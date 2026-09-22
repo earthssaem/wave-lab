@@ -104,6 +104,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--accent);ou
 .spd-row.best{background:#E4F3E8;border-color:var(--ok)}
 .spd-row.best b{color:var(--ok)}
 .info{font-size:14px;color:var(--ink-2);line-height:1.55}
+.card .fig{width:100%;height:auto;display:block;border:3px solid var(--ink);border-radius:10px;background:var(--sky);margin:2px 0 8px}
 .info b{color:var(--ink);font-family:var(--display);font-weight:400;font-size:16px}
 .predict{position:absolute;inset:0;display:grid;place-items:center;background:rgba(36,48,58,.35);z-index:3}
 .predict[hidden]{display:none}

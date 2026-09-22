@@ -59,6 +59,7 @@
     const c = S.L / S.T;
     $('#v1-L').textContent = S.L + ' m'; $('#v1-H').textContent = fmt(S.H) + ' m'; $('#v1-T').textContent = fmt(S.T) + ' s';
     $('#f1-L').textContent = S.L + ' m'; $('#f1-T').textContent = fmt(S.T) + ' s'; $('#v1-c').textContent = fmt(c, 2) + ' m/s';
+    $('#v1-steep').innerHTML = TX.steep(fmt(S.H), S.L, fmt(S.H / S.L, 3));
     $('#cap1').innerHTML = hangCap(TX.cap(S, c, HINT[which] || TX.hintDefault));
   }
   ['L', 'H', 'T'].forEach(key => { const r = $('#r1-' + key); r.addEventListener('input', () => { S[key] = +r.value; upd(key); }); });
