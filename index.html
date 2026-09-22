@@ -29,12 +29,14 @@
         <h3>해파 조절하기</h3>
         <div class="rng"><label>파장 (L) <b id="v1-L">60 m</b></label><input type="range" id="r1-L" min="30" max="120" step="5" value="60"></div>
         <div class="rng"><label>파고 (H) <b id="v1-H">3 m</b></label><input type="range" id="r1-H" min="1" max="8" step="0.5" value="3"></div>
-        <div class="rng"><label>주기 (T) <b id="v1-T">8 s</b></label><input type="range" id="r1-T" min="3" max="15" step="0.5" value="8"></div>
+        <div class="rng"><label>주기 (T) <b id="v1-T">8 s</b></label><input type="range" id="r1-T" min="3" max="16" step="0.5" value="8"></div>
+        <div class="mini-note">바람으로 생긴 해파의 주기는 보통 6~16초예요.</div>
       </div>
       <div class="card">
         <h3>진행 속도</h3>
         <div class="formula">속도 = <span class="frac"><span>파장</span><span>주기</span></span> = <span class="frac"><span id="f1-L">60 m</span><span id="f1-T">8 s</span></span></div>
         <div class="vbig" id="v1-c">7.5 m/s</div>
+        <div class="mini-note" id="v1-steep"></div>
         <div class="mini-note">그림의 세로(파고)는 보기 쉽게 약 3배 과장했어요.</div>
       </div>
       <div class="card">
@@ -65,6 +67,7 @@
         <h3>해파 조절하기</h3>
         <div class="rng"><label>파장 (L) <b id="v2-L">80 m</b></label><input type="range" id="r2-L" min="60" max="100" step="10" value="80"></div>
         <div class="rng"><label>파고 (H) · 바람이 셀수록 ↑ <b id="v2-H">8 m</b></label><input type="range" id="r2-H" min="2" max="10" step="1" value="8"></div>
+        <div class="mini-note">해파는 바람이 셀수록, 오래 불수록, 바람이 부는 바다가 넓을수록 파고와 파장이 커져요.</div>
       </div>
       <div class="card">
         <h3>읽어 보기</h3>
@@ -118,10 +121,15 @@
       </div>
       <div class="card">
         <h3>속도 계산</h3>
-        <div class="spd-row" id="sp-full"><span>일반식<small>√(g/k · tanh kh)</small></span><b></b></div>
+        <div class="spd-row" id="sp-full"><span>천이파 속도(일반식)<small>√(g/k · tanh kh)</small></span><b></b></div>
         <div class="spd-row" id="sp-deep"><span>심해파 근사<small>√(gL/2π)</small></span><b></b></div>
         <div class="spd-row" id="sp-shal"><span>천해파 근사<small>√(gh)</small></span><b></b></div>
         <div class="mini-note" id="sp-note"></div>
+      </div>
+      <div class="card">
+        <h3>모양에 따른 해파의 종류</h3>
+        <svg class="fig" id="svg3-types" viewBox="0 0 300 120"></svg>
+        <div class="info" id="info3-types"></div>
       </div>
     </div>
     <div>

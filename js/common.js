@@ -128,3 +128,30 @@ function drawGull() {
   ]);
 }
 function drawFoam() { return E('g', {}, [E('rect', { x: -10, y: -10, width: 20, height: 13, rx: 4, fill: '#fff', stroke: '#24303A', 'stroke-width': 2.5 })]); }
+/* 모양에 따른 해파의 종류: 바람 → 풍랑(뾰족) → 너울(둥글고 긴 파장) → 연안 쇄파(파장↓ 파고↑ 부서짐). 300×120 좌표계의 g 반환 (탭3 카드·퀴즈 그림 공용) */
+function drawWaveTypes(t) {
+  const g = E('g');
+  g.appendChild(E('rect', { width: 300, height: 120, fill: '#CFE8F5' }));
+  const tri = (x, L) => 1 - Math.abs(((x / L) % 1) * 2 - 1); // 0~1 삼각파
+  const y = x => {
+    if (x < 100) return 66 - 9 * tri(x + 4, 22) - 4 * tri(x, 13);          // 풍랑: 뾰족하고 불규칙
+    if (x < 200) return 66 - 6 * Math.cos(2 * Math.PI * (x - 100) / 62);   // 너울: 둥글고 긴 파장
+    const s = (x - 200) / 100, L = 62 - 30 * s, A = 6 + 8 * s;             // 연안: 얕아지며 파장↓ 파고↑
+    return 66 - A * Math.cos(2 * Math.PI * (x - 200) / L);
+  };
+  let d = `M0 ${y(0).toFixed(1)}`; for (let x = 2; x <= 300; x += 2) d += `L${x} ${y(x).toFixed(1)}`;
+  g.appendChild(E('path', { d: d + 'L300 120L0 120Z', fill: '#5FB0DE', stroke: '#24303A', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));
+  [100, 200].forEach(x => g.appendChild(E('line', { x1: x, y1: 8, x2: x, y2: 98, stroke: '#24303A', 'stroke-width': 1.5, 'stroke-dasharray': '4 4', opacity: .4 })));
+  // 부서지는 마루의 거품: 해안 앞 가장 높은 마루를 찾아 표시
+  let xc = 225, yc = 200; for (let x = 225; x <= 258; x += 1) { const v = y(x); if (v < yc) { yc = v; xc = x; } }
+  [[0, 0, 6], [8, 5, 4.5], [-7, 4, 4], [14, 10, 3.5]].forEach(([dx, dy, r]) => g.appendChild(E('circle', { cx: xc + dx, cy: yc + dy, r, fill: '#fff', stroke: '#24303A', 'stroke-width': 1.5 })));
+  // 해안(모래)
+  g.appendChild(E('path', { d: 'M256 120 L300 62 L300 120 Z', fill: '#E6C377', stroke: '#24303A', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));
+  // 바람: 구름 + 화살표
+  g.appendChild(E('path', { d: 'M12 30 a8 8 0 0 1 16 -5 a9 9 0 0 1 18 3 a6 6 0 0 1 1 12 l-34 0 a7 7 0 0 1 -1 -10 Z', fill: '#fff', stroke: '#24303A', 'stroke-width': 2 }));
+  g.appendChild(E('path', { d: 'M54 32 L84 32 M84 32 L76 26 M84 32 L76 38', stroke: '#E8553E', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', fill: 'none' }));
+  g.appendChild(E('text', { x: 69, y: 22, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 11, fill: '#C7432E', text: t.wind }));
+  // 이름표
+  [[t.names[0], 50], [t.names[1], 150], [t.names[2], 230]].forEach(([s, x]) => g.appendChild(E('text', { x, y: 110, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 13, fill: '#24303A', text: s })));
+  return g;
+}

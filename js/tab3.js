@@ -90,6 +90,8 @@
   $$('#seg3-preset button').forEach(b => b.onclick = () => { const [L, h] = PRE[b.dataset.v]; S.L = L; S.h = h; $('#r3-L').value = L; $('#r3-h').value = h; upd(); b.classList.add('sel'); });
   $('#t3-orbit').onclick = e => { orbitOn = !orbitOn; e.currentTarget.classList.toggle('on', orbitOn); };
   registerPauseBtn($('#t3-pause'));
+  // 모양에 따른 해파의 종류 카드 (풍랑 → 너울 → 연안 쇄파)
+  $('#svg3-types').appendChild(drawWaveTypes(TEXT.waveTypes)); $('#info3-types').innerHTML = TX.types;
   upd(); render(0);
   frames['3'] = render;
 })();

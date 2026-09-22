@@ -35,14 +35,19 @@
     });
     return s;
   }
-  function artRatio() {
+  function artRatio(lblL = TX.art.ratioL, lblH = TX.art.ratioH) {
     const s = E('svg', { viewBox: '0 0 300 190' }); sea(s);
     s.appendChild(E('path', { d: wavePath(70, 8, 240, 300, Math.PI), fill: '#5FB0DE', stroke: '#24303A', 'stroke-width': 3 }));
     s.appendChild(E('rect', { x: 0, y: 130, width: 300, height: 60, fill: '#E6C377', stroke: '#24303A', 'stroke-width': 3 }));
     s.appendChild(E('path', { d: arrowD(30, 30, 270, 30, 8), stroke: '#5B9BD5', 'stroke-width': 3.5, fill: 'none', 'stroke-linecap': 'round' }));
-    s.appendChild(E('text', { x: 150, y: 22, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 15, fill: '#24303A', text: TX.art.ratioL }));
+    s.appendChild(E('text', { x: 150, y: 22, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 15, fill: '#24303A', text: lblL }));
     s.appendChild(E('path', { d: arrowD(150, 78, 150, 130, 8), stroke: '#E8553E', 'stroke-width': 3.5, fill: 'none', 'stroke-linecap': 'round' }));
-    s.appendChild(E('text', { x: 160, y: 110, 'font-family': 'Jua', 'font-size': 15, fill: '#C7432E', text: TX.art.ratioH }));
+    s.appendChild(E('text', { x: 160, y: 110, 'font-family': 'Jua', 'font-size': 15, fill: '#C7432E', text: lblH }));
+    return s;
+  }
+  function artSwell() {
+    const s = E('svg', { viewBox: '0 0 300 190' }); sea(s);
+    const g = drawWaveTypes(TEXT.waveTypes); g.setAttribute('transform', 'translate(0,35)'); s.appendChild(g);
     return s;
   }
   function artCapeTop() {
@@ -58,7 +63,7 @@
     return s;
   }
   /* 문항 텍스트는 text.js 에서 가져오고, 그림은 이름 → 함수 참조로 연결 */
-  const ART = { artBoat, artBall, artOrbitDeep: () => artOrbit(true), artOrbitShallow: () => artOrbit(false), artRatio, artCapeTop };
+  const ART = { artBoat, artBall, artSwell, artOrbitDeep: () => artOrbit(true), artOrbitShallow: () => artOrbit(false), artRatio, artRatioSym: () => artRatio(TX.art.ratioLsym, TX.art.ratioHsym), artCapeTop };
   const QS = TX.QS.map(q => q.type === 'pic2' ? { ...q, options: q.options.map(o => ({ ...o, art: ART[o.art] })) } : { ...q, art: ART[q.art] });
   let queue = QS.map((_, i) => i), pos = 0, results = QS.map(() => null);
   function render() {
@@ -116,7 +121,7 @@
   }
   function renderEnd() {
     const score = results.filter(Boolean).length, wrong = QS.map((_, i) => i).filter(i => !results[i]);
-    const msg = score === QS.length ? TX.msgPerfect : score >= 4 ? TX.msgGood : TX.msgOk;
+    const msg = score === QS.length ? TX.msgPerfect : score >= Math.ceil(QS.length * 2 / 3) ? TX.msgGood : TX.msgOk;
     const box = document.createElement('div'); box.className = 'q';
     box.innerHTML = `<div class="score">${TX.score(score, QS.length)}</div><div style="text-align:center;margin-top:10px;font-size:16px">${msg}</div><div class="review">${QS.map((q, i) => `<span class="rv ${results[i] ? 'ok' : 'no'}">Q${i + 1} ${results[i] ? '○' : '✕'}</span>`).join('')}</div><div class="qctl" style="justify-content:center;flex-wrap:wrap;gap:10px">${wrong.length ? `<button class="btn warn big" id="q-wrong">${TX.btnWrong}</button>` : ''}<button class="btn big" id="q-back">${TX.btnBack}</button><button class="btn primary big" id="q-restart">${TX.btnRestart}</button></div>`;
     quiz.appendChild(box);
