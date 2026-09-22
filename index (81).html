@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>해파 탐구실</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<style>
+:root{
+  --ink:#24303A; --ink-2:#4A5763; --paper:#FFFDF8; --ground:#E6EEF3;
+  --sea:#2E7DB0; --sea-deep:#1E5A85; --sky:#BFE3F5;
+  --sand:#E6C377; --sand-2:#D9AD5C; --clay:#B9744A; --rock:#8A8276;
+  --accent:#E8553E; --accent-2:#C7432E; --ok:#3FA36B; --warn:#F2B233; --bad:#D9483B;
+  --tab1:#5B9BD5; --tab2:#E0A93B; --tab3:#E8553E; --tab4:#6AAE78; --tab5:#8C7BB5;
+  --display:'Jua','Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --body:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh}
+button{font-family:var(--display);cursor:pointer;border:none}
+button:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* ---------- 상단 ---------- */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;max-width:1240px;margin:0 auto;padding:8px 16px 0;width:100%;min-width:0}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0;flex-wrap:nowrap;white-space:nowrap}
+.brand h1{font-family:var(--display);font-weight:400;font-size:clamp(19px,3.1vw,30px);margin:0;letter-spacing:-.5px;flex:none}
+.brand .sub{font-size:clamp(11px,1.7vw,16px);color:var(--ink-2);border-left:2px solid rgba(36,48,58,.25);padding-left:10px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.tabs{display:flex;gap:6px;max-width:1240px;margin:6px auto 0;padding:0 36px 0 16px;overflow-x:auto;scrollbar-width:none;width:100%;min-width:0}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:1 0 auto;min-width:150px;padding:10px 14px 12px;border-radius:14px 14px 0 0;background:#fff;color:var(--ink-2);font-size:18px;border:3px solid var(--ink);border-bottom:none;position:relative;top:3px;display:flex;align-items:center;gap:8px;white-space:nowrap;transition:transform .15s}
+.tab .num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:14px}
+.tab.active{color:#fff;top:0;padding-bottom:15px}
+.tab.active[data-tab="1"]{background:var(--tab1)}
+.tab.active[data-tab="2"]{background:var(--tab2)}
+.tab.active[data-tab="3"]{background:var(--tab3)}
+.tab.active[data-tab="4"]{background:var(--tab4)}
+.tab.active[data-tab="5"]{background:var(--tab5)}
+.tab.active .num{background:#fff;color:var(--ink)}
+
+/* ---------- 본문 ---------- */
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px 6px;width:100%;flex:1 0 auto;display:flex;flex-direction:column}
+.panel{display:none;background:var(--paper);border:3px solid var(--ink);border-radius:0 18px 18px 18px;padding:12px;box-shadow:0 8px 0 rgba(36,48,58,.12)}
+.panel.active{display:block;flex:1 0 auto}
+.stage-wrap{position:relative;width:min(100%,max(640px,calc((100vh - 250px)*16/9)));width:min(100%,max(640px,calc((100dvh - 250px)*16/9)));margin:0 auto;aspect-ratio:16/9;border:4px solid var(--ink);border-radius:14px;overflow:hidden;background:var(--sky)}
+#panel4 .stage-wrap{width:min(100%,max(640px,calc((100vh - 320px)*16/9)));width:min(100%,max(640px,calc((100dvh - 320px)*16/9)))}
+@media(max-width:600px){#cap4{right:auto}}
+.lab-grid .stage-wrap{width:100%}
+.stage-wrap svg,.stage-wrap canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.stage-wrap canvas{touch-action:none}
+.caption{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(255,253,248,.94);border:3px solid var(--ink);border-radius:12px;padding:10px 16px;font-size:clamp(14px,1.9vw,20px);line-height:1.45;font-weight:500;pointer-events:none;transition:opacity .3s;word-break:keep-all;overflow-wrap:anywhere}
+.caption b{color:var(--accent-2)}
+.caption small{display:block;font-size:.78em;color:var(--ink-2);font-weight:400}
+.caption .cap-line{display:flex;align-items:flex-start;column-gap:.35em}
+.caption .cap-line b{flex:none;white-space:nowrap}
+.caption .cap-rest{flex:1 1 auto;min-width:0}
+.caption .cap-s{display:inline-block;max-width:100%}
+.caption.hidden{opacity:0}
+.badge{position:absolute;top:12px;left:12px;background:var(--ink);color:#fff;font-family:var(--display);font-size:clamp(14px,1.8vw,20px);padding:6px 14px;border-radius:999px;pointer-events:none}
+.mychip{position:absolute;top:12px;right:12px;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:4px 14px;font-family:var(--display);font-size:clamp(13px,1.6vw,17px);pointer-events:none}
+.mychip[hidden]{display:none}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:10px}
+.controls .spacer{flex:1}
+.btn{font-size:19px;padding:10px 20px;border-radius:12px;background:#fff;color:var(--ink);border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);transition:transform .08s,box-shadow .08s;user-select:none;-webkit-user-select:none}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.ok{background:var(--ok);color:#fff}
+.btn.warn{background:var(--warn)}
+.btn.ghost{background:transparent;box-shadow:none;border-color:transparent;color:var(--ink-2)}
+.btn:disabled{opacity:.4;cursor:default;transform:none;box-shadow:0 4px 0 var(--ink)}
+.btn.big{font-size:24px;padding:14px 30px}
+.btn.tog{background:#F4F7FA;color:var(--ink-2)}
+.btn.tog.on{background:var(--ink);color:#fff}
+#panel1 .btn.tog.on{background:var(--tab1)} #panel2 .btn.tog.on{background:var(--tab2)} #panel3 .btn.tog.on{background:var(--tab3)} #panel4 .btn.tog.on{background:var(--tab4)}
+.steps{display:flex;gap:6px;align-items:center}
+.steps .dot{width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--ink);transition:background .2s}
+.steps .dot.on{background:var(--tab4)}
+.steps .dot.done{background:var(--ink)}
+.note{margin-top:14px;padding:12px 16px;border-left:6px solid var(--tab1);background:#fff;border-radius:8px;font-size:15px;color:var(--ink-2)}
+.note b{color:var(--ink)}
+
+/* ---------- 카드형 실험실 레이아웃 ---------- */
+.lab-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:900px){.lab-grid{grid-template-columns:minmax(250px,300px) minmax(0,1fr)}}
+.lab-side{display:flex;flex-direction:column;gap:8px}
+.card{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:10px}
+.card h3{font-family:var(--display);font-weight:400;font-size:18px;margin:0 0 6px;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.card h3 .tag{font-size:13px;background:var(--ink);color:#fff;padding:2px 8px;border-radius:999px;font-family:var(--body)}
+.seg{display:flex;border:3px solid var(--ink);border-radius:12px;overflow:hidden}
+.seg button{flex:1;padding:8px 6px;background:#F4F7FA;color:var(--ink);font-size:16px;line-height:1.2;word-break:keep-all}
+.seg button small{display:block;font-family:var(--body);font-size:11px;opacity:.75}
+.seg button.sel{background:var(--tab2);color:#fff}
+#panel3 .seg button.sel{background:var(--tab3)} #panel4 .seg button.sel{background:var(--tab4)}
+.seg button+button{border-left:3px solid var(--ink)}
+.rng{display:flex;flex-direction:column;gap:0;margin-top:4px}
+.rng label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;color:var(--ink-2);gap:8px}
+.rng label b{font-family:var(--display);color:var(--ink);font-size:18px;font-weight:400;white-space:nowrap}
+.rng input[type=range]{width:100%;accent-color:var(--accent);height:30px;margin:0}
+#panel1 .rng input{accent-color:var(--tab1)} #panel2 .rng input{accent-color:var(--tab2)} #panel3 .rng input{accent-color:var(--tab3)} #panel4 .rng input{accent-color:var(--tab4)}
+.formula{font-family:var(--display);font-size:19px;text-align:center;padding:8px 6px;border:3px dashed var(--ink);border-radius:12px;background:#F4F7FA;display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap}
+.formula .frac{display:inline-flex;flex-direction:column;align-items:center;line-height:1.15;vertical-align:middle}
+.formula .frac span:first-child{border-bottom:3px solid var(--ink);padding:0 6px}
+.vbig{font-family:var(--display);font-size:32px;color:var(--accent-2);text-align:center;margin-top:6px;line-height:1.1}
+.mini-note{margin-top:8px;font-size:12px;color:var(--ink-2);line-height:1.45}
+.ratio-row{display:flex;justify-content:space-between;align-items:baseline;font-size:15px;color:var(--ink-2)}
+.ratio-row b{font-family:var(--display);font-size:26px;color:var(--ink);font-weight:400}
+.cls{font-family:var(--display);font-size:26px;text-align:center;color:#fff;background:var(--tab1);border:3px solid var(--ink);border-radius:12px;padding:6px;margin-top:4px}
+.spd-row{display:flex;justify-content:space-between;align-items:center;gap:6px;padding:6px 10px;border:3px solid var(--ink);border-radius:10px;margin-top:6px;background:#fff;font-size:13px;color:var(--ink-2)}
+.spd-row b{font-family:var(--display);font-size:18px;color:var(--ink);font-weight:400;white-space:nowrap}
+.spd-row small{display:block;font-size:11px}
+.spd-row.best{background:#E4F3E8;border-color:var(--ok)}
+.spd-row.best b{color:var(--ok)}
+.info{font-size:14px;color:var(--ink-2);line-height:1.55}
+.info b{color:var(--ink);font-family:var(--display);font-weight:400;font-size:16px}
+.predict{position:absolute;inset:0;display:grid;place-items:center;background:rgba(36,48,58,.35);z-index:3}
+.predict[hidden]{display:none}
+.predict .pbox{background:var(--paper);border:4px solid var(--ink);border-radius:16px;padding:14px 18px;max-width:min(560px,92%);max-height:92%;overflow:auto;text-align:center;box-shadow:0 6px 0 rgba(36,48,58,.3)}
+.predict h4{font-family:var(--display);font-weight:400;font-size:clamp(17px,2.4vw,24px);margin:0 0 10px;line-height:1.3}
+.predict .pbtns{display:flex;flex-direction:column;gap:8px}
+.predict .pbtns.row{flex-direction:row;justify-content:center}
+.predict .pbtns .btn{font-size:clamp(14px,1.8vw,17px);white-space:normal;line-height:1.3;text-align:left}
+.predict .pbtns.row .btn{text-align:center;font-size:22px;padding:12px 30px}
+.predict .psub{font-size:13px;color:var(--ink-2);margin-top:8px}
+
+/* ---------- 탭4 ---------- */
+.mode-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.mode-row .seg{max-width:380px;flex:1 1 300px}
+.mode-row .rng{flex:1 1 220px;max-width:340px}
+
+/* ---------- 탭5 퀴즈 ---------- */
+.quiz{display:flex;flex-direction:column;gap:16px}
+.q{background:#fff;border:3px solid var(--ink);border-radius:14px;padding:16px}
+.q h3{font-family:var(--display);font-weight:400;font-size:21px;line-height:1.45;margin:0 0 10px}
+.qtop{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.qtop .qn{background:var(--tab5);color:#fff;border-radius:8px;padding:2px 12px;font-family:var(--display);font-size:16px}
+.qtop .qtag{font-size:13px;background:#F1ECF8;border:2px solid var(--tab5);color:var(--ink);border-radius:999px;padding:1px 10px}
+#panel5 .q.tall{min-height:min(560px,calc(100dvh - 220px));display:flex;flex-direction:column}
+#panel5 .qbody{flex:1;display:flex;flex-direction:column;justify-content:center}
+.qart{min-height:200px;display:grid;place-items:center;margin:10px 0}
+.qart svg{width:min(480px,100%);height:auto;display:block;border:3px solid var(--ink);border-radius:12px;background:#fff}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.choice{border:3px solid var(--ink);border-radius:12px;padding:14px;background:#fff;text-align:center;font-family:var(--display);font-size:19px;line-height:1.4;color:var(--ink)}
+.choice.sel{background:var(--tab5);color:#fff}
+.choice.right{background:#E4F3E8;border-color:var(--ok)} .choice.wrong{background:#FBE5E2;border-color:var(--bad)}
+.pic2{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch;margin:10px 0}
+.piccard{border:3px solid var(--ink);border-radius:14px;background:#fff;padding:10px;cursor:pointer;text-align:center;position:relative;transition:transform .12s}
+.piccard svg{width:100%;height:auto;display:block;border-radius:8px}
+.piccard .pl{font-family:var(--display);font-size:19px;margin-top:8px}
+.piccard:hover{transform:translateY(-2px)}
+.piccard.right{border-color:var(--ok);background:#E4F3E8}
+.piccard.wrong{border-color:var(--bad);background:#FBE5E2}
+.piccard.dim{opacity:.5}
+.mark{position:absolute;top:8px;right:8px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:20px;border:3px solid var(--ink)}
+.mark.ok{background:var(--ok)} .mark.no{background:var(--bad)}
+.oxrow{display:flex;gap:24px;justify-content:center;margin-top:10px}
+.oxbtn{width:104px;height:104px;border-radius:50%;border:4px solid var(--ink);background:#fff;font-family:var(--display);color:var(--ink);display:grid;place-items:center;box-shadow:0 4px 0 var(--ink);line-height:1.1}
+.oxbtn>span{font-size:38px;line-height:1}
+.oxbtn small{display:block;font-size:12px;font-family:var(--body);color:var(--ink-2)}
+.oxbtn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.oxbtn.right{background:var(--ok);color:#fff} .oxbtn.right small{color:#fff}
+.oxbtn.wrong{background:var(--bad);color:#fff} .oxbtn.wrong small{color:#fff}
+.qfeed{margin-top:14px;padding:12px 16px;border-radius:12px;border:3px solid var(--ok);background:#E4F3E8;font-size:15px}
+.qfeed.bad{border-color:var(--bad);background:#FBE5E2}
+.qfeed .fh{font-family:var(--display);font-size:20px;margin-bottom:4px}
+.qctl{margin-top:14px;display:flex;justify-content:flex-end}
+.score{font-family:var(--display);font-size:26px;text-align:center;padding:14px;border-radius:14px;background:var(--tab5);color:#fff}
+.review{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;justify-content:center}
+.rv{border:3px solid var(--ink);border-radius:10px;padding:4px 10px;font-family:var(--display);font-size:15px;background:#fff}
+.rv.ok{border-color:var(--ok);background:#E4F3E8} .rv.no{border-color:var(--bad);background:#FBE5E2}
+@keyframes popok{0%{transform:scale(1)}40%{transform:scale(1.07)}100%{transform:scale(1)}}
+.pop{animation:popok .45s ease}
+
+/* ---------- 모바일(폰) ---------- */
+@media(max-width:600px){
+  .choices,.pic2{grid-template-columns:1fr}.oxbtn{width:92px;height:92px}
+  .tab{min-width:0;padding:8px 12px 10px;font-size:15px;gap:6px}.tab .num{width:22px;height:22px;font-size:12px}
+  .btn{font-size:16px;padding:9px 14px}.btn.big{font-size:18px;padding:11px 16px}
+  .controls{gap:8px}.controls .spacer{display:none}
+  .controls .btn{flex:1 1 calc(50% - 8px);white-space:nowrap;min-width:0}
+  .controls .btn.big{flex:1 1 100%}
+  .mode-row .seg,.mode-row .rng{max-width:none;flex:1 1 100%}
+  #panel4 .controls{display:grid;grid-template-columns:1fr 1fr}
+  #t4-steps{grid-column:1/-1;justify-content:center;order:-1;margin-bottom:2px}
+  #t4-prev{order:1}#t4-next{order:2}#t4-pause{order:3;grid-column:1/-1}
+  .lab-grid>div:last-child{order:-1}
+  .cap-slot{margin-top:8px}
+  .cap-slot:empty{display:none}
+  .caption.below{position:static;left:auto;right:auto;bottom:auto;font-size:15px;padding:8px 12px;pointer-events:auto;transition:none}
+  .caption.below.hidden{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+
+/* ---------- 푸터 ---------- */
+.site-foot{max-width:1240px;margin:auto auto 0;padding:4px 16px 8px;text-align:center;font-size:13px;color:var(--ink-2);width:100%}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><h1>해파 탐구실</h1><span class="sub">파도는 물을 옮길까, 에너지를 옮길까?</span></div>
+</header>
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-tab="1" role="tab"><span class="num">1</span>해파의 구조</button>
+  <button class="tab" data-tab="2" role="tab"><span class="num">2</span>물 입자의 운동</button>
+  <button class="tab" data-tab="3" role="tab"><span class="num">3</span>심해파와 천해파</button>
+  <button class="tab" data-tab="4" role="tab"><span class="num">4</span>해파의 굴절</button>
+  <button class="tab" data-tab="5" role="tab"><span class="num">5</span>핵심 퀴즈</button>
+</nav>
+<main class="wrap">
+
+<!-- ===== 탭1: 해파의 구조 ===== -->
+<section class="panel active" id="panel1">
+  <div class="lab-grid">
+    <div class="lab-side">
+      <div class="card">
+        <h3>해파 조절하기</h3>
+        <div class="rng"><label>파장 (L) <b id="v1-L">60 m</b></label><input type="range" id="r1-L" min="30" max="120" step="5" value="60"></div>
+        <div class="rng"><label>파고 (H) <b id="v1-H">3 m</b></label><input type="range" id="r1-H" min="1" max="8" step="0.5" value="3"></div>
+        <div class="rng"><label>주기 (T) <b id="v1-T">8 s</b></label><input type="range" id="r1-T" min="3" max="15" step="0.5" value="8"></div>
+      </div>
+      <div class="card">
+        <h3>진행 속도</h3>
+        <div class="formula">속도 = <span class="frac"><span>파장</span><span>주기</span></span> = <span class="frac"><span id="f1-L">60 m</span><span id="f1-T">8 s</span></span></div>
+        <div class="vbig" id="v1-c">7.5 m/s</div>
+        <div class="mini-note">그림의 세로(파고)는 보기 쉽게 약 3배 과장했어요.</div>
+      </div>
+      <div class="card">
+        <h3>용어 정리</h3>
+        <div class="info"><b>마루</b> 가장 높은 곳 · <b>골</b> 가장 낮은 곳<br><b>파고</b> 골에서 마루까지의 높이<br><b>파장</b> 마루에서 다음 마루까지의 거리<br><b>주기</b> 마루가 지나간 뒤 다음 마루가 올 때까지의 시간</div>
+      </div>
+    </div>
+    <div>
+      <div class="stage-wrap" id="stage1">
+        <svg id="svg1" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
+        <div class="badge">해파의 구조</div>
+        <div class="caption" id="cap1"></div>
+      </div>
+      <div class="controls">
+        <button class="btn tog on" id="t1-labels">🏷 이름표 보기</button>
+        <div class="spacer"></div>
+        <button class="btn" id="t1-pause">⏸ 일시 정지</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 탭2: 물 입자의 운동 ===== -->
+<section class="panel" id="panel2">
+  <div class="lab-grid">
+    <div class="lab-side">
+      <div class="card">
+        <h3>해파 조절하기</h3>
+        <div class="rng"><label>파장 (L) <b id="v2-L">80 m</b></label><input type="range" id="r2-L" min="60" max="100" step="10" value="80"></div>
+        <div class="rng"><label>파고 (H) · 바람이 셀수록 ↑ <b id="v2-H">8 m</b></label><input type="range" id="r2-H" min="2" max="10" step="1" value="8"></div>
+      </div>
+      <div class="card">
+        <h3>읽어 보기</h3>
+        <div class="info" id="info2"></div>
+        <div class="mini-note">이 그림은 가로·세로 비율이 실제와 같아요 (1 m = 4 px).</div>
+      </div>
+    </div>
+    <div>
+      <div class="stage-wrap" id="stage2">
+        <svg id="svg2" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
+        <div class="badge">물 입자의 운동</div>
+        <div class="mychip" id="chip2" hidden></div>
+        <div class="caption" id="cap2"></div>
+        <div class="predict" id="pred2"><div class="pbox">
+          <h4>🐦 파도가 지나가면 물 위의 갈매기는 어떻게 움직일까요?</h4>
+          <div class="pbtns">
+            <button class="btn" data-v="a">ⓐ 파도와 함께 오른쪽(해안 쪽)으로 계속 밀려간다</button>
+            <button class="btn" data-v="b">ⓑ 제자리에서 원을 그리며 돈다</button>
+            <button class="btn" data-v="c">ⓒ 그 자리에서 위아래로만 오르내린다</button>
+          </div>
+          <div class="psub">예측을 고르면 파도가 움직이기 시작해요. 예측은 기록되지 않아요.</div>
+        </div></div>
+      </div>
+      <div class="controls">
+        <button class="btn tog on" id="t2-trail">🪶 궤적</button>
+        <button class="btn tog on" id="t2-deep">🔵 깊이별 입자</button>
+        <button class="btn tog on" id="t2-num">①② 위치 번호</button>
+        <div class="spacer"></div>
+        <button class="btn ghost" id="t2-again">↺ 예측 다시 하기</button>
+        <button class="btn" id="t2-pause">⏸ 일시 정지</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 탭3: 심해파와 천해파 ===== -->
+<section class="panel" id="panel3">
+  <div class="lab-grid">
+    <div class="lab-side">
+      <div class="card">
+        <h3>파장과 수심</h3>
+        <div class="rng"><label>파장 (L) <b id="v3-L">60 m</b></label><input type="range" id="r3-L" min="10" max="200" step="5" value="60"></div>
+        <div class="rng"><label>수심 (h) <b id="v3-h">40 m</b></label><input type="range" id="r3-h" min="1" max="100" step="1" value="40"></div>
+        <div class="seg" id="seg3-preset" style="margin-top:8px"><button data-v="deep">심해파<small>예시</small></button><button data-v="mid">천이파<small>예시</small></button><button data-v="shal">천해파<small>예시</small></button></div>
+      </div>
+      <div class="card">
+        <h3>판정 <span class="tag">수심 ÷ 파장</span></h3>
+        <div class="ratio-row"><span>h ÷ L =</span><b id="v3-ratio">0.67</b></div>
+        <div class="cls" id="cls3">심해파</div>
+        <div class="mini-note" id="cls3-why"></div>
+      </div>
+      <div class="card">
+        <h3>속도 계산</h3>
+        <div class="spd-row" id="sp-full"><span>일반식<small>√(g/k · tanh kh)</small></span><b></b></div>
+        <div class="spd-row" id="sp-deep"><span>심해파 근사<small>√(gL/2π)</small></span><b></b></div>
+        <div class="spd-row" id="sp-shal"><span>천해파 근사<small>√(gh)</small></span><b></b></div>
+        <div class="mini-note" id="sp-note"></div>
+      </div>
+    </div>
+    <div>
+      <div class="stage-wrap" id="stage3">
+        <svg id="svg3" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
+        <div class="badge" id="badge3">심해파</div>
+        <div class="caption" id="cap3"></div>
+      </div>
+      <div class="controls">
+        <button class="btn tog on" id="t3-orbit">⭕ 궤도 보기</button>
+        <div class="spacer"></div>
+        <button class="btn" id="t3-pause">⏸ 일시 정지</button>
+      </div>
+      <div class="mini-note">깊이 눈금은 보기 쉽게 간격을 조절해 그렸어요(실제 비율이 아님). 궤도 모양은 파장·수심으로 계산한 값이에요.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 탭4: 해파의 굴절 ===== -->
+<section class="panel" id="panel4">
+  <div class="mode-row">
+    <div class="seg" id="seg4-scene"><button data-v="cape" class="sel">🏝 곶과 만</button><button data-v="line">📐 비스듬한 직선 해안</button></div>
+    <div class="rng"><label>파가 들어오는 방향 <b id="v4-ang">정면 (0°)</b></label><input type="range" id="r4-ang" min="-50" max="50" step="5" value="0"></div>
+  </div>
+  <div class="stage-wrap" id="stage4">
+    <svg id="svg4" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
+    <div class="badge" id="badge4">관찰</div><div class="mychip">위에서 본 모습 · 위쪽이 육지</div>
+    <div class="caption" id="cap4"></div>
+  </div>
+  <div class="controls">
+    <button class="btn" id="t4-prev">◀ 이전</button>
+    <div class="steps" id="t4-steps"></div>
+    <div class="spacer"></div>
+    <button class="btn" id="t4-pause">⏸ 일시 정지</button>
+    <button class="btn primary" id="t4-next">다음 ▶</button>
+  </div>
+</section>
+
+<!-- ===== 탭5: 퀴즈 ===== -->
+<section class="panel" id="panel5">
+  <div class="quiz" id="quiz"></div>
+</section>
+
+</main>
+<footer class="site-foot">© 2026 제작: 김연경(earthssaem@gmail.com)</footer>
+<script>
+/* ================= 공통 ================= */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+/* 폰에서는 자막을 그림 아래 칸으로 옮겨 그림을 가리지 않게 함 */
+(function () {
+  const mq = matchMedia('(max-width:600px)');
+  const apply = () => {
+    $$('.stage-wrap').forEach(sw => {
+      let slot = sw.nextElementSibling;
+      if (!slot || !slot.classList.contains('cap-slot')) { slot = document.createElement('div'); slot.className = 'cap-slot'; sw.after(slot); }
+      const cap = (mq.matches ? sw : slot).querySelector('.caption');
+      if (!cap) return;
+      cap.classList.toggle('below', mq.matches);
+      (mq.matches ? slot : sw).appendChild(cap);
+    });
+  };
+  apply();
+  mq.addEventListener('change', apply);
+})();
+function hangCap(html) {
+  const sm = html.match(/<small>[\s\S]*<\/small>\s*$/);
+  let main = sm ? html.slice(0, sm.index) : html; const tail = sm ? sm[0] : '';
+  const m = main.match(/^<b>(.*?)<\/b>\s*—\s*/);
+  if (m) main = main.slice(m[0].length);
+  const body = main.trim().replace(/([.!?…])\s+/g, '$1\u0001').split('\u0001').map(t => `<span class="cap-s">${t}</span>`).join(' ');
+  if (!m) return body + tail;
+  return `<span class="cap-line"><b>${m[1]}</b><span class="cap-rest">${body}</span></span>${tail}`;
+}
+const SVGNS = 'http://www.w3.org/2000/svg';
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, t) => a + (b - a) * t;
+const mod = (a, n) => ((a % n) + n) % n;
+function E(tag, attrs = {}, children = []) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const k in attrs) {
+    if (k === 'text') e.textContent = attrs[k];
+    else if (k === 'html') e.innerHTML = attrs[k];
+    else e.setAttribute(k, attrs[k]);
+  }
+  for (const c of children) if (c) e.appendChild(c);
+  return e;
+}
+function attr(e, o) { for (const k in o) e.setAttribute(k, o[k]); return e; }
+const fmt = (v, d = 1) => (+v).toFixed(d).replace(/\.0+$/, '');
+
+/* ---- 일시 정지 (전역) ---- */
+let _paused = false;
+const _pauseBtns = [];
+function syncPauseBtns() { _pauseBtns.forEach(b => { b.textContent = _paused ? '▶ 재생' : '⏸ 일시 정지'; }); }
+function registerPauseBtn(btn) { _pauseBtns.push(btn); btn.addEventListener('click', () => { _paused = !_paused; syncPauseBtns(); }); }
+
+/* ---- 전역 애니메이션 루프: 활성 탭의 frame(dt)만 호출 ---- */
+let activeTab = '1'; const frames = {}; const tabInit = {};
+let _last = performance.now();
+(function loop(now) {
+  let dt = (now - _last) / 1000; _last = now; if (dt > 0.1) dt = 0.1;
+  if (!_paused && frames[activeTab]) frames[activeTab](dt);
+  requestAnimationFrame(loop);
+})(performance.now());
+$$('.tab').forEach(b => b.addEventListener('click', () => {
+  $$('.tab').forEach(x => x.classList.toggle('active', x === b)); b.scrollIntoView({ inline: 'center', block: 'nearest' });
+  $$('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel' + b.dataset.tab));
+  activeTab = b.dataset.tab;
+  if (tabInit[activeTab]) { tabInit[activeTab](); }
+}));
+
+/* ---- 글자 폭 추정 + 알약 이름표 ---- */
+function textW(t, fs) { let w = 0; for (const ch of t) { w += /[가-힣]/.test(ch) ? fs * .92 : /[①-⑳ⓐ-ⓩ⏱↔→←]/.test(ch) ? fs * .95 : /[A-Z]/.test(ch) ? fs * .64 : /[0-9a-z.]/.test(ch) ? fs * .52 : ch === ' ' ? fs * .3 : fs * .62; } return w; }
+function pill(text, o = {}) {
+  const fs = o.fs || 18, pad = o.pad ?? 10, h = fs + pad;
+  const g = E('g', { class: 'pill' });
+  const r = E('rect', { rx: h / 2, fill: o.bg || '#FFFDF8', stroke: '#24303A', 'stroke-width': o.sw ?? 3, y: -h / 2, height: h });
+  const t = E('text', { 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': fs, fill: o.color || '#24303A', y: fs * .36, text });
+  g.appendChild(r); g.appendChild(t);
+  const set = s => { t.textContent = s; const w = textW(s, fs) + pad * 2; attr(r, { x: -w / 2, width: w }); };
+  set(text);
+  const move = (x, y) => g.setAttribute('transform', `translate(${x},${y})`);
+  return { g, set, move };
+}
+/* 양방향 화살표 path */
+function arrowD(x1, y1, x2, y2, h = 10) {
+  const ang = Math.atan2(y2 - y1, x2 - x1);
+  const head = (x, y, dir) => `M${x + Math.cos(dir + Math.PI * .8) * h} ${y + Math.sin(dir + Math.PI * .8) * h} L${x} ${y} L${x + Math.cos(dir - Math.PI * .8) * h} ${y + Math.sin(dir - Math.PI * .8) * h}`;
+  return `M${x1} ${y1} L${x2} ${y2} ${head(x2, y2, ang)} ${head(x1, y1, ang + Math.PI)}`;
+}
+/* 하늘·해·구름 배경 (옆에서 본 바다 장면 공용) */
+function drawSky(svg, id, o = {}) {
+  svg.appendChild(E('defs', {}, [
+    E('linearGradient', { id: id + '-water', x1: 0, y1: 0, x2: 0, y2: 1 }, [E('stop', { offset: 0, 'stop-color': '#7CC4EA' }), E('stop', { offset: 1, 'stop-color': '#1E5A85' })]),
+  ]));
+  svg.appendChild(E('rect', { x: -40, y: -40, width: 1040, height: 620, fill: '#BFE3F5' }));
+  const SX = o.sunX ?? 850, SY = o.sunY ?? 80, SR = 34; const sun = E('g', { class: 'sun' });
+  for (let i = 0; i < 8; i++) {
+    const a = (i / 8) * Math.PI * 2, r1 = SR + 8, r2 = SR + (i % 2 ? 18 : 25);
+    const x1 = SX + Math.cos(a) * r1, y1 = SY + Math.sin(a) * r1, x2 = SX + Math.cos(a) * r2, y2 = SY + Math.sin(a) * r2;
+    sun.appendChild(E('line', { x1, y1, x2, y2, stroke: '#24303A', 'stroke-width': 9, 'stroke-linecap': 'round' }));
+    sun.appendChild(E('line', { x1, y1, x2, y2, stroke: '#FFE082', 'stroke-width': 5, 'stroke-linecap': 'round' }));
+  }
+  sun.appendChild(E('circle', { cx: SX, cy: SY, r: SR, fill: '#FFE082', stroke: '#24303A', 'stroke-width': 4 }));
+  svg.appendChild(sun);
+  const dy = o.cloudDy ?? 0;
+  svg.appendChild(E('g', { transform: `translate(0,${dy})` }, [
+    E('path', { d: 'M120 90 a26 26 0 0 1 50 -16 a30 30 0 0 1 58 8 a20 20 0 0 1 4 40 l-110 0 a22 22 0 0 1 -2 -32 Z', fill: '#fff', stroke: '#24303A', 'stroke-width': 4 }),
+    E('path', { d: 'M560 60 a20 20 0 0 1 40 -12 a24 24 0 0 1 46 6 a16 16 0 0 1 3 32 l-88 0 a18 18 0 0 1 -1 -26 Z', fill: '#fff', stroke: '#24303A', 'stroke-width': 4 }),
+  ]));
+}
+function drawBoat() {
+  return E('g', {}, [
+    E('path', { d: 'M-46 0 L46 0 L30 22 L-30 22 Z', fill: '#B9744A', stroke: '#24303A', 'stroke-width': 4, 'stroke-linejoin': 'round' }),
+    E('rect', { x: -3, y: -62, width: 6, height: 62, fill: '#8A8276', stroke: '#24303A', 'stroke-width': 3 }),
+    E('path', { d: 'M6 -56 L42 -12 L6 -12 Z', fill: '#fff', stroke: '#24303A', 'stroke-width': 3, 'stroke-linejoin': 'round' }),
+    E('path', { d: 'M-3 -62 L-24 -54 L-3 -46 Z', fill: '#E8553E', stroke: '#24303A', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }),
+    E('path', { d: 'M-32 -4 L-14 -4 L-12 4 L-34 4 Z', fill: '#5B9BD5', stroke: '#24303A', 'stroke-width': 3, 'stroke-linejoin': 'round' }),
+    E('circle', { cx: -23, cy: -14, r: 9, fill: '#F7D9B5', stroke: '#24303A', 'stroke-width': 3 }),
+    E('path', { d: 'M-32 -17 Q-23 -28 -14 -17', fill: '#24303A' }),
+  ]);
+}
+function drawGull() {
+  return E('g', {}, [
+    E('ellipse', { cx: 0, cy: -13, rx: 24, ry: 13, fill: '#fff', stroke: '#24303A', 'stroke-width': 3 }),
+    E('path', { d: 'M-8 -19 Q6 -34 26 -21 Q10 -16 -8 -19 Z', fill: '#B8C4CC', stroke: '#24303A', 'stroke-width': 2.5 }),
+    E('path', { d: 'M-22 -18 L-38 -30', stroke: '#24303A', 'stroke-width': 3, 'stroke-linecap': 'round' }),
+    E('path', { d: 'M12 -22 L18 -30', stroke: '#24303A', 'stroke-width': 4, 'stroke-linecap': 'round' }),
+    E('circle', { cx: 20, cy: -32, r: 9, fill: '#fff', stroke: '#24303A', 'stroke-width': 3 }),
+    E('path', { d: 'M28 -33 L41 -30 L28 -27 Z', fill: '#F2B233', stroke: '#24303A', 'stroke-width': 2 }),
+    E('circle', { cx: 22, cy: -34, r: 2.2, fill: '#24303A' }),
+  ]);
+}
+function drawFoam() { return E('g', {}, [E('rect', { x: -10, y: -10, width: 20, height: 13, rx: 4, fill: '#fff', stroke: '#24303A', 'stroke-width': 2.5 })]); }
+
+/* ================= 탭1: 해파의 구조 ================= */
+(function () {
+  const svg = $('#svg1'); drawSky(svg, 's1');
+  const PXM = 3, PXV = 10, Y0 = 300, XB = 800;
+  const S = { L: 60, H: 3, T: 8 };
+  const water = E('path', { fill: 'url(#s1-water)', stroke: '#24303A', 'stroke-width': 4, 'stroke-linejoin': 'round' }); svg.appendChild(water);
+  const lab = E('g'); svg.appendChild(lab);
+  const guideCrest = E('path', { stroke: '#24303A', 'stroke-width': 2, 'stroke-dasharray': '6 6', fill: 'none' });
+  const guideTrough = E('path', { stroke: '#24303A', 'stroke-width': 2, 'stroke-dasharray': '6 6', fill: 'none' });
+  const lGuide = E('path', { stroke: '#5B9BD5', 'stroke-width': 2, 'stroke-dasharray': '6 6', fill: 'none' });
+  const hArrow = E('path', { stroke: '#E8553E', 'stroke-width': 4, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+  const lArrow = E('path', { stroke: '#5B9BD5', 'stroke-width': 4, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' });
+  const pCrest = pill('마루', { bg: '#FFE082' }), pTrough = pill('골', { bg: '#fff' }), pH = pill('파고', { bg: '#E8553E', color: '#fff' }), pL = pill('파장', { bg: '#5B9BD5', color: '#fff' });
+  [guideCrest, guideTrough, lGuide, hArrow, lArrow, pCrest.g, pTrough.g, pH.g, pL.g].forEach(e => lab.appendChild(e));
+  const dirArrow = E('g', { transform: 'translate(430,150)' }, [
+    E('path', { d: 'M-60 0 L40 0 M40 0 L22 -14 M40 0 L22 14', stroke: '#24303A', 'stroke-width': 9, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', fill: 'none' }),
+    E('path', { d: 'M-60 0 L40 0 M40 0 L22 -14 M40 0 L22 14', stroke: '#E8553E', 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', fill: 'none' }),
+  ]);
+  const pDir = pill('해파의 진행 방향', { fs: 16, pad: 8 }); pDir.move(420, 118); svg.appendChild(dirArrow); svg.appendChild(pDir.g);
+  const boat = E('g'); boat.appendChild(drawBoat()); svg.appendChild(boat);
+  const sw = E('g', {}, [
+    E('rect', { x: -78, y: -32, width: 156, height: 64, rx: 12, fill: '#FFFDF8', stroke: '#24303A', 'stroke-width': 3 }),
+    E('path', { d: 'M-10 32 L0 46 L10 32 Z', fill: '#FFFDF8', stroke: '#24303A', 'stroke-width': 3, 'stroke-linejoin': 'round' }),
+    E('rect', { x: -12, y: 26, width: 24, height: 8, fill: '#FFFDF8' }),
+  ]);
+  const swT = E('text', { x: 0, y: 2, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 26, fill: '#24303A', text: '⏱ 0.0 s' });
+  const swS = E('text', { x: 0, y: 22, 'text-anchor': 'middle', 'font-family': 'Noto Sans KR', 'font-size': 12, fill: '#4A5763', text: '마루가 지나간 뒤 흐른 시간' });
+  sw.appendChild(swT); sw.appendChild(swS); svg.appendChild(sw);
+  const flash = pill('마루 통과!', { bg: '#E8553E', color: '#fff', fs: 22 }); flash.g.style.opacity = 0; svg.appendChild(flash.g);
+  let s = 0, prevPh = 0, fl = 0, labelsOn = true;
+
+  function render(dt) {
+    const Lpx = S.L * PXM, k = 2 * Math.PI / Lpx, c = S.L / S.T * PXM, A = S.H / 2 * PXV;
+    s += c * dt;
+    const eta = x => A * Math.cos(k * (x - s));
+    let d = `M-20 ${(Y0 - eta(-20)).toFixed(1)}`;
+    for (let x = -12; x <= 984; x += 6) d += `L${x} ${(Y0 - eta(x)).toFixed(1)}`;
+    d += 'L984 600L-20 600Z'; water.setAttribute('d', d);
+    lab.style.display = labelsOn ? '' : 'none';
+    if (labelsOn) {
+      const start = Lpx / 2 + 30; const xc = start + mod(s - start, Lpx), xt = xc - Lpx / 2, xn = xc + Lpx;
+      const yc = Y0 - A, yt = Y0 + A;
+      pCrest.move(xc, yc - 28); pTrough.move(xt, yt + 30);
+      attr(guideCrest, { d: `M${xt - 16} ${yc} L${xc + 16} ${yc}` }); attr(guideTrough, { d: `M${xt - 16} ${yt} L${xc + 16} ${yt}` });
+      const xm = (xc + xt) / 2; hArrow.setAttribute('d', arrowD(xm, yc, xm, yt)); pH.move(xm - 58, (yc + yt) / 2);
+      const yl = yc - 66; lArrow.setAttribute('d', arrowD(xc, yl, xn, yl)); attr(lGuide, { d: `M${xc} ${yl} L${xc} ${yc - 4} M${xn} ${yl} L${xn} ${yc - 4}` }); pL.move((xc + xn) / 2, yl - 22);
+    }
+    const yb = Y0 - eta(XB); const slope = A * k * Math.sin(k * (XB - s)); const ang = Math.atan(slope) * 180 / Math.PI * .7;
+    boat.setAttribute('transform', `translate(${XB},${(yb - 10).toFixed(1)}) rotate(${ang.toFixed(1)})`);
+    sw.setAttribute('transform', `translate(${XB},${(yb - 130).toFixed(1)})`);
+    const ph = mod((s - XB) / Lpx, 1); if (ph < prevPh) fl = 1.2; prevPh = ph;
+    swT.textContent = `⏱ ${(ph * S.T).toFixed(1)} s`;
+    fl = Math.max(0, fl - dt); flash.g.style.opacity = Math.min(1, fl); flash.move(XB, yb - 190);
+  }
+  const HINT = { L: '파장이 길수록(주기가 같다면) 속도가 빨라요.', T: '주기가 짧을수록(파장이 같다면) 속도가 빨라요.', H: '파고를 바꿔도 속도는 그대로예요! 속도는 파장과 주기로만 정해져요.' };
+  function upd(which) {
+    const c = S.L / S.T;
+    $('#v1-L').textContent = S.L + ' m'; $('#v1-H').textContent = fmt(S.H) + ' m'; $('#v1-T').textContent = fmt(S.T) + ' s';
+    $('#f1-L').textContent = S.L + ' m'; $('#f1-T').textContent = fmt(S.T) + ' s'; $('#v1-c').textContent = fmt(c, 2) + ' m/s';
+    $('#cap1').innerHTML = hangCap(`<b>진행 속도</b> — 파장 ${S.L} m ÷ 주기 ${fmt(S.T)} s = <b>${fmt(c, 2)} m/s</b>. ${HINT[which] || '슬라이더를 움직여 속도가 어떻게 달라지는지 살펴보세요.'}<small>배 위의 시계: 마루가 지나간 뒤 다음 마루가 올 때까지의 시간 = 주기(${fmt(S.T)} s)</small>`);
+  }
+  ['L', 'H', 'T'].forEach(key => { const r = $('#r1-' + key); r.addEventListener('input', () => { S[key] = +r.value; upd(key); }); });
+  $('#t1-labels').onclick = e => { labelsOn = !labelsOn; e.currentTarget.classList.toggle('on', labelsOn); };
+  registerPauseBtn($('#t1-pause'));
+  upd(); render(0);
+  frames['1'] = render;
+})();
+
+/* ================= 탭2: 물 입자의 운동 ================= */
+(function () {
+  const svg = $('#svg2'); drawSky(svg, 's2');
+  const PX = 4, Y0 = 215, T = 5;
+  const S = { L: 80, H: 8 };
+  const water = E('path', { fill: 'url(#s2-water)', stroke: '#24303A', 'stroke-width': 4, 'stroke-linejoin': 'round' }); svg.appendChild(water);
+  // 진행 방향 화살표
+  svg.appendChild(E('g', { transform: 'translate(480,112)' }, [
+    E('path', { d: 'M-60 0 L40 0 M40 0 L22 -14 M40 0 L22 14', stroke: '#24303A', 'stroke-width': 9, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', fill: 'none' }),
+    E('path', { d: 'M-60 0 L40 0 M40 0 L22 -14 M40 0 L22 14', stroke: '#E8553E', 'stroke-width': 5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', fill: 'none' }),
+  ]));
+  const pDir = pill('해파의 진행 방향', { fs: 16, pad: 8 }); pDir.move(470, 80); svg.appendChild(pDir.g);
+  // 깊이 자 + L/2 기준선
+  const halfLine = E('path', { stroke: '#fff', 'stroke-width': 2.5, 'stroke-dasharray': '10 8', fill: 'none', opacity: .85 }); svg.appendChild(halfLine);
+  const pHalf = pill('이 아래는 거의 잠잠해요', { fs: 15, pad: 8 }); svg.appendChild(pHalf.g);
+  const rulerLine = E('path', { stroke: '#24303A', 'stroke-width': 3, fill: 'none' }); svg.appendChild(rulerLine);
+  const pR0 = pill('수면', { fs: 14, pad: 8 }), pR1 = pill('L/4', { fs: 14, pad: 8 }), pR2 = pill('L/2', { fs: 14, pad: 8, bg: '#FFE082' });
+  [pR0, pR1, pR2].forEach(p => svg.appendChild(p.g));
+  const COLS = [200, 480, 760], FR = [0, 1 / 8, 1 / 4, 3 / 8, 1 / 2];
+  const orbitG = E('g'), trail = E('polyline', { fill: 'none', stroke: '#E8553E', 'stroke-width': 3.5, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }), numG = E('g'), dotG = E('g');
+  svg.appendChild(orbitG); svg.appendChild(trail); svg.appendChild(numG); svg.appendChild(dotG);
+  const items = [];
+  COLS.forEach((x0, ci) => FR.forEach((f, ri) => {
+    const isGull = ci === 1 && ri === 0;
+    const circ = E('circle', { fill: 'none', stroke: isGull ? '#E8553E' : '#24303A', 'stroke-width': ri ? 2 : 2.5, 'stroke-dasharray': '5 5', opacity: .85 });
+    const dot = ri ? E('g', {}, [E('circle', { r: 5.5, fill: '#5B9BD5', stroke: '#24303A', 'stroke-width': 2.5 })]) : (isGull ? drawGull() : drawFoam());
+    items.push({ x0, f, ri, ci, circ, dot, isGull }); orbitG.appendChild(circ); dotG.appendChild(dot);
+  }));
+  const nums = ['①', '②', '③', '④'].map(t => { const p = pill(t, { fs: 15, pad: 6, bg: '#FFE082' }); numG.appendChild(p.g); return p; });
+  let s = 0, tt = 0, pts = [], started = false, predicted = null, revealed = false, view = { trail: true, deep: true, num: true };
+  const setCap = h => { $('#cap2').innerHTML = hangCap(h); };
+
+  function render(dt) {
+    const Lpx = S.L * PX, k = 2 * Math.PI / Lpx, c = Lpx / T, A = S.H / 2 * PX;
+    if (started) { s += c * dt; tt += dt; }
+    const eta = x => A * Math.cos(k * (x - s));
+    let d = `M-20 ${(Y0 - eta(-20)).toFixed(1)}`;
+    for (let x = -12; x <= 984; x += 6) d += `L${x} ${(Y0 - eta(x)).toFixed(1)}`;
+    d += 'L984 600L-20 600Z'; water.setAttribute('d', d);
+    // 자·기준선
+    const yh = Y0 + Lpx / 2;
+    attr(rulerLine, { d: `M90 ${Y0} L90 ${yh + 14} M78 ${Y0} L102 ${Y0} M78 ${Y0 + Lpx / 4} L102 ${Y0 + Lpx / 4} M78 ${yh} L102 ${yh}` });
+    pR0.move(46, Y0); pR1.move(46, Y0 + Lpx / 4); pR2.move(46, yh);
+    attr(halfLine, { d: `M120 ${yh} L960 ${yh}` }); pHalf.move(760, yh - 22);
+    items.forEach(it => {
+      const z = it.f * Lpx, r = A * Math.exp(-k * z), y0 = Y0 + z, th = k * (it.x0 - s);
+      const x = it.x0 - r * Math.sin(th), y = y0 - r * Math.cos(th);
+      attr(it.circ, { cx: it.x0, cy: y0, r: Math.max(r, .6) });
+      it.dot.setAttribute('transform', `translate(${x.toFixed(1)},${y.toFixed(1)})`);
+      const show = it.ri === 0 || view.deep;
+      it.circ.style.display = show ? '' : 'none'; it.dot.style.display = show ? '' : 'none';
+      if (it.isGull) {
+        if (started) { pts.push({ x, y, t: tt }); while (pts.length && tt - pts[0].t > T * .92) pts.shift(); }
+        trail.setAttribute('points', view.trail ? pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ') : '');
+        const R = A + 46;
+        [[-R - 6, 0], [0, -R - 8], [R + 4, 0], [0, R - 8]].forEach(([dx, dy], i) => nums[i].move(it.x0 + dx, y0 + dy));
+        numG.style.display = view.num ? '' : 'none';
+      }
+    });
+    if (started && !revealed && tt > T * 1.6) {
+      revealed = true;
+      setCap(`<b>정답은 ⓑ</b> — 갈매기는 제자리에서 원을 그려요(①→②→③→④, 시계 방향). ${predicted === 'b' ? '예측 성공!' : '예측과 달랐죠?'} 파도가 옮기는 것은 물이 아니라 <b>에너지</b>예요. 깊어질수록 원이 작아져 L/2 깊이에서는 거의 멈춰요.`);
+    }
+  }
+  function info() {
+    $('#v2-L').textContent = S.L + ' m'; $('#v2-H').textContent = S.H + ' m';
+    $('#info2').innerHTML = `갈매기가 그리는 원의 지름 = 파고 = <b>${S.H} m</b><br>깊이 L/4 (${S.L / 4} m)에서 지름 ≈ <b>${fmt(S.H * .208, 1)} m</b><br>깊이 L/2 (${S.L / 2} m)에서 지름 ≈ <b>${fmt(S.H * .043, 2)} m</b> (거의 0)`;
+  }
+  const reset = () => { started = false; revealed = false; predicted = null; pts = []; tt = 0; $('#pred2').hidden = false; $('#chip2').hidden = true; setCap('<b>예측</b> — 먼저 갈매기가 어떻게 움직일지 골라 보세요.'); };
+  $$('#pred2 .pbtns .btn').forEach(b => b.onclick = () => {
+    predicted = b.dataset.v; $('#pred2').hidden = true; const chip = $('#chip2'); chip.hidden = false; chip.textContent = '내 예측: ' + b.textContent.trim().slice(0, 1);
+    started = true; tt = 0; pts = [];
+    setCap('<b>관찰</b> — 갈매기와 스타이로폼 조각이 어떻게 움직이는지 잘 지켜보세요. ①→②→③→④ 순서로 어디를 지나가나요?');
+  });
+  $('#t2-again').onclick = reset;
+  [['trail', '#t2-trail'], ['deep', '#t2-deep'], ['num', '#t2-num']].forEach(([key, id]) => { $(id).onclick = e => { view[key] = !view[key]; e.currentTarget.classList.toggle('on', view[key]); }; });
+  ['L', 'H'].forEach(key => { const r = $('#r2-' + key); r.addEventListener('input', () => { S[key] = +r.value; pts = []; info(); }); });
+  registerPauseBtn($('#t2-pause'));
+  info(); reset(); render(0);
+  frames['2'] = render;
+})();
+
+/* ================= 탭3: 심해파·천이파·천해파 ================= */
+(function () {
+  const svg = $('#svg3'); drawSky(svg, 's3', { cloudDy: -46, sunY: 46 });
+  const YS = 110, LPX = 320, A0 = 12, T = 4, TAU = 2 * Math.PI;
+  const S = { L: 60, h: 40 };
+  const f = r => r <= 0 ? 0 : 262 * Math.pow(r / .5, .6);
+  const water = E('path', { fill: 'url(#s3-water)', stroke: '#24303A', 'stroke-width': 4, 'stroke-linejoin': 'round' }); svg.appendChild(water);
+  const floor = E('path', { fill: '#E6C377', stroke: '#24303A', 'stroke-width': 4, 'stroke-linejoin': 'round' }); svg.appendChild(floor);
+  const floorDots = E('g'); svg.appendChild(floorDots);
+  const pFloor = pill('해저면', { fs: 15, pad: 8, bg: '#E6C377' }); svg.appendChild(pFloor.g);
+  const pFloorFar = pill('▼ 해저면은 훨씬 아래에 있어요', { fs: 15, pad: 8, bg: '#E6C377' }); svg.appendChild(pFloorFar.g);
+  // 깊이 자: 해저면이 어느 색 구간에 있는지로 판정
+  const rx = 62, rw = 18;
+  const y05 = YS + f(.05), y50 = YS + f(.5);
+  svg.appendChild(E('rect', { x: rx, y: YS, width: rw, height: y05 - YS, fill: '#6AAE78', stroke: '#24303A', 'stroke-width': 2.5 }));
+  svg.appendChild(E('rect', { x: rx, y: y05, width: rw, height: y50 - y05, fill: '#E0A93B', stroke: '#24303A', 'stroke-width': 2.5 }));
+  svg.appendChild(E('rect', { x: rx, y: y50, width: rw, height: 560 - y50, fill: '#5B9BD5', stroke: '#24303A', 'stroke-width': 2.5 }));
+  [['수면', YS, '#fff'], ['L/20', y05, '#FFE082'], ['L/2', y50, '#FFE082']].forEach(([t, y, bg]) => { const p = pill(t, { fs: 13, pad: 6, bg }); p.move(34, y); svg.appendChild(p.g); });
+  [['천해파', (YS + y05) / 2, '#6AAE78'], ['천이파', (y05 + y50) / 2, '#E0A93B'], ['심해파', y50 + 20, '#5B9BD5']].forEach(([t, y, bg]) => { const p = pill(t, { fs: 13, pad: 6, bg, color: '#fff' }); p.move(116, y); svg.appendChild(p.g); });
+  const pRuler = pill('해저면 위치로 판정', { fs: 13, pad: 6 }); pRuler.move(88, YS - 26); svg.appendChild(pRuler.g);
+  const marker = E('path', { d: 'M0 0 L16 -9 L16 9 Z', fill: '#E6C377', stroke: '#24303A', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }); svg.appendChild(marker);
+  const COLS = [280, 470, 660, 850], ROWS = [0, .02, .05, .1, .15, .2, .3, .4, .5];
+  const orbitG = E('g'), dotG = E('g'); svg.appendChild(orbitG); svg.appendChild(dotG);
+  const items = [];
+  COLS.forEach((x0, ci) => { ROWS.forEach((rz, ri) => {
+    const isGull = ci === 1 && ri === 0;
+    const el = E('ellipse', { fill: 'none', stroke: isGull ? '#E8553E' : '#24303A', 'stroke-width': ri ? 2 : 2.5, 'stroke-dasharray': '5 5', opacity: .85 });
+    const dot = ri ? E('g', {}, [E('circle', { r: 5.5, fill: '#5B9BD5', stroke: '#24303A', 'stroke-width': 2.5 })]) : (isGull ? drawGull() : drawFoam());
+    items.push({ x0, rz, ri, el, dot, bottom: false }); orbitG.appendChild(el); dotG.appendChild(dot);
+  });
+    // 해저면 바로 위 입자 (수평 왕복)
+    const el = E('ellipse', { fill: 'none', stroke: '#24303A', 'stroke-width': 2, 'stroke-dasharray': '5 5', opacity: .85 });
+    const dot = E('g', {}, [E('circle', { r: 5.5, fill: '#5B9BD5', stroke: '#24303A', 'stroke-width': 2.5 })]);
+    items.push({ x0, rz: 0, ri: 99, el, dot, bottom: true }); orbitG.appendChild(el); dotG.appendChild(dot);
+  });
+  let s = 0, orbitOn = true;
+  const cls = () => { const r = S.h / S.L; return r > .5 ? 'deep' : r < .05 ? 'shal' : 'mid'; };
+
+  function render(dt) {
+    s += LPX / T * dt;
+    const k = TAU / LPX, r = S.h / S.L, kh = TAU * r, sh = Math.sinh(kh);
+    const eta = x => A0 * Math.cos(k * (x - s));
+    let d = `M-20 ${(YS - eta(-20)).toFixed(1)}`;
+    for (let x = -12; x <= 984; x += 6) d += `L${x} ${(YS - eta(x)).toFixed(1)}`;
+    d += 'L984 600L-20 600Z'; water.setAttribute('d', d);
+    const showFloor = r <= .6; const yb = YS + f(Math.min(r, .6));
+    floor.style.display = showFloor ? '' : 'none'; floorDots.style.display = showFloor ? '' : 'none';
+    pFloor.g.style.display = showFloor ? '' : 'none'; pFloorFar.g.style.display = showFloor ? 'none' : '';
+    if (showFloor) {
+      floor.setAttribute('d', `M-20 ${yb} L984 ${yb} L984 600 L-20 600 Z`);
+      floorDots.innerHTML = ''; for (let x = 150; x < 960; x += 90) floorDots.appendChild(E('circle', { cx: x + (x % 180 ? 20 : 0), cy: yb + 14 + (x % 270 ? 8 : 0), r: 3, fill: '#D9AD5C', stroke: '#24303A', 'stroke-width': 1.5 }));
+      pFloor.move(900, yb + 24); marker.setAttribute('transform', `translate(82,${yb})`);
+    } else { pFloorFar.move(560, 516); marker.setAttribute('transform', 'translate(82,548)'); }
+    orbitG.style.display = orbitOn ? '' : 'none';
+    items.forEach(it => {
+      let show, rz, y0;
+      if (it.bottom) { show = showFloor; rz = r; y0 = yb - 8; } else { rz = it.rz; show = rz < r * .93 || rz === 0; y0 = YS + f(rz); }
+      it.el.style.display = show ? '' : 'none'; it.dot.style.display = show ? '' : 'none';
+      if (!show) return;
+      let a, b;
+      if (kh > 20) { a = b = A0 * Math.exp(-TAU * rz); } else { a = A0 * Math.cosh(kh - TAU * rz) / sh; b = A0 * Math.sinh(kh - TAU * rz) / sh; }
+      a = Math.min(a, A0 * 4); if (it.bottom) { b = 0; y0 = yb - 8; }
+      const th = k * (it.x0 - s), x = it.x0 - a * Math.sin(th), y = y0 - b * Math.cos(th);
+      attr(it.el, { cx: it.x0, cy: y0, rx: Math.max(a, .6), ry: Math.max(b, .6) });
+      it.dot.setAttribute('transform', `translate(${x.toFixed(1)},${y.toFixed(1)})`);
+    });
+  }
+  const NAME = { deep: '심해파', mid: '천이파', shal: '천해파' }, COL = { deep: '#5B9BD5', mid: '#E0A93B', shal: '#6AAE78' };
+  function upd() {
+    const L = S.L, h = S.h, r = h / L, c = cls(), g = 9.8, k = TAU / L;
+    $('#v3-L').textContent = L + ' m'; $('#v3-h').textContent = h + ' m';
+    $('#v3-ratio').textContent = r >= 10 ? fmt(r, 0) : r >= 1 ? fmt(r, 1) : fmt(r, 3);
+    const badge = $('#cls3'); badge.textContent = NAME[c]; badge.style.background = COL[c]; $('#badge3').textContent = NAME[c];
+    $('#cls3-why').innerHTML = c === 'deep' ? `수심 ${h} m > 파장의 1/2 (${fmt(L / 2)} m)` : c === 'shal' ? `수심 ${h} m < 파장의 1/20 (${fmt(L / 20)} m)` : `파장의 1/20 (${fmt(L / 20)} m) < 수심 ${h} m < 파장의 1/2 (${fmt(L / 2)} m)`;
+    const cf = Math.sqrt(g / k * Math.tanh(k * h)), cd = Math.sqrt(g * L / TAU), cs = Math.sqrt(g * h);
+    const eD = Math.abs(cd - cf) / cf, eS = Math.abs(cs - cf) / cf;
+    $('#sp-full b').textContent = fmt(cf) + ' m/s';
+    $('#sp-deep b').textContent = fmt(cd) + ' m/s'; $('#sp-shal b').textContent = fmt(cs) + ' m/s';
+    $('#sp-deep').classList.toggle('best', eD < .05); $('#sp-shal').classList.toggle('best', eS < .05);
+    $('#sp-deep span small').textContent = `√(gL/2π) · 오차 ${eD < .0005 ? '0' : fmt(eD * 100, eD < .01 ? 1 : 0)}%`;
+    $('#sp-shal span small').textContent = `√(gh) · 오차 ${eS < .0005 ? '0' : fmt(eS * 100, eS < .01 ? 1 : 0)}%`;
+    $('#sp-note').textContent = c === 'deep' ? '심해파 근사만으로 거의 정확해요 → 속도는 파장이 결정해요.' : c === 'shal' ? '천해파 근사만으로 거의 정확해요 → 속도는 수심이 결정해요.' : '두 근사 모두 잘 맞지 않아요 → 파장과 수심이 모두 영향을 줘요.';
+    $$('#seg3-preset button').forEach(b => b.classList.remove('sel'));
+    $('#cap3').innerHTML = hangCap(c === 'deep'
+      ? `<b>심해파</b> — 수심 ${h} m > 파장의 1/2(${fmt(L / 2)} m). 물 입자는 원운동을 하고 해저의 영향을 받지 않아요. 속도는 <b>파장</b>이 정해요(길수록 빨라요).`
+      : c === 'shal'
+        ? `<b>천해파</b> — 수심 ${h} m < 파장의 1/20(${fmt(L / 20)} m). 물 입자는 납작한 타원을 그리고 해저에서는 수평으로 왕복해요. 속도는 <b>수심</b>이 정해요(얕을수록 느려요).`
+        : `<b>천이파</b> — 수심이 파장의 1/20~1/2 사이(${fmt(L / 20)}~${fmt(L / 2)} m). 궤도가 타원으로 납작해지기 시작하고, 속도는 파장과 수심 모두의 영향을 받아요.`);
+  }
+  ['L', 'h'].forEach(key => { const r = $('#r3-' + key); r.addEventListener('input', () => { S[key] = +r.value; upd(); }); });
+  const PRE = { deep: [60, 50], mid: [60, 10], shal: [100, 3] };
+  $$('#seg3-preset button').forEach(b => b.onclick = () => { const [L, h] = PRE[b.dataset.v]; S.L = L; S.h = h; $('#r3-L').value = L; $('#r3-h').value = h; upd(); b.classList.add('sel'); });
+  $('#t3-orbit').onclick = e => { orbitOn = !orbitOn; e.currentTarget.classList.toggle('on', orbitOn); };
+  registerPauseBtn($('#t3-pause'));
+  upd(); render(0);
+  frames['3'] = render;
+})();
+
+/* ================= 탭4: 해파의 굴절 (위에서 본 모습, 육지가 위·바다가 아래) ================= */
+(function () {
+  const svg = $('#svg4');
+  const CP = 4, GW = 240, GH = 135, M = 60, MB = 40, W = GW + 2 * M, HT = GH + MB, N = W * HT, CM = 4; // 셀 = 4 px = 4 m
+  const g = 9.8, L0 = 64, TP = Math.sqrt(2 * Math.PI * L0 / g), OM = 2 * Math.PI / TP, C0 = L0 / TP, HMAX = 70, SLOPE = HMAX / 230, HMIN = 1.2, TPV = 2.2;
+  const H_SHAL = 12, H_MID = 30, H_SURF = 2.5;
+  const scenes = {
+    cape: { shore: x => 205 + 92 * Math.cos(2 * Math.PI * (x - 300) / 960), ang: 0 },
+    line: { shore: () => 130, ang: 40 },
+  };
+  let scene = 'cape', ang = 0, land, dep, slow, Tf, rays = [], tt = 0, step = 0, inited = false, nLevels = 8;
+  let crestG, crestBack, crestFront, rayG, labelG;
+
+  function buildDepth() {
+    const sh = scenes[scene].shore; land = new Uint8Array(N); dep = new Float32Array(N); slow = new Float32Array(N);
+    const sx = [], sy = [];
+    for (let px = -M * CP; px <= (GW + M) * CP; px += 2) { sx.push(px / CP + M); sy.push(sh(px) / CP); }
+    const n = sx.length;
+    for (let cy = 0; cy < HT; cy++) for (let cx = 0; cx < W; cx++) {
+      const i = cy * W + cx, px = (cx - M) * CP + CP / 2, ys = sh(px) / CP;
+      if (cy + .5 < ys) { land[i] = 1; continue; }
+      let best = 1e9; const j0 = Math.max(0, (cx - 70) * 2), j1 = Math.min(n - 1, (cx + 70) * 2);
+      for (let j = j0; j <= j1; j++) { const dx = sx[j] - (cx + .5), dy = sy[j] - (cy + .5); const d2 = dx * dx + dy * dy; if (d2 < best) best = d2; }
+      const h = Math.min(HMAX, HMIN + SLOPE * Math.sqrt(best) * CM); dep[i] = h;
+      const x = OM * Math.sqrt(h / g); const kh = x * x * Math.pow(1 - Math.exp(-Math.pow(x, 2.4908)), -.4015);
+      slow[i] = CM / (OM / (kh / h));
+    }
+  }
+  /* 도착 시각 T(x,y): 먼바다(균일 수심)는 평면파 해석해, 나머지는 fast marching */
+  function march() {
+    Tf = new Float64Array(N).fill(Infinity); const known = new Uint8Array(N);
+    const th = ang * Math.PI / 180, dxs = Math.sin(th), dys = -Math.cos(th);
+    const hv = [], hi = [];
+    const push = (v, i) => { hv.push(v); hi.push(i); let j = hv.length - 1; while (j > 0) { const p = (j - 1) >> 1; if (hv[p] <= hv[j]) break; [hv[p], hv[j]] = [hv[j], hv[p]]; [hi[p], hi[j]] = [hi[j], hi[p]]; j = p; } };
+    const pop = () => { const i = hi[0]; const lv = hv.pop(), li = hi.pop(); if (hv.length) { hv[0] = lv; hi[0] = li; let j = 0; for (; ;) { const l = 2 * j + 1, r = l + 1; let m = j; if (l < hv.length && hv[l] < hv[m]) m = l; if (r < hv.length && hv[r] < hv[m]) m = r; if (m === j) break; [hv[m], hv[j]] = [hv[j], hv[m]]; [hi[m], hi[j]] = [hi[j], hi[m]]; j = m; } } return i; };
+    let tmin = Infinity;
+    for (let i = 0; i < N; i++) { if (land[i] || dep[i] < HMAX - 1e-3) continue; const t = ((i % W) * dxs + ((i / W) | 0) * dys) * CM / C0; Tf[i] = t; known[i] = 1; if (t < tmin) tmin = t; }
+    for (let i = 0; i < N; i++) if (known[i]) Tf[i] -= tmin;
+    const update = i => {
+      if (land[i] || known[i]) return; const cx = i % W, cy = (i / W) | 0; let a = Infinity, b = Infinity;
+      if (cx > 0 && known[i - 1]) a = Tf[i - 1]; if (cx < W - 1 && known[i + 1]) a = Math.min(a, Tf[i + 1]);
+      if (cy > 0 && known[i - W]) b = Tf[i - W]; if (cy < HT - 1 && known[i + W]) b = Math.min(b, Tf[i + W]);
+      const f = slow[i]; let t;
+      if (a < Infinity && b < Infinity) { const d = Math.abs(a - b); t = d < f ? (a + b + Math.sqrt(2 * f * f - d * d)) / 2 : Math.min(a, b) + f; } else t = Math.min(a, b) + f;
+      if (t < Tf[i]) { Tf[i] = t; push(t, i); }
+    };
+    const nb = i => { const cx = i % W, cy = (i / W) | 0; if (cx > 0) update(i - 1); if (cx < W - 1) update(i + 1); if (cy > 0) update(i - W); if (cy < HT - 1) update(i + W); };
+    for (let i = 0; i < N; i++) if (known[i]) nb(i);
+    while (hv.length) { const i = pop(); if (known[i]) continue; known[i] = 1; nb(i); }
+    let tmax = 0;
+    for (let cy = 0; cy < GH; cy++) for (let cx = 0; cx < GW; cx++) { const i = cy * W + cx + M; if (!land[i] && dep[i] >= H_SURF && isFinite(Tf[i]) && Tf[i] > tmax) tmax = Tf[i]; }
+    nLevels = Math.ceil(tmax / TP) + 1;
+  }
+  /* 파향선: 도착 시각의 기울기 방향을 따라 추적 (아래 먼바다에서 출발) */
+  function traceRays() {
+    rays = []; const th = ang * Math.PI / 180; const starts = [];
+    for (let cx = 6; cx < W; cx += 18) starts.push([cx, HT - 2]);
+    if (th > .01) for (let cy = 18; cy < HT; cy += 18) starts.push([1, cy]);
+    if (th < -.01) for (let cy = 18; cy < HT; cy += 18) starts.push([W - 2, cy]);
+    const v = j => (land[j] || !isFinite(Tf[j])) ? null : Tf[j];
+    const grad = (x, y) => {
+      const cx = clamp(Math.round(x), 1, W - 2), cy = clamp(Math.round(y), 1, HT - 2), i = cy * W + cx;
+      const c = v(i); if (c === null) return null; const l = v(i - 1), r = v(i + 1), u = v(i - W), d = v(i + W);
+      const gx = (l !== null && r !== null) ? (r - l) / 2 : r !== null ? r - c : l !== null ? c - l : 0;
+      const gy = (u !== null && d !== null) ? (d - u) / 2 : d !== null ? d - c : u !== null ? c - u : 0;
+      const m = Math.hypot(gx, gy); return m > 1e-9 ? [gx / m, gy / m] : null;
+    };
+    starts.forEach(([x, y]) => {
+      const pts = [];
+      for (let n = 0; n < 900; n++) {
+        const cx = Math.round(x), cy = Math.round(y);
+        if (cx < 1 || cx > W - 2 || cy < 1 || cy > HT - 2 || land[cy * W + cx] || dep[cy * W + cx] < H_SURF) break;
+        pts.push([((x - M) * CP).toFixed(1), (y * CP).toFixed(1)]);
+        const gd = grad(x, y); if (!gd) break; x += gd[0] * .6; y += gd[1] * .6;
+      }
+      if (pts.length > 6) rays.push(pts);
+    });
+  }
+  /* 마루선: 도착 시각 T 의 등치선 (marching squares, 2셀 간격) */
+  function crestPaths() {
+    const frac = mod(tt / TPV, 1); let d = '';
+    const val = (cx, cy) => { const i = cy * W + cx + M; return (land[i] || dep[i] < H_SURF || !isFinite(Tf[i])) ? null : Tf[i]; };
+    const S = 2;
+    for (let n = 0; n < nLevels; n++) {
+      const lv = (n + frac) * TP;
+      for (let cy = 0; cy + S <= GH; cy += S) for (let cx = 0; cx + S <= GW; cx += S) {
+        const a = val(cx, cy), b = val(cx + S, cy), c = val(cx + S, cy + S), e = val(cx, cy + S);
+        if (a === null || b === null || c === null || e === null) continue;
+        const idx = (a >= lv ? 8 : 0) | (b >= lv ? 4 : 0) | (c >= lv ? 2 : 0) | (e >= lv ? 1 : 0);
+        if (idx === 0 || idx === 15) continue;
+        const x0 = cx * CP, y0 = cy * CP, L = S * CP;
+        const top = [x0 + L * (lv - a) / (b - a), y0], right = [x0 + L, y0 + L * (lv - b) / (c - b)], bot = [x0 + L * (lv - e) / (c - e), y0 + L], left = [x0, y0 + L * (lv - a) / (e - a)];
+        const seg = (p, q) => { d += `M${p[0].toFixed(1)} ${p[1].toFixed(1)}L${q[0].toFixed(1)} ${q[1].toFixed(1)}`; };
+        switch (idx) {
+          case 1: case 14: seg(left, bot); break;
+          case 2: case 13: seg(bot, right); break;
+          case 3: case 12: seg(left, right); break;
+          case 4: case 11: seg(top, right); break;
+          case 5: seg(top, left); seg(bot, right); break;
+          case 10: seg(top, right); seg(left, bot); break;
+          case 6: case 9: seg(top, bot); break;
+          case 7: case 8: seg(top, left); break;
+        }
+      }
+    }
+    return d;
+  }
+  function tree(x, y) {
+    return E('g', { transform: `translate(${x},${y})` }, [
+      E('rect', { x: -3, y: -14, width: 6, height: 14, fill: '#8A5230', stroke: '#24303A', 'stroke-width': 2 }),
+      E('circle', { cx: 0, cy: -24, r: 14, fill: '#5F9E4B', stroke: '#24303A', 'stroke-width': 2.5 }),
+    ]);
+  }
+  /* 해안선에서 바다 쪽으로 d(px) 떨어진 곡선 (수심선) */
+  function offsetPath(d, closeUp) {
+    const sh = scenes[scene].shore; let p = '';
+    for (let x = -40; x <= 1000; x += 4) {
+      const y = sh(x), s = (sh(x + 1) - sh(x - 1)) / 2, m = Math.hypot(1, s);
+      const qx = x - s / m * d, qy = y + 1 / m * d;
+      p += (p ? 'L' : 'M') + qx.toFixed(1) + ' ' + qy.toFixed(1);
+    }
+    return closeUp ? p + 'L1000 -60L-40 -60Z' : p;
+  }
+  function buildSvg() {
+    svg.innerHTML = '';
+    const sh = scenes[scene].shore;
+    svg.appendChild(E('defs', {}, [
+      E('marker', { id: 'arr4', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 5, markerHeight: 5, orient: 'auto' }, [E('path', { d: 'M0 0 L10 5 L0 10 Z', fill: '#E8553E' })]),
+    ]));
+    // 바다: 깊음 → 중간 → 얕음 (밝을수록 얕음)
+    svg.appendChild(E('rect', { x: -40, y: -40, width: 1040, height: 620, fill: '#2E7DB0' }));
+    const dMid = (H_MID - HMIN) / SLOPE, dShal = (H_SHAL - HMIN) / SLOPE;
+    svg.appendChild(E('path', { d: offsetPath(dMid, true), fill: '#5FB0DE' }));
+    svg.appendChild(E('path', { d: offsetPath(dShal, true), fill: '#9DDBF3' }));
+    svg.appendChild(E('path', { d: offsetPath(dMid), fill: 'none', stroke: '#1E5A85', 'stroke-width': 2, 'stroke-dasharray': '8 6', opacity: .55 }));
+    svg.appendChild(E('path', { d: offsetPath(dShal), fill: 'none', stroke: '#1E5A85', 'stroke-width': 2, 'stroke-dasharray': '8 6', opacity: .55 }));
+    // 마루선 (뒤: 진한 테두리, 앞: 흰 선)
+    crestG = E('g');
+    crestBack = E('path', { fill: 'none', stroke: '#1E5A85', 'stroke-width': 7, 'stroke-linecap': 'round', opacity: .7 });
+    crestFront = E('path', { fill: 'none', stroke: '#fff', 'stroke-width': 3.5, 'stroke-linecap': 'round' });
+    crestG.appendChild(crestBack); crestG.appendChild(crestFront); svg.appendChild(crestG);
+    // 해안 거품
+    svg.appendChild(E('path', { d: offsetPath(6), fill: 'none', stroke: '#fff', 'stroke-width': 4, 'stroke-dasharray': '10 8', 'stroke-linecap': 'round', opacity: .9 }));
+    rayG = E('g'); svg.appendChild(rayG);
+    // 육지 (위쪽): 모래 띠 + 초록
+    let d1 = `M-40 ${sh(-40)}`, d2 = `M-40 ${sh(-40) - 46}`;
+    for (let x = -32; x <= 1000; x += 8) { d1 += `L${x} ${sh(x).toFixed(1)}`; d2 += `L${x} ${(sh(x) - 46).toFixed(1)}`; }
+    svg.appendChild(E('path', { d: d1 + 'L1000 -60L-40 -60Z', fill: '#E6C377', stroke: '#24303A', 'stroke-width': 4, 'stroke-linejoin': 'round' }));
+    svg.appendChild(E('path', { d: d2 + 'L1000 -60L-40 -60Z', fill: '#8FB07A', stroke: '#24303A', 'stroke-width': 3, 'stroke-linejoin': 'round' }));
+    [120, 520, 900].forEach(x => svg.appendChild(tree(x, sh(x) - 60)));
+    if (scene === 'cape') {
+      svg.appendChild(E('g', { transform: `translate(300,${sh(300) - 6})` }, [
+        E('path', { d: 'M-70 -8 L-50 14 L-22 2 L-6 22 L20 6 L44 18 L66 -8 Z', fill: '#8A8276', stroke: '#24303A', 'stroke-width': 3, 'stroke-linejoin': 'round' }),
+        E('path', { d: 'M-50 14 L-40 -2 M-6 22 L-2 4 M44 18 L36 0', stroke: '#24303A', 'stroke-width': 2, opacity: .5 }),
+      ]));
+      svg.appendChild(E('g', { transform: `translate(780,${sh(780) - 22})` }, [
+        E('path', { d: 'M-26 0 A26 26 0 0 1 26 0 Z', fill: '#E8553E', stroke: '#24303A', 'stroke-width': 3 }),
+        E('path', { d: 'M-13 -22 A13 13 0 0 1 13 -22', fill: 'none', stroke: '#24303A', 'stroke-width': 3 }),
+        E('path', { d: 'M0 0 L0 20', stroke: '#24303A', 'stroke-width': 3 }),
+      ]));
+      for (let i = 0; i < 12; i++) { const x = 700 + (i * 37) % 170; svg.appendChild(E('circle', { cx: x, cy: sh(x) - 10 - (i * 13) % 28, r: 2.5, fill: '#D9AD5C', stroke: '#24303A', 'stroke-width': 1.2 })); }
+    }
+    labelG = E('g'); svg.appendChild(labelG);
+    const add = (p, steps) => { p.g.dataset.steps = steps; labelG.appendChild(p.g); };
+    if (scene === 'cape') {
+      const a = pill('곶', { fs: 22, bg: '#FFE082' }); a.move(300, sh(300) - 78); add(a, '0123');
+      const b = pill('만', { fs: 22, bg: '#FFE082' }); b.move(780, sh(780) + 42); add(b, '0123');
+      const c1 = pill('밝은 곳 = 얕음 → 파도가 느려요', { fs: 14, pad: 7 }); c1.move(560, 236); add(c1, '1');
+      const c2 = pill('어두운 곳 = 깊음 → 파도가 빨라요', { fs: 14, pad: 7 }); c2.move(560, 420); add(c2, '1');
+      const r1 = pill('파향선이 모여요', { fs: 14, pad: 7 }); r1.move(300, sh(300) + 62); add(r1, '2');
+      const r2 = pill('파향선이 퍼져요', { fs: 14, pad: 7 }); r2.move(780, sh(780) + 120); add(r2, '2');
+      const a2 = pill('에너지 집중 → 침식 (해식 절벽)', { fs: 13, pad: 6, bg: '#FBE5E2' }); a2.move(300, sh(300) - 50); add(a2, '3');
+      const b2 = pill('에너지 분산 → 퇴적 (모래사장)', { fs: 13, pad: 6, bg: '#E4F3E8' }); b2.move(780, sh(780) + 70); add(b2, '3');
+    } else {
+      const c1 = pill('해안 근처: 얕아서 느려요', { fs: 14, pad: 7 }); c1.move(700, sh(700) + 60); add(c1, '1');
+      const c2 = pill('먼바다: 깊어서 빨라요', { fs: 14, pad: 7 }); c2.move(700, 400); add(c2, '1');
+      const s3 = pill('파향선이 해안 쪽으로 꺾여요', { fs: 14, pad: 7 }); s3.move(700, sh(700) + 60); add(s3, '2');
+      const s4 = pill('마루가 해안선과 나란해져요', { fs: 14, pad: 7, bg: '#FFE082' }); s4.move(700, sh(700) + 60); add(s4, '3');
+    }
+  }
+  function renderRays() {
+    rayG.innerHTML = '';
+    rays.forEach(pts => rayG.appendChild(E('polyline', { points: pts.map(p => p.join(',')).join(' '), fill: 'none', stroke: '#E8553E', 'stroke-width': 3, opacity: .95, 'stroke-linejoin': 'round', 'marker-end': 'url(#arr4)' })));
+  }
+  function applyView() {
+    rayG.style.display = step >= 2 ? '' : 'none';
+    labelG.querySelectorAll('[data-steps]').forEach(el => el.style.display = el.dataset.steps.includes(String(step)) ? '' : 'none');
+  }
+  function recompute(full) {
+    if (full) { buildDepth(); buildSvg(); }
+    march(); traceRays(); renderRays(); applyView(); drawCrests();
+  }
+  function drawCrests() { const d = crestPaths(); crestBack.setAttribute('d', d); crestFront.setAttribute('d', d); }
+  const setCap = h => { $('#cap4').innerHTML = hangCap(h); };
+  const STEPS = {
+    cape: [
+      { badge: '① 관찰', cap: '<b>관찰</b> — 흰 선이 파도의 마루예요. 먼바다에서는 곧게 오다가 해안에 가까워지면 어떻게 휘는지 지켜보세요.' },
+      { badge: '② 수심', cap: '<b>수심</b> — 곶 앞은 얕은 곳이 바다 쪽으로 튀어나와 있어요. 얕은 곳에 먼저 닿는 마루는 느려지고, 아직 깊은 곳의 마루는 계속 빨라요.' },
+      { badge: '③ 파향선', cap: '<b>파향선</b> — 파도가 나아가는 방향을 그린 빨간 선이에요. 곶 쪽으로 모이고, 만에서는 퍼져요.' },
+      { badge: '④ 정리', cap: '<b>정리</b> — 곶: 에너지 집중 → <b>침식</b>(해식 절벽) · 만: 에너지 분산 → <b>퇴적</b>(모래사장).' },
+    ],
+    line: [
+      { badge: '① 관찰', cap: '<b>관찰</b> — 비스듬히 들어온 마루(흰 선)가 해안에 가까워지면서 어떻게 되는지 지켜보세요.' },
+      { badge: '② 수심', cap: '<b>수심</b> — 해안에 가까운 쪽부터 얕아져요. 마루의 얕은 쪽 끝이 먼저 느려지고, 아직 깊은 쪽 끝은 계속 빨라서 마루가 돌아가요.' },
+      { badge: '③ 파향선', cap: '<b>파향선</b> — 파도의 진행 방향이 해안 쪽으로 꺾여요. 방향 슬라이더로 들어오는 각도를 바꿔 보세요.' },
+      { badge: '④ 정리', cap: '<b>정리</b> — 그래서 대부분의 파도는 해안선에 나란하게 밀려와요.' },
+    ],
+  };
+  function applyStep() {
+    const st = STEPS[scene][step]; $('#badge4').textContent = st.badge; setCap(st.cap);
+    $$('#t4-steps .dot').forEach((d, i) => { d.classList.toggle('on', i === step); d.classList.toggle('done', i < step); });
+    $('#t4-prev').disabled = step === 0; $('#t4-next').disabled = step === 3;
+    applyView();
+  }
+  function render(dt) {
+    if (!inited) return;
+    tt += dt; drawCrests();
+  }
+  function setScene(sc) {
+    scene = sc; ang = scenes[sc].ang; $('#r4-ang').value = ang; angLabel();
+    $$('#seg4-scene button').forEach(b => b.classList.toggle('sel', b.dataset.v === sc));
+    step = 0; recompute(true); applyStep();
+  }
+  function angLabel() { $('#v4-ang').textContent = ang === 0 ? '정면 (0°)' : (ang > 0 ? '왼쪽에서 ' : '오른쪽에서 ') + Math.abs(ang) + '°'; }
+  let pendingAng = false;
+  $('#r4-ang').addEventListener('input', e => { ang = +e.target.value; angLabel(); if (pendingAng) return; pendingAng = true; requestAnimationFrame(() => { pendingAng = false; recompute(false); }); });
+  $$('#seg4-scene button').forEach(b => b.onclick = () => setScene(b.dataset.v));
+  for (let i = 0; i < 4; i++) { const d = document.createElement('div'); d.className = 'dot'; $('#t4-steps').appendChild(d); }
+  $('#t4-prev').onclick = () => { if (step > 0) { step--; applyStep(); } };
+  $('#t4-next').onclick = () => { if (step < 3) { step++; applyStep(); } };
+  registerPauseBtn($('#t4-pause'));
+  tabInit['4'] = () => { if (inited) return; inited = true; setScene('cape'); };
+  frames['4'] = render;
+})();
+
+/* ================= 탭5: 핵심 퀴즈 ================= */
+(function () {
+  const quiz = $('#quiz');
+  const sea = (s, y, w = 300, h = 190) => { s.appendChild(E('rect', { width: w, height: h, fill: '#CFE8F5' })); };
+  const wavePath = (y, A, L, w = 300, ph = 0) => { let d = `M0 ${y - A * Math.cos(ph)}`; for (let x = 4; x <= w; x += 4) d += `L${x} ${(y - A * Math.cos(2 * Math.PI * x / L + ph)).toFixed(1)}`; return d + `L${w} 300L0 300Z`; };
+  function artBoat() {
+    const s = E('svg', { viewBox: '0 0 300 190' }); sea(s);
+    s.appendChild(E('path', { d: wavePath(120, 14, 120), fill: '#5FB0DE', stroke: '#24303A', 'stroke-width': 3 }));
+    const b = drawBoat(); b.setAttribute('transform', 'translate(150,112) scale(.55)'); s.appendChild(b);
+    s.appendChild(E('g', {}, [E('rect', { x: 70, y: 14, width: 160, height: 30, rx: 8, fill: '#fff', stroke: '#24303A', 'stroke-width': 2.5 }), E('text', { x: 150, y: 35, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 17, fill: '#24303A', text: '⏱ 마루→마루 2 s' })]));
+    s.appendChild(E('g', {}, [E('path', { d: 'M20 70 L64 70 M64 70 L54 62 M64 70 L54 78', stroke: '#E8553E', 'stroke-width': 4, 'stroke-linecap': 'round', fill: 'none' }), E('text', { x: 42, y: 60, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 14, fill: '#C7432E', text: '2 m/s' })]));
+    return s;
+  }
+  function artBall() {
+    const s = E('svg', { viewBox: '0 0 300 190' }); sea(s);
+    s.appendChild(E('path', { d: wavePath(120, 14, 120, 300, .6), fill: '#5FB0DE', stroke: '#24303A', 'stroke-width': 3 }));
+    s.appendChild(E('circle', { cx: 150, cy: 112, r: 14, fill: 'none', stroke: '#E8553E', 'stroke-width': 2.5, 'stroke-dasharray': '4 4' }));
+    s.appendChild(E('g', { transform: 'translate(150,100)' }, [E('circle', { r: 12, fill: '#FFE082', stroke: '#24303A', 'stroke-width': 3 }), E('path', { d: 'M-12 0 A12 12 0 0 0 12 0 Z', fill: '#E8553E', stroke: '#24303A', 'stroke-width': 3 })]));
+    s.appendChild(E('path', { d: 'M20 40 L70 40 M70 40 L60 32 M70 40 L60 48', stroke: '#24303A', 'stroke-width': 4, 'stroke-linecap': 'round', fill: 'none' }));
+    s.appendChild(E('text', { x: 45, y: 30, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 13, fill: '#24303A', text: '파도 진행' }));
+    s.appendChild(E('rect', { x: 250, y: 60, width: 50, height: 130, fill: '#E6C377', stroke: '#24303A', 'stroke-width': 3 }));
+    s.appendChild(E('text', { x: 275, y: 130, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 14, fill: '#24303A', text: '해안' }));
+    return s;
+  }
+  function artOrbit(deep) {
+    const s = E('svg', { viewBox: '0 0 300 190' }); sea(s);
+    s.appendChild(E('path', { d: wavePath(40, 10, 150), fill: '#5FB0DE', stroke: '#24303A', 'stroke-width': 3 }));
+    if (!deep) s.appendChild(E('rect', { x: 0, y: 150, width: 300, height: 40, fill: '#E6C377', stroke: '#24303A', 'stroke-width': 3 }));
+    [75, 150, 225].forEach(x => {
+      if (deep) [[40, 10], [70, 6], [96, 3.5], [118, 2], [136, 1]].forEach(([y, r]) => s.appendChild(E('circle', { cx: x, cy: y, r, fill: 'none', stroke: '#24303A', 'stroke-width': 2 })));
+      else [[40, 16, 10], [70, 16, 7], [98, 15, 4], [124, 15, 1.5]].forEach(([y, rx, ry]) => s.appendChild(E('ellipse', { cx: x, cy: y, rx, ry, fill: 'none', stroke: '#24303A', 'stroke-width': 2 })));
+      if (!deep) s.appendChild(E('path', { d: `M${x - 15} 144 L${x + 15} 144 M${x - 15} 144 L${x - 9} 139 M${x - 15} 144 L${x - 9} 149 M${x + 15} 144 L${x + 9} 139 M${x + 15} 144 L${x + 9} 149`, stroke: '#24303A', 'stroke-width': 2, fill: 'none' }));
+    });
+    return s;
+  }
+  function artRatio() {
+    const s = E('svg', { viewBox: '0 0 300 190' }); sea(s);
+    s.appendChild(E('path', { d: wavePath(70, 8, 240, 300, Math.PI), fill: '#5FB0DE', stroke: '#24303A', 'stroke-width': 3 }));
+    s.appendChild(E('rect', { x: 0, y: 130, width: 300, height: 60, fill: '#E6C377', stroke: '#24303A', 'stroke-width': 3 }));
+    s.appendChild(E('path', { d: arrowD(30, 30, 270, 30, 8), stroke: '#5B9BD5', 'stroke-width': 3.5, fill: 'none', 'stroke-linecap': 'round' }));
+    s.appendChild(E('text', { x: 150, y: 22, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 15, fill: '#24303A', text: '파장 100 m' }));
+    s.appendChild(E('path', { d: arrowD(150, 78, 150, 130, 8), stroke: '#E8553E', 'stroke-width': 3.5, fill: 'none', 'stroke-linecap': 'round' }));
+    s.appendChild(E('text', { x: 160, y: 110, 'font-family': 'Jua', 'font-size': 15, fill: '#C7432E', text: '수심 3 m' }));
+    return s;
+  }
+  function artCapeTop() {
+    const s = E('svg', { viewBox: '0 0 300 190' }); s.appendChild(E('rect', { width: 300, height: 190, fill: '#5FB0DE' }));
+    const sh = x => 120 - 46 * Math.cos(2 * Math.PI * (x - 90) / 300);
+    let d = `M-5 ${sh(-5)}`; for (let x = 0; x <= 305; x += 5) d += `L${x} ${sh(x).toFixed(1)}`;
+    // 굴절된 마루 (해안선과 나란해지는 곡선)
+    [18, 40, 62].forEach((off, i) => { let c = `M-5 ${sh(-5) - off * (1 + i * .6)}`; for (let x = 0; x <= 305; x += 5) c += `L${x} ${(sh(x) * (1 - i * .28) - off + i * 20).toFixed(1)}`; s.appendChild(E('path', { d: c, fill: 'none', stroke: '#fff', 'stroke-width': 3, opacity: .9 })); });
+    s.appendChild(E('path', { d: d + 'L305 200L-5 200Z', fill: '#E6C377', stroke: '#24303A', 'stroke-width': 3 }));
+    s.appendChild(E('text', { x: 90, y: sh(90) + 40, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 18, fill: '#24303A', text: '곶' }));
+    s.appendChild(E('text', { x: 240, y: sh(240) + 30, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 18, fill: '#24303A', text: '만' }));
+    s.appendChild(E('rect', { x: 0, y: 0, width: 300, height: 190, fill: 'none', stroke: '#24303A', 'stroke-width': 4 }));
+    return s;
+  }
+  const QS = [
+    { type: 'mc', tag: '진행 속도', q: '움직이지 않는 배에서 보니 마루가 지나간 뒤 다음 마루가 오기까지 2초가 걸렸어요. 파의 속도가 2 m/s라면 파장은?', art: artBoat, choices: ['1 m', '2 m', '4 m', '8 m'], ans: 2, exp: '속도 = 파장 ÷ 주기이므로 파장 = 속도 × 주기 = 2 m/s × 2 s = 4 m예요.' },
+    { type: 'ox', tag: '물 입자의 운동', q: '파도가 해안으로 밀려오면, 바다 위에 떠 있는 공도 파도를 따라 해안까지 밀려온다.', art: artBall, ans: 1, exp: '물 입자는 제자리에서 원운동을 하며 에너지만 전달해요. 마루와 골의 위치가 번갈아 바뀌어 물이 이동하는 것처럼 보일 뿐, 공은 거의 제자리에 있어요.' },
+    { type: 'pic2', tag: '심해파', q: '심해파에서 물 입자가 움직이는 모습은 어느 쪽일까요? 그림을 눌러 골라 보세요.', options: [{ label: '원운동, 깊어질수록 작아짐', art: () => artOrbit(true) }, { label: '납작한 타원, 해저에서 왕복', art: () => artOrbit(false) }], ans: 0, exp: '심해파의 물 입자는 원운동을 하고, 원의 지름은 깊어질수록 줄어 파장의 1/2 깊이에서는 거의 사라져요. 납작한 타원과 해저 왕복은 천해파의 특징이에요.' },
+    { type: 'mc', tag: '해파의 분류', q: '파장 100 m인 해파가 수심 3 m인 곳에 왔어요. 이 해파는?', art: artRatio, choices: ['심해파', '천이파', '천해파'], ans: 2, exp: '파장의 1/20 = 5 m인데 수심 3 m는 그보다 얕으므로 천해파예요. (심해파: 수심 > L/2, 천이파: L/20 < 수심 < L/2)' },
+    { type: 'mc', tag: '속도', q: '심해파의 진행 속도를 결정하는 것은 무엇일까요?', art: () => artOrbit(true), choices: ['파장', '수심', '파고'], ans: 0, exp: '심해파의 속도는 √(gL/2π)로 파장이 길수록 빨라요. 수심이 속도를 결정하는 것은 천해파(√gh)예요.' },
+    { type: 'mc', tag: '굴절', q: '위에서 본 해안이에요. 파도의 에너지가 집중되어 해식 절벽 같은 침식 지형이 잘 생기는 곳은?', art: artCapeTop, choices: ['곶', '만'], ans: 0, exp: '곶 앞은 수심이 얕아 파도가 느려지면서 파도가 곶 쪽으로 굴절해요. 파향선이 모이면서 에너지가 집중되어 침식이 활발하고, 만에서는 에너지가 분산되어 퇴적이 일어나요.' },
+  ];
+  let queue = QS.map((_, i) => i), pos = 0, results = QS.map(() => null);
+  function render() {
+    quiz.innerHTML = '';
+    if (pos >= queue.length) return renderEnd();
+    const qi = queue[pos], Q = QS[qi];
+    const box = document.createElement('div'); box.className = 'q tall';
+    box.innerHTML = `<div class="qtop"><span class="qn">Q${qi + 1} / ${QS.length}</span><span class="qtag">${Q.tag}</span></div><h3>${Q.q}</h3><div class="qbody"></div><div class="qfeed" hidden></div><div class="qctl"><button class="btn ok big" id="q-next" style="display:none">다음 문제 ▶</button></div>`;
+    quiz.appendChild(box);
+    const body = box.querySelector('.qbody'), feed = box.querySelector('.qfeed'), next = box.querySelector('#q-next');
+    let answered = false;
+    const finish = (ok, popEl) => {
+      if (answered) return; answered = true; results[qi] = ok;
+      feed.hidden = false; feed.className = 'qfeed ' + (ok ? 'good' : 'bad');
+      feed.innerHTML = `<div class="fh">${ok ? '✔ 정답이에요!' : '✖ 다시 생각해 볼까요?'}</div><div>${Q.exp}</div>`;
+      next.style.display = ''; next.textContent = pos + 1 < queue.length ? '다음 문제 ▶' : '결과 보기 ▶';
+      if (popEl) popEl.classList.add('pop');
+      feed.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    };
+    if (Q.type === 'pic2') {
+      const row = document.createElement('div'); row.className = 'pic2'; body.appendChild(row);
+      Q.options.forEach((o, i) => {
+        const cdiv = document.createElement('div'); cdiv.className = 'piccard'; cdiv.setAttribute('role', 'button'); cdiv.tabIndex = 0;
+        cdiv.appendChild(o.art()); cdiv.insertAdjacentHTML('beforeend', `<div class="pl">${o.label}</div>`);
+        const pick = () => {
+          if (answered) return; const okA = i === Q.ans;
+          Array.from(row.children).forEach((el, k) => {
+            if (k === Q.ans) { el.classList.add('right'); el.insertAdjacentHTML('beforeend', '<span class="mark ok">✔</span>'); }
+            else if (el === cdiv) { el.classList.add('wrong'); el.insertAdjacentHTML('beforeend', '<span class="mark no">✖</span>'); }
+            else el.classList.add('dim');
+          });
+          finish(okA, row.children[Q.ans]);
+        };
+        cdiv.onclick = pick; cdiv.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(); } };
+        row.appendChild(cdiv);
+      });
+    } else if (Q.type === 'ox') {
+      const art = document.createElement('div'); art.className = 'qart'; art.appendChild(Q.art()); body.appendChild(art);
+      const row = document.createElement('div'); row.className = 'oxrow'; body.appendChild(row);
+      [['◯', '맞아요'], ['✕', '아니에요']].forEach(([icon, txt], i) => {
+        const b = document.createElement('button'); b.className = 'oxbtn'; b.innerHTML = `<span>${icon}<small>${txt}</small></span>`;
+        b.onclick = () => { if (answered) return; const okA = i === Q.ans; row.children[Q.ans].classList.add('right'); if (!okA) b.classList.add('wrong'); finish(okA, row.children[Q.ans]); };
+        row.appendChild(b);
+      });
+    } else {
+      const art = document.createElement('div'); art.className = 'qart'; art.appendChild(Q.art()); body.appendChild(art);
+      body.insertAdjacentHTML('beforeend', `<div class="choices"${Q.choices.length === 3 ? ' style="grid-template-columns:repeat(3,1fr)"' : ''}>${Q.choices.map((c, i) => `<button class="choice" data-i="${i}">${c}</button>`).join('')}</div>`);
+      body.querySelectorAll('.choice').forEach(c => c.onclick = () => {
+        if (answered) return; const okA = +c.dataset.i === Q.ans;
+        body.querySelectorAll('.choice').forEach(x => { if (+x.dataset.i === Q.ans) { x.classList.add('right'); x.insertAdjacentHTML('beforeend', ' ✔'); } else if (x === c) { x.classList.add('wrong'); x.insertAdjacentHTML('beforeend', ' ✖'); } });
+        finish(okA, body.querySelector('.choice.right'));
+      });
+    }
+    next.onclick = () => { pos++; render(); };
+  }
+  function renderEnd() {
+    const score = results.filter(Boolean).length, wrong = QS.map((_, i) => i).filter(i => !results[i]);
+    const msg = score === QS.length ? '완벽해요! 해파의 핵심을 모두 이해했어요.' : score >= 4 ? '좋아요! 헷갈린 문제만 다시 확인해 볼까요?' : '괜찮아요! 앞 탭의 장면을 다시 보면 금방 알 수 있어요.';
+    const box = document.createElement('div'); box.className = 'q';
+    box.innerHTML = `<div class="score">${QS.length}문제 중 ${score}문제 정답!</div><div style="text-align:center;margin-top:10px;font-size:16px">${msg}</div><div class="review">${QS.map((q, i) => `<span class="rv ${results[i] ? 'ok' : 'no'}">Q${i + 1} ${results[i] ? '○' : '✕'}</span>`).join('')}</div><div class="qctl" style="justify-content:center;flex-wrap:wrap;gap:10px">${wrong.length ? '<button class="btn warn big" id="q-wrong">틀린 문제만 다시 보기</button>' : ''}<button class="btn big" id="q-back">'물 입자의 운동' 탭으로 돌아가기</button><button class="btn primary big" id="q-restart">↺ 처음부터 다시 풀기</button></div>`;
+    quiz.appendChild(box);
+    const w = box.querySelector('#q-wrong'); if (w) w.onclick = () => { queue = wrong; pos = 0; render(); };
+    box.querySelector('#q-back').onclick = () => $('.tab[data-tab="2"]').click();
+    box.querySelector('#q-restart').onclick = () => { queue = QS.map((_, i) => i); pos = 0; results = QS.map(() => null); render(); };
+  }
+  render();
+})();
+
+</script>
+</body>
+</html>
