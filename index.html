@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>해파 탐구실</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><h1>해파 탐구실</h1><span class="sub">파도는 물을 옮길까, 에너지를 옮길까?</span></div>
+</header>
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-tab="1" role="tab"><span class="num">1</span>해파의 구조</button>
+  <button class="tab" data-tab="2" role="tab"><span class="num">2</span>물 입자의 운동</button>
+  <button class="tab" data-tab="3" role="tab"><span class="num">3</span>심해파와 천해파</button>
+  <button class="tab" data-tab="4" role="tab"><span class="num">4</span>해파의 굴절</button>
+  <button class="tab" data-tab="5" role="tab"><span class="num">5</span>핵심 퀴즈</button>
+</nav>
+<main class="wrap">
+
+<!-- ===== 탭1: 해파의 구조 ===== -->
+<section class="panel active" id="panel1">
+  <div class="lab-grid">
+    <div class="lab-side">
+      <div class="card">
+        <h3>해파 조절하기</h3>
+        <div class="rng"><label>파장 (L) <b id="v1-L">60 m</b></label><input type="range" id="r1-L" min="30" max="120" step="5" value="60"></div>
+        <div class="rng"><label>파고 (H) <b id="v1-H">3 m</b></label><input type="range" id="r1-H" min="1" max="8" step="0.5" value="3"></div>
+        <div class="rng"><label>주기 (T) <b id="v1-T">8 s</b></label><input type="range" id="r1-T" min="3" max="15" step="0.5" value="8"></div>
+      </div>
+      <div class="card">
+        <h3>진행 속도</h3>
+        <div class="formula">속도 = <span class="frac"><span>파장</span><span>주기</span></span> = <span class="frac"><span id="f1-L">60 m</span><span id="f1-T">8 s</span></span></div>
+        <div class="vbig" id="v1-c">7.5 m/s</div>
+        <div class="mini-note">그림의 세로(파고)는 보기 쉽게 약 3배 과장했어요.</div>
+      </div>
+      <div class="card">
+        <h3>용어 정리</h3>
+        <div class="info"><b>마루</b> 가장 높은 곳 · <b>골</b> 가장 낮은 곳<br><b>파고</b> 골에서 마루까지의 높이<br><b>파장</b> 마루에서 다음 마루까지의 거리<br><b>주기</b> 마루가 지나간 뒤 다음 마루가 올 때까지의 시간</div>
+      </div>
+    </div>
+    <div>
+      <div class="stage-wrap" id="stage1">
+        <svg id="svg1" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
+        <div class="badge">해파의 구조</div>
+        <div class="caption" id="cap1"></div>
+      </div>
+      <div class="controls">
+        <button class="btn tog on" id="t1-labels">🏷 이름표 보기</button>
+        <div class="spacer"></div>
+        <button class="btn" id="t1-pause">⏸ 일시 정지</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 탭2: 물 입자의 운동 ===== -->
+<section class="panel" id="panel2">
+  <div class="lab-grid">
+    <div class="lab-side">
+      <div class="card">
+        <h3>해파 조절하기</h3>
+        <div class="rng"><label>파장 (L) <b id="v2-L">80 m</b></label><input type="range" id="r2-L" min="60" max="100" step="10" value="80"></div>
+        <div class="rng"><label>파고 (H) · 바람이 셀수록 ↑ <b id="v2-H">8 m</b></label><input type="range" id="r2-H" min="2" max="10" step="1" value="8"></div>
+      </div>
+      <div class="card">
+        <h3>읽어 보기</h3>
+        <div class="info" id="info2"></div>
+        <div class="mini-note">이 그림은 가로·세로 비율이 실제와 같아요 (1 m = 4 px).</div>
+      </div>
+    </div>
+    <div>
+      <div class="stage-wrap" id="stage2">
+        <svg id="svg2" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
+        <div class="badge">물 입자의 운동</div>
+        <div class="mychip" id="chip2" hidden></div>
+        <div class="caption" id="cap2"></div>
+        <div class="predict" id="pred2"><div class="pbox">
+          <h4>🐦 파도가 지나가면 물 위의 갈매기는 어떻게 움직일까요?</h4>
+          <div class="pbtns">
+            <button class="btn" data-v="a">ⓐ 파도와 함께 오른쪽(해안 쪽)으로 계속 밀려간다</button>
+            <button class="btn" data-v="b">ⓑ 제자리에서 원을 그리며 돈다</button>
+            <button class="btn" data-v="c">ⓒ 그 자리에서 위아래로만 오르내린다</button>
+          </div>
+          <div class="psub">예측을 고르면 파도가 움직이기 시작해요. 예측은 기록되지 않아요.</div>
+        </div></div>
+      </div>
+      <div class="controls">
+        <button class="btn tog on" id="t2-trail">🪶 궤적</button>
+        <button class="btn tog on" id="t2-deep">🔵 깊이별 입자</button>
+        <button class="btn tog on" id="t2-num">①② 위치 번호</button>
+        <div class="spacer"></div>
+        <button class="btn ghost" id="t2-again">↺ 예측 다시 하기</button>
+        <button class="btn" id="t2-pause">⏸ 일시 정지</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 탭3: 심해파와 천해파 ===== -->
+<section class="panel" id="panel3">
+  <div class="lab-grid">
+    <div class="lab-side">
+      <div class="card">
+        <h3>파장과 수심</h3>
+        <div class="rng"><label>파장 (L) <b id="v3-L">60 m</b></label><input type="range" id="r3-L" min="10" max="200" step="5" value="60"></div>
+        <div class="rng"><label>수심 (h) <b id="v3-h">40 m</b></label><input type="range" id="r3-h" min="1" max="100" step="1" value="40"></div>
+        <div class="seg" id="seg3-preset" style="margin-top:8px"><button data-v="deep">심해파<small>예시</small></button><button data-v="mid">천이파<small>예시</small></button><button data-v="shal">천해파<small>예시</small></button></div>
+      </div>
+      <div class="card">
+        <h3>판정 <span class="tag">수심 ÷ 파장</span></h3>
+        <div class="ratio-row"><span>h ÷ L =</span><b id="v3-ratio">0.67</b></div>
+        <div class="cls" id="cls3">심해파</div>
+        <div class="mini-note" id="cls3-why"></div>
+      </div>
+      <div class="card">
+        <h3>속도 계산</h3>
+        <div class="spd-row" id="sp-full"><span>일반식<small>√(g/k · tanh kh)</small></span><b></b></div>
+        <div class="spd-row" id="sp-deep"><span>심해파 근사<small>√(gL/2π)</small></span><b></b></div>
+        <div class="spd-row" id="sp-shal"><span>천해파 근사<small>√(gh)</small></span><b></b></div>
+        <div class="mini-note" id="sp-note"></div>
+      </div>
+    </div>
+    <div>
+      <div class="stage-wrap" id="stage3">
+        <svg id="svg3" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
+        <div class="badge" id="badge3">심해파</div>
+        <div class="caption" id="cap3"></div>
+      </div>
+      <div class="controls">
+        <button class="btn tog on" id="t3-orbit">⭕ 궤도 보기</button>
+        <div class="spacer"></div>
+        <button class="btn" id="t3-pause">⏸ 일시 정지</button>
+      </div>
+      <div class="mini-note">깊이 눈금은 보기 쉽게 간격을 조절해 그렸어요(실제 비율이 아님). 궤도 모양은 파장·수심으로 계산한 값이에요.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 탭4: 해파의 굴절 ===== -->
+<section class="panel" id="panel4">
+  <div class="mode-row">
+    <div class="seg" id="seg4-scene"><button data-v="cape" class="sel">🏝 곶과 만</button><button data-v="line">📐 비스듬한 직선 해안</button></div>
+    <div class="rng"><label>파가 들어오는 방향 <b id="v4-ang">정면 (0°)</b></label><input type="range" id="r4-ang" min="-50" max="50" step="5" value="0"></div>
+  </div>
+  <div class="stage-wrap" id="stage4">
+    <svg id="svg4" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
+    <div class="badge" id="badge4">관찰</div><div class="mychip">위에서 본 모습 · 위쪽이 육지</div>
+    <div class="caption" id="cap4"></div>
+  </div>
+  <div class="controls">
+    <button class="btn" id="t4-prev">◀ 이전</button>
+    <div class="steps" id="t4-steps"></div>
+    <div class="spacer"></div>
+    <button class="btn" id="t4-pause">⏸ 일시 정지</button>
+    <button class="btn primary" id="t4-next">다음 ▶</button>
+  </div>
+</section>
+
+<!-- ===== 탭5: 퀴즈 ===== -->
+<section class="panel" id="panel5">
+  <div class="quiz" id="quiz"></div>
+</section>
+
+</main>
+<footer class="site-foot">© 2026 제작: 김연경(earthssaem@gmail.com)</footer>
+<!-- 스크립트는 common → text → tab1 … tab5 순서로 로드 (번들러·ES module 없이 file:// 에서도 동작) -->
+<script src="js/common.js"></script>
+<script src="js/text.js"></script>
+<script src="js/tab1.js"></script>
+<script src="js/tab2.js"></script>
+<script src="js/tab3.js"></script>
+<script src="js/tab4.js"></script>
+<script src="js/tab5.js"></script>
+</body>
+</html>
