@@ -20,7 +20,7 @@ function explainCard(el) {
     title.innerHTML = m ? m[1] : ''; title.hidden = !m;
     main.innerHTML = body.trim();
     more.innerHTML = sm ? sm[1] : ''; btn.hidden = !sm;
-    el.hidden = !html;
+    el.hidden = !html; if (!html) open = false; // 카드를 숨기면 '자세히'도 접힌 상태로 되돌림
     sync();
   };
 }
@@ -87,12 +87,12 @@ function arrowD(x1, y1, x2, y2, h = 10) {
   const head = (x, y, dir) => `M${x + Math.cos(dir + Math.PI * .8) * h} ${y + Math.sin(dir + Math.PI * .8) * h} L${x} ${y} L${x + Math.cos(dir - Math.PI * .8) * h} ${y + Math.sin(dir - Math.PI * .8) * h}`;
   return `M${x1} ${y1} L${x2} ${y2} ${head(x2, y2, ang)} ${head(x1, y1, ang + Math.PI)}`;
 }
-/* 하늘·해·구름 배경 (옆에서 본 바다 장면 공용) */
+/* 하늘·해·구름 배경 (옆에서 본 바다 장면 공용). o: sunX·sunY(해 위치), cloudDy(구름 높이), w(그림 폭, 기본 960), cloud2Dx(둘째 구름 가로 이동) */
 function drawSky(svg, id, o = {}) {
   svg.appendChild(E('defs', {}, [
     E('linearGradient', { id: id + '-water', x1: 0, y1: 0, x2: 0, y2: 1 }, [E('stop', { offset: 0, 'stop-color': '#7CC4EA' }), E('stop', { offset: 1, 'stop-color': '#1E5A85' })]),
   ]));
-  svg.appendChild(E('rect', { x: -40, y: -40, width: 1040, height: 620, fill: '#BFE3F5' }));
+  svg.appendChild(E('rect', { x: -40, y: -40, width: (o.w ?? 960) + 80, height: 620, fill: '#BFE3F5' }));
   const SX = o.sunX ?? 850, SY = o.sunY ?? 80, SR = 34; const sun = E('g', { class: 'sun' });
   for (let i = 0; i < 8; i++) {
     const a = (i / 8) * Math.PI * 2, r1 = SR + 8, r2 = SR + (i % 2 ? 18 : 25);
@@ -105,7 +105,7 @@ function drawSky(svg, id, o = {}) {
   const dy = o.cloudDy ?? 0;
   svg.appendChild(E('g', { transform: `translate(0,${dy})` }, [
     E('path', { d: 'M120 90 a26 26 0 0 1 50 -16 a30 30 0 0 1 58 8 a20 20 0 0 1 4 40 l-110 0 a22 22 0 0 1 -2 -32 Z', fill: '#fff', stroke: '#24303A', 'stroke-width': 4 }),
-    E('path', { d: 'M560 60 a20 20 0 0 1 40 -12 a24 24 0 0 1 46 6 a16 16 0 0 1 3 32 l-88 0 a18 18 0 0 1 -1 -26 Z', fill: '#fff', stroke: '#24303A', 'stroke-width': 4 }),
+    E('path', { d: 'M560 60 a20 20 0 0 1 40 -12 a24 24 0 0 1 46 6 a16 16 0 0 1 3 32 l-88 0 a18 18 0 0 1 -1 -26 Z', fill: '#fff', stroke: '#24303A', 'stroke-width': 4, transform: `translate(${o.cloud2Dx ?? 0},0)` }),
   ]));
 }
 function drawBoat() {

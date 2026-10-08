@@ -61,45 +61,30 @@
 
 <!-- ===== 탭2: 물 입자의 운동 ===== -->
 <section class="panel" id="panel2">
-  <div class="lab-grid">
-    <div class="lab-side">
-      <div class="card">
-        <h3>해파 조절하기</h3>
-        <div class="rng"><label>파장 (L) <b id="v2-L">80 m</b></label><input type="range" id="r2-L" min="60" max="100" step="10" value="80"></div>
-        <div class="rng"><label>파고 (H) · 바람이 셀수록 ↑ <b id="v2-H">8 m</b></label><input type="range" id="r2-H" min="2" max="10" step="1" value="8"></div>
-        <div class="mini-note">해파는 바람이 셀수록, 오래 불수록, 바람이 부는 바다가 넓을수록 파고와 파장이 커져요.</div>
-      </div>
-      <div class="card">
-        <h3>읽어 보기</h3>
-        <div class="info" id="info2"></div>
-        <div class="mini-note">이 그림은 가로·세로 비율이 실제와 같아요 (1 m = 4 px).</div>
+  <div class="sim sim-wide">
+    <div class="stage-wrap" id="stage2">
+      <svg id="svg2" viewBox="0 40 1176 420" preserveAspectRatio="xMidYMid slice"></svg>
+      <div class="badge">물 입자의 운동</div>
+      <div class="mychip" id="chip2" hidden></div>
+      <button class="btn primary cta" id="t2-predict" type="button">🐦 예측하기</button>
+      <div class="predict" id="pred2" hidden>
+        <div class="pbox" role="dialog" aria-modal="true" aria-labelledby="pred2-q">
+          <button class="pclose" id="pred2-close" type="button" aria-label="닫기">✕</button>
+          <h4 id="pred2-q"></h4>
+          <div class="pbtns" id="pred2-choices" role="radiogroup" aria-labelledby="pred2-q"></div>
+          <div class="pfoot"><button class="btn primary" id="pred2-go" type="button" disabled>관찰 시작 ▶</button></div>
+        </div>
       </div>
     </div>
-    <div class="sim">
-      <div class="stage-wrap" id="stage2">
-        <svg id="svg2" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
-        <div class="badge">물 입자의 운동</div>
-        <div class="mychip" id="chip2" hidden></div>
-        <div class="predict" id="pred2"><div class="pbox">
-          <h4>🐦 파도가 지나가면 물 위의 갈매기는 어떻게 움직일까요?</h4>
-          <div class="pbtns">
-            <button class="btn" data-v="a">ⓐ 파도와 함께 오른쪽(해안 쪽)으로 계속 밀려간다</button>
-            <button class="btn" data-v="b">ⓑ 제자리에서 원을 그리며 돈다</button>
-            <button class="btn" data-v="c">ⓒ 그 자리에서 위아래로만 오르내린다</button>
-          </div>
-          <div class="psub">예측을 고르면 파도가 움직이기 시작해요. 예측은 기록되지 않아요.</div>
-        </div></div>
-      </div>
-      <div class="controls">
-        <button class="btn tog on" id="t2-trail">궤적</button>
-        <button class="btn tog on" id="t2-deep">깊이별 입자</button>
-        <button class="btn tog on" id="t2-num">①② 위치 번호</button>
-        <div class="spacer"></div>
-        <button class="btn" id="t2-again">↺ 예측 다시 하기</button>
-        <button class="btn" id="t2-pause">⏸ 일시 정지</button>
-      </div>
-      <div id="ex2"></div>
+    <div class="controls">
+      <button class="btn tog on" id="t2-trail">궤적</button>
+      <button class="btn tog on" id="t2-deep">깊이별 입자</button>
+      <button class="btn tog on" id="t2-num">①② 위치 번호</button>
+      <div class="spacer"></div>
+      <button class="btn" id="t2-again">↺ 예측 다시 하기</button>
+      <button class="btn" id="t2-pause">⏸ 일시 정지</button>
     </div>
+    <div id="ex2"></div>
   </div>
 </section>
 
