@@ -1,4 +1,4 @@
-/* 탭2: 물 입자의 운동 — 갈매기 예측 → 관찰 → 자막 공개, 궤적/깊이별 입자/번호 토글 */
+/* 탭2: 물 입자의 운동 — 갈매기 예측 → 관찰 → 해설 카드에 정답 공개, 궤적/깊이별 입자/번호 토글 */
 /* ================= 탭2: 물 입자의 운동 ================= */
 (function () {
   const TX = TEXT.tab2; // 이 탭의 문구
@@ -30,7 +30,7 @@
   }));
   const nums = TX.nums.map(t => { const p = pill(t, { fs: 15, pad: 6, bg: '#FFE082' }); numG.appendChild(p.g); return p; });
   let s = 0, tt = 0, pts = [], started = false, predicted = null, revealed = false, view = { trail: true, deep: true, num: true };
-  const setCap = h => { $('#cap2').innerHTML = hangCap(h); };
+  const setCap = explainCard($('#ex2'));
 
   function render(dt) {
     const Lpx = S.L * PX, k = 2 * Math.PI / Lpx, c = Lpx / T, A = S.H / 2 * PX;
@@ -75,7 +75,7 @@
     setCap(TX.capObserve);
   });
   $('#t2-again').onclick = reset;
-  [['trail', '#t2-trail'], ['deep', '#t2-deep'], ['num', '#t2-num']].forEach(([key, id]) => { $(id).onclick = e => { view[key] = !view[key]; e.currentTarget.classList.toggle('on', view[key]); }; });
+  [['trail', '#t2-trail'], ['deep', '#t2-deep'], ['num', '#t2-num']].forEach(([key, id]) => bindToggle($(id), v => { view[key] = v; }));
   ['L', 'H'].forEach(key => { const r = $('#r2-' + key); r.addEventListener('input', () => { S[key] = +r.value; pts = []; info(); }); });
   registerPauseBtn($('#t2-pause'));
   info(); reset(); render(0);

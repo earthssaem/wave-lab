@@ -1,31 +1,33 @@
-/* 공통 유틸·폰 자막 이동·전역 일시 정지·전역 애니메이션 루프·탭 전환·공용 그림(drawSky/drawBoat/drawGull/drawFoam) — 모든 탭이 쓰는 전역을 제공 */
+/* 공통 유틸·해설 카드·토글 버튼·전역 일시 정지·전역 애니메이션 루프·탭 전환·공용 그림(drawSky/drawBoat/drawGull/drawFoam) — 모든 탭이 쓰는 전역을 제공 */
 /* ================= 공통 ================= */
 const $ = s => document.querySelector(s);
 const $$ = s => Array.from(document.querySelectorAll(s));
-/* 폰에서는 자막을 그림 아래 칸으로 옮겨 그림을 가리지 않게 함 */
-(function () {
-  const mq = matchMedia('(max-width:600px)');
-  const apply = () => {
-    $$('.stage-wrap').forEach(sw => {
-      let slot = sw.nextElementSibling;
-      if (!slot || !slot.classList.contains('cap-slot')) { slot = document.createElement('div'); slot.className = 'cap-slot'; sw.after(slot); }
-      const cap = (mq.matches ? sw : slot).querySelector('.caption');
-      if (!cap) return;
-      cap.classList.toggle('below', mq.matches);
-      (mq.matches ? slot : sw).appendChild(cap);
-    });
+/* 해설 카드: '<b>제목</b> — 핵심 해설<small>추가 설명</small>' 형식의 글을 받아
+   제목 · 핵심 해설(항상 보임) · 추가 설명('자세히 보기'로 펼치고 접음)으로 나눠 시뮬레이션 아래 카드에 표시.
+   <small> 이 없으면 '자세히 보기' 버튼을 숨김. 반환값: set(html) 함수 */
+function explainCard(el) {
+  el.classList.add('explain');
+  el.innerHTML = '<div class="ex-row"><span class="ex-title"></span><div class="ex-main" aria-live="polite"></div><button type="button" class="ex-btn" aria-expanded="false"></button></div><div class="ex-more"></div>';
+  const title = el.querySelector('.ex-title'), main = el.querySelector('.ex-main'), btn = el.querySelector('.ex-btn'), more = el.querySelector('.ex-more');
+  let open = false;
+  const sync = () => { more.hidden = !open || btn.hidden; btn.setAttribute('aria-expanded', open); btn.textContent = open ? '접기 ▴' : '자세히 보기 ▾'; };
+  btn.onclick = () => { open = !open; sync(); };
+  return html => {
+    const sm = html.match(/<small>([\s\S]*)<\/small>\s*$/);
+    let body = sm ? html.slice(0, sm.index) : html;
+    const m = body.match(/^<b>(.*?)<\/b>\s*—\s*/);
+    if (m) body = body.slice(m[0].length);
+    title.innerHTML = m ? m[1] : ''; title.hidden = !m;
+    main.innerHTML = body.trim();
+    more.innerHTML = sm ? sm[1] : ''; btn.hidden = !sm;
+    el.hidden = !html;
+    sync();
   };
-  apply();
-  mq.addEventListener('change', apply);
-})();
-function hangCap(html) {
-  const sm = html.match(/<small>[\s\S]*<\/small>\s*$/);
-  let main = sm ? html.slice(0, sm.index) : html; const tail = sm ? sm[0] : '';
-  const m = main.match(/^<b>(.*?)<\/b>\s*—\s*/);
-  if (m) main = main.slice(m[0].length);
-  const body = main.trim().replace(/([.!?…])\s+/g, '$1\u0001').split('\u0001').map(t => `<span class="cap-s">${t}</span>`).join(' ');
-  if (!m) return body + tail;
-  return `<span class="cap-line"><b>${m[1]}</b><span class="cap-rest">${body}</span></span>${tail}`;
+}
+/* 관찰 보조 토글 버튼: .on 클래스·aria-pressed 를 함께 바꾸고 cb(켜짐 여부) 호출 */
+function bindToggle(btn, cb) {
+  btn.setAttribute('aria-pressed', btn.classList.contains('on'));
+  btn.addEventListener('click', () => { const v = !btn.classList.contains('on'); btn.classList.toggle('on', v); btn.setAttribute('aria-pressed', v); cb(v); });
 }
 const SVGNS = 'http://www.w3.org/2000/svg';
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -49,6 +51,7 @@ let _paused = false;
 const _pauseBtns = [];
 function syncPauseBtns() { _pauseBtns.forEach(b => { b.textContent = _paused ? '▶ 재생' : '⏸ 일시 정지'; }); }
 function registerPauseBtn(btn) { _pauseBtns.push(btn); btn.addEventListener('click', () => { _paused = !_paused; syncPauseBtns(); }); }
+function setPaused(v) { _paused = v; syncPauseBtns(); }
 
 /* ---- 전역 애니메이션 루프: 활성 탭의 frame(dt)만 호출 ---- */
 let activeTab = '1'; const frames = {}; const tabInit = {};
@@ -128,30 +131,3 @@ function drawGull() {
   ]);
 }
 function drawFoam() { return E('g', {}, [E('rect', { x: -10, y: -10, width: 20, height: 13, rx: 4, fill: '#fff', stroke: '#24303A', 'stroke-width': 2.5 })]); }
-/* 모양에 따른 해파의 종류: 바람 → 풍랑(뾰족) → 너울(둥글고 긴 파장) → 연안 쇄파(파장↓ 파고↑ 부서짐). 300×120 좌표계의 g 반환 (탭3 카드·퀴즈 그림 공용) */
-function drawWaveTypes(t) {
-  const g = E('g');
-  g.appendChild(E('rect', { width: 300, height: 120, fill: '#CFE8F5' }));
-  const tri = (x, L) => 1 - Math.abs(((x / L) % 1) * 2 - 1); // 0~1 삼각파
-  const y = x => {
-    if (x < 100) return 66 - 9 * tri(x + 4, 22) - 4 * tri(x, 13);          // 풍랑: 뾰족하고 불규칙
-    if (x < 200) return 66 - 6 * Math.cos(2 * Math.PI * (x - 100) / 62);   // 너울: 둥글고 긴 파장
-    const s = (x - 200) / 100, L = 62 - 30 * s, A = 6 + 8 * s;             // 연안: 얕아지며 파장↓ 파고↑
-    return 66 - A * Math.cos(2 * Math.PI * (x - 200) / L);
-  };
-  let d = `M0 ${y(0).toFixed(1)}`; for (let x = 2; x <= 300; x += 2) d += `L${x} ${y(x).toFixed(1)}`;
-  g.appendChild(E('path', { d: d + 'L300 120L0 120Z', fill: '#5FB0DE', stroke: '#24303A', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));
-  [100, 200].forEach(x => g.appendChild(E('line', { x1: x, y1: 8, x2: x, y2: 98, stroke: '#24303A', 'stroke-width': 1.5, 'stroke-dasharray': '4 4', opacity: .4 })));
-  // 부서지는 마루의 거품: 해안 앞 가장 높은 마루를 찾아 표시
-  let xc = 225, yc = 200; for (let x = 225; x <= 258; x += 1) { const v = y(x); if (v < yc) { yc = v; xc = x; } }
-  [[0, 0, 6], [8, 5, 4.5], [-7, 4, 4], [14, 10, 3.5]].forEach(([dx, dy, r]) => g.appendChild(E('circle', { cx: xc + dx, cy: yc + dy, r, fill: '#fff', stroke: '#24303A', 'stroke-width': 1.5 })));
-  // 해안(모래)
-  g.appendChild(E('path', { d: 'M256 120 L300 62 L300 120 Z', fill: '#E6C377', stroke: '#24303A', 'stroke-width': 2.5, 'stroke-linejoin': 'round' }));
-  // 바람: 구름 + 화살표
-  g.appendChild(E('path', { d: 'M12 30 a8 8 0 0 1 16 -5 a9 9 0 0 1 18 3 a6 6 0 0 1 1 12 l-34 0 a7 7 0 0 1 -1 -10 Z', fill: '#fff', stroke: '#24303A', 'stroke-width': 2 }));
-  g.appendChild(E('path', { d: 'M54 32 L84 32 M84 32 L76 26 M84 32 L76 38', stroke: '#E8553E', 'stroke-width': 3, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', fill: 'none' }));
-  g.appendChild(E('text', { x: 69, y: 22, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 11, fill: '#C7432E', text: t.wind }));
-  // 이름표
-  [[t.names[0], 50], [t.names[1], 150], [t.names[2], 230]].forEach(([s, x]) => g.appendChild(E('text', { x, y: 110, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 13, fill: '#24303A', text: s })));
-  return g;
-}
