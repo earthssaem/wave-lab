@@ -1,4 +1,4 @@
-/* 탭1: 해파의 구조 — 파장·파고·주기 슬라이더, 이름표, 배 위 시계 */
+/* 탭1: 해파의 구조 — 파장·파고·주기 슬라이더, 이름표, 배 위 시계 (슬라이더별 힌트는 그림 아래 해설 카드) */
 /* ================= 탭1: 해파의 구조 ================= */
 (function () {
   const TX = TEXT.tab1; // 이 탭의 문구
@@ -54,16 +54,16 @@
     swT.textContent = TX.watch((ph * S.T).toFixed(1));
     fl = Math.max(0, fl - dt); flash.g.style.opacity = Math.min(1, fl); flash.move(XB, yb - 190);
   }
-  const HINT = TX.HINT;
+  const HINT = TX.HINT, setExplain = explainCard($('#ex1'));
   function upd(which) {
     const c = S.L / S.T;
     $('#v1-L').textContent = S.L + ' m'; $('#v1-H').textContent = fmt(S.H) + ' m'; $('#v1-T').textContent = fmt(S.T) + ' s';
     $('#f1-L').textContent = S.L + ' m'; $('#f1-T').textContent = fmt(S.T) + ' s'; $('#v1-c').textContent = fmt(c, 2) + ' m/s';
     $('#v1-steep').innerHTML = TX.steep(fmt(S.H), S.L, fmt(S.H / S.L, 3));
-    $('#cap1').innerHTML = hangCap(TX.cap(S, c, HINT[which] || TX.hintDefault));
+    setExplain(TX.cap(HINT[which] || TX.hintDefault, fmt(S.T)));
   }
   ['L', 'H', 'T'].forEach(key => { const r = $('#r1-' + key); r.addEventListener('input', () => { S[key] = +r.value; upd(key); }); });
-  $('#t1-labels').onclick = e => { labelsOn = !labelsOn; e.currentTarget.classList.toggle('on', labelsOn); };
+  bindToggle($('#t1-labels'), v => { labelsOn = v; });
   registerPauseBtn($('#t1-pause'));
   upd(); render(0);
   frames['1'] = render;
