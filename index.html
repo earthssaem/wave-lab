@@ -24,6 +24,18 @@
 <!-- ===== 탭1: 해파의 구조 ===== -->
 <section class="panel active" id="panel1">
   <div class="lab-grid">
+    <div class="sim">
+      <div class="stage-wrap" id="stage1">
+        <svg id="svg1" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
+        <div class="badge">해파의 구조</div>
+      </div>
+      <div class="controls">
+        <button class="btn tog on" id="t1-labels">이름표 보기</button>
+        <div class="spacer"></div>
+        <button class="btn" id="t1-pause">⏸ 일시 정지</button>
+      </div>
+      <div id="ex1"></div>
+    </div>
     <div class="lab-side">
       <div class="card">
         <h3>해파 조절하기</h3>
@@ -43,18 +55,6 @@
         <summary><h3>용어 정리</h3></summary>
         <div class="info"><b>마루</b> 가장 높은 곳 · <b>골</b> 가장 낮은 곳<br><b>파고</b> 골에서 마루까지의 높이<br><b>파장</b> 마루에서 다음 마루까지의 거리<br><b>주기</b> 마루가 지나간 뒤 다음 마루가 올 때까지의 시간</div>
       </details>
-    </div>
-    <div class="sim">
-      <div class="stage-wrap" id="stage1">
-        <svg id="svg1" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
-        <div class="badge">해파의 구조</div>
-      </div>
-      <div class="controls">
-        <button class="btn tog on" id="t1-labels">이름표 보기</button>
-        <div class="spacer"></div>
-        <button class="btn" id="t1-pause">⏸ 일시 정지</button>
-      </div>
-      <div id="ex1"></div>
     </div>
   </div>
 </section>
@@ -91,12 +91,6 @@
 <!-- ===== 탭3: 풍랑·너울·연안 쇄파 ===== -->
 <section class="panel" id="panel3">
   <div class="lab-grid">
-    <div class="lab-side">
-      <div class="card">
-        <h3>관찰 순서</h3>
-        <ol class="stepper" id="st3"></ol>
-      </div>
-    </div>
     <div class="sim">
       <div class="stage-wrap" id="stage3">
         <svg id="svg3" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
@@ -109,12 +103,30 @@
       </div>
       <div id="ex3"></div>
     </div>
+    <div class="lab-side">
+      <div class="card">
+        <h3>관찰 순서</h3>
+        <ol class="stepper" id="st3"></ol>
+      </div>
+    </div>
   </div>
 </section>
 
 <!-- ===== 탭4: 심해파와 천해파 ===== -->
 <section class="panel" id="panel4">
   <div class="lab-grid">
+    <div class="sim">
+      <div class="stage-wrap" id="stage4">
+        <svg id="svg4" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
+        <div class="badge" id="badge4">심해파</div>
+      </div>
+      <div class="controls">
+        <button class="btn tog on" id="t4-orbit">궤도 보기</button>
+        <div class="spacer"></div>
+        <button class="btn" id="t4-pause">⏸ 일시 정지</button>
+      </div>
+      <div id="ex4"></div>
+    </div>
     <div class="lab-side">
       <div class="card">
         <h3>파장과 수심</h3>
@@ -136,31 +148,12 @@
         <details class="more"><summary>계산식 자세히 보기</summary><div class="info" id="sp-detail"></div></details>
       </div>
     </div>
-    <div class="sim">
-      <div class="stage-wrap" id="stage4">
-        <svg id="svg4" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
-        <div class="badge" id="badge4">심해파</div>
-      </div>
-      <div class="controls">
-        <button class="btn tog on" id="t4-orbit">궤도 보기</button>
-        <div class="spacer"></div>
-        <button class="btn" id="t4-pause">⏸ 일시 정지</button>
-      </div>
-      <div id="ex4"></div>
-    </div>
   </div>
 </section>
 
 <!-- ===== 탭5: 해파의 굴절 ===== -->
 <section class="panel" id="panel5">
   <div class="lab-grid">
-    <div class="lab-side">
-      <div class="card">
-        <h3>해안 모양</h3>
-        <div class="seg seg-col" id="seg5-scene"><button data-v="cape" class="sel">🏝 곶과 만</button><button data-v="line">📐 비스듬한 직선 해안</button></div>
-        <div class="rng"><label>파가 들어오는 방향 <b id="v5-ang">정면 (0°)</b></label><input type="range" id="r5-ang" min="-50" max="50" step="5" value="0"></div>
-      </div>
-    </div>
     <div class="sim">
       <div class="stage-wrap" id="stage5">
         <svg id="svg5" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
@@ -174,6 +167,13 @@
         <button class="btn primary" id="t5-next">다음 ▶</button>
       </div>
       <div id="ex5"></div>
+    </div>
+    <div class="lab-side">
+      <div class="card">
+        <h3>해안 모양</h3>
+        <div class="seg seg-col" id="seg5-scene"><button data-v="cape" class="sel">🏝 곶과 만</button><button data-v="line">📐 비스듬한 직선 해안</button></div>
+        <div class="rng"><label>파가 들어오는 방향 <b id="v5-ang">정면 (0°)</b></label><input type="range" id="r5-ang" min="-50" max="50" step="5" value="0"></div>
+      </div>
     </div>
   </div>
 </section>
