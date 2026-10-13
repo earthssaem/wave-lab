@@ -59,7 +59,10 @@
     E('linearGradient', { id: 's3-sky', gradientUnits: 'userSpaceOnUse', x1: 0, y1: 0, x2: 1700, y2: 0 }, [E('stop', { offset: 0, 'stop-color': '#A9C3D1' }), E('stop', { offset: .6, 'stop-color': '#B1CCDA' }), E('stop', { offset: 1, 'stop-color': '#BFE3F5' })]),
   ]));
   const back = E('g'); svg.appendChild(back);           // world: 하늘·구름·바람
-  back.appendChild(E('rect', { x: XMIN, y: -40, width: XMAX - XMIN, height: 620, fill: 'url(#s3-sky)' }));
+  // 하늘: 색이 변하는 0~1700 구간만 그라데이션, 양 옆은 단색 (그라데이션은 픽셀마다 계산해 느린 기기에서 비용이 큼). 이음새가 안 보이게 2px 겹침
+  back.appendChild(E('rect', { x: XMIN, y: -40, width: 2 - XMIN, height: 620, fill: '#A9C3D1' }));
+  back.appendChild(E('rect', { x: 1698, y: -40, width: XMAX - 1698, height: 620, fill: '#BFE3F5' }));
+  back.appendChild(E('rect', { x: 0, y: -40, width: 1700, height: 620, fill: 'url(#s3-sky)' }));
   const cloud = (x, y, s, fill) => E('path', { d: 'M0 0 a26 26 0 0 1 50 -16 a30 30 0 0 1 58 8 a20 20 0 0 1 4 40 l-110 0 a22 22 0 0 1 -2 -32 Z', fill, stroke: '#24303A', 'stroke-width': 4 / s, transform: `translate(${x},${y}) scale(${s})` });
   [[90, 70, 1, '#D2DBE1'], [380, 52, .8, '#C7D1D8'], [640, 78, 1.1, '#D2DBE1'], [930, 56, .85, '#C7D1D8'], [1560, 64, .8, '#fff'], [2050, 80, .7, '#fff'], [2620, 60, .85, '#fff'], [3060, 84, .7, '#fff']].forEach(([x, y, s, f]) => back.appendChild(cloud(x, y, s, f)));
   back.appendChild(E('path', { d: `M${XW} 40 L${XW} ${Y0 - 50}`, stroke: '#24303A', 'stroke-width': 2, 'stroke-dasharray': '8 7', opacity: .45 }));
@@ -144,21 +147,26 @@
 
   /* ---- 수면 그리기 ---- */
   const SX = [], SY = [], SW = [];
+  const NW = WIND.length, WA = new Float64Array(NW), WP = new Float64Array(NW); // 풍랑 성분의 이번 프레임 진폭·위상 (x와 무관한 부분)
   function surface() {
     const Ft = OM * t - PH0;
+    for (let j = 0; j < NW; j++) { const w = WIND[j]; WA[j] = w.a * (1 + .18 * Math.sin(.37 * t * (j + 1) + w.p)); WP[j] = w.p - w.om * t; }
     let d = '';
     SX.length = SY.length = SW.length = 0;
     for (let sx = -32; sx <= 992; sx += 4) {
       const x = camX + sx;
-      const k = at(KK, x), m = at(MM, x), H = at(HH, x), th = at(PHI, x) - Ft, c2 = (1 + Math.cos(th)) / 2;
-      let eta = H * (Math.pow(c2, m) - mu(m)), dx = at(LEAN, x) * 1.415 / k * c2 * c2, wsum = 0;
+      // 표 보간 (at()과 같은 계산을 다섯 표에 한 번에)
+      const f = clamp((x - XMIN) / DX, 0, N - 1.001), i = f | 0, r = f - i;
+      const k = KK[i] + (KK[i + 1] - KK[i]) * r, m = MM[i] + (MM[i + 1] - MM[i]) * r, H = HH[i] + (HH[i + 1] - HH[i]) * r;
+      const th = PHI[i] + (PHI[i + 1] - PHI[i]) * r - Ft, lean = LEAN[i] + (LEAN[i + 1] - LEAN[i]) * r, c2 = (1 + Math.cos(th)) / 2;
+      let eta = H * (Math.pow(c2, m) - mu(m)), dx = lean * 1.415 / k * c2 * c2, wsum = 0;
       if (x < XW + 900) {
-        const fetch = .55 + .45 * sm(-200, 700, x);
-        WIND.forEach((w, i) => {
-          const env = fetch * (x < XW ? 1 : Math.exp(-(x - XW) / w.D)); if (env < .01) return;
-          const a = w.a * env * (1 + .18 * Math.sin(.37 * t * (i + 1) + w.p)), th2 = w.k * x - w.om * t + w.p;
+        const fetch = .55 + .45 * sm(-200, 700, x), past = x > XW ? x - XW : 0;
+        for (let j = 0; j < NW; j++) {
+          const w = WIND[j], env = past ? fetch * Math.exp(-past / w.D) : fetch; if (env < .01) continue;
+          const a = WA[j] * env, th2 = w.k * x + WP[j];
           eta += a * Math.cos(th2); dx -= QW * a * Math.sin(th2); wsum += env;
-        });
+        }
       }
       const X = sx + dx, Y = Y0 - eta;
       SX.push(X); SY.push(Y); SW.push(wsum);
@@ -253,7 +261,8 @@
     sun.style.opacity = sm(600, 1150, camX);
     winds.forEach(w => {
       const x = -160 + mod(w.off + 150 * t, XW + 60), o = sm(-160, -60, x) * (1 - sm(XW - 160, XW - 20, x));
-      w.g.setAttribute('transform', `translate(${x.toFixed(1)},${(w.y + 5 * Math.sin(t * 2 + w.off)).toFixed(1)})`); w.g.style.opacity = o.toFixed(2);
+      w.g.setAttribute('transform', `translate(${x.toFixed(1)},${(w.y + 5 * Math.sin(t * 2 + w.off)).toFixed(1)})`);
+      const os = o.toFixed(2); if (os !== w.o) { w.o = os; w.g.style.opacity = os; } // 값이 바뀔 때만 스타일 갱신
     });
     surface(); coast(); annotate(); syncProgress();
   }
@@ -269,11 +278,12 @@
   const checks = document.createElement('ul'); checks.className = 'checks';
   checks.innerHTML = TX.checks.map((c, i) => `<li data-n="${i + 1}">${c}</li>`).join('');
   stepEls[2].appendChild(checks);
-  const checkEls = Array.from(checks.children), bars = stepEls.map(li => li.querySelector('.st-bar i'));
+  const checkEls = Array.from(checks.children), bars = stepEls.map(li => li.querySelector('.st-bar i')), barW = [];
   function syncProgress() {
     stepEls.forEach((li, i) => {
       const f = state === 'idle' ? 0 : clamp((tau - START[i]) / DUR[i], 0, 1);
-      bars[i].style.width = (f * 100).toFixed(1) + '%';
+      const w = Math.round(f * 200) / 2 + '%'; // 0.5 % 단위로만 바꿔 매 프레임 페이지 레이아웃을 피함
+      if (barW[i] !== w) { barW[i] = w; bars[i].style.width = w; }
       li.classList.toggle('on', i === stage); li.classList.toggle('done', state !== 'idle' && f >= 1 && i !== stage);
     });
   }
