@@ -235,87 +235,70 @@ const TEXT = {
     /* 단계: 그림 배지·관찰 순서 카드 */
     steps: [
       { badge: '① 풍랑', name: '풍랑', where: '바람이 부는 해역' },
-      { badge: '② 너울', name: '너울', where: '바람이 불지 않는 해역' },
+      { badge: '② 너울', name: '너울', where: '발생 해역 밖' },
       { badge: '③ 연안 쇄파', name: '연안 쇄파', where: '수심이 얕아지는 해안' },
     ],
     /* ③ 단계에서 순서대로 관찰할 변화 */
     checks: ['속도 감소', '파장 감소', '파고 증가', '부서짐'],
     /* 그림 안 이름표 */
-    wind: '바람', windZone: '바람이 부는 해역', calmZone: '바람이 불지 않는 해역',
-    shallow: '수심이 점점 얕아져요', speed: '속도', length: '파장', height: '파고', breaking: '연안 쇄파',
-    deep: '깊은 바다', now: '지금', perPeriod: '1주기마다',
+    wind: '바람', windZone: '바람이 부는 해역', calmZone: '발생 해역 밖',
+    speed: '속도', length: '파장', height: '파고', depth: '수심', first: '처음', now: '현재', compare: '파고 비교',
+    breakNote: '마루가 앞으로 쏟아짐',
     /* 재생 버튼 */
     play: '▶ 전체 재생', replay: '↺ 다시 재생',
     /* 단계별 해설 (①·②, 그리고 ③으로 카메라가 이동하는 동안) */
     cap: [
       '<b>풍랑</b> — 바람이 부는 해역에서 발생한 해파로, 파도의 모양과 크기가 비교적 불규칙해요.<small>바람이 셀수록, 오래 불수록, 바람이 부는 해역이 넓을수록 파고와 파장이 커져요. 바람의 영향을 직접 받아 마루가 뾰족한 파도가 많아요.</small>',
-      '<b>너울</b> — 풍랑이 바람이 부는 해역을 벗어나면 파의 마루가 둥글고 파장이 비교적 길고 고른 해파인 너울로 변해요. 너울은 바람이 직접 불지 않는 해역까지 전달될 수 있어요.<small>파장이 짧은 파도는 전파되는 동안 쉽게 약해지고, 파장이 긴 파도는 더 빠르게 멀리까지 전달돼요. 그래서 바람이 잔잔한 날에도 먼 바다에서 온 너울이 해안에 밀려올 수 있어요.</small>',
+      '<b>너울</b> — 파도를 만든 바람의 발생 해역 밖으로 나오면, 마루가 둥글고 파장이 길고 고른 해파인 너울로 변해요.<small>바람이 멎어서가 아니라 파도가 발생 해역을 벗어난 거예요. 파장이 짧은 파도는 전파되는 동안 쉽게 약해지고, 파장이 긴 파도는 더 빠르게 멀리까지 전달돼요. 그래서 바람이 잔잔한 날에도 먼 바다에서 온 너울이 해안에 밀려올 수 있어요.</small>',
       '<b>연안 쇄파</b> — 너울이 해안에 접근하면서 수심이 얕아지면 속도가 느려지고 파장이 짧아지며 파고가 높아져요. 마루 하나를 골라 부서질 때까지 따라가며 차례로 살펴봐요.',
     ],
     /* ③ 추적 단계별 해설: 속도 감소 → 파장 감소 → 파고 증가 → 부서짐 → 부서진 뒤 */
     cap3: [
-      '<b>속도 감소</b> — 수심이 파장의 1/2보다 얕아지면 물 입자의 운동이 해저면의 영향을 받아 파도가 나아가는 속도가 느려져요. 얕을수록 더 느려요.<small>얕은 바다에서 해파의 속도는 수심이 얕을수록 느려요(천해파의 속도 v = √(gh)). 깃발은 추적하는 마루가 1주기마다 지나간 자리예요. 같은 시간 동안 간 거리가 점점 짧아져요.</small>',
-      '<b>파장 감소</b> — 뒤따르는 파도는 같은 시간 간격(주기)으로 계속 들어오는데 앞의 마루가 느려지니, 마루 사이의 간격인 파장이 짧아져요.<small>파장 = 속도 × 주기예요. 주기는 거의 변하지 않으므로 속도가 느려진 만큼 파장이 짧아져요.</small>',
-      '<b>파고 증가</b> — 파도가 실어 나르는 에너지는 계속 들어오는데, 얕은 곳에서는 에너지가 전달되는 속도도 느려져요. 그래서 에너지가 좁은 구간에 모여 파고가 높아져요.<small>부서지기 전에는 에너지 손실이 작아요. 물이 위로 쌓이는 것이 아니라 같은 넓이의 바다에 담긴 파의 에너지가 커지는 거예요. 파고는 골에서 마루까지의 높이예요.</small>',
-      '<b>부서짐</b> — 파장은 짧아지고 파고는 높아져 파도가 점점 가팔라져요. 마루 쪽은 골 쪽보다 수심이 깊어 더 빨리 나아가므로, 마루가 앞으로 쏠리다가 쏟아지며 부서져요.<small>파고가 수심의 약 0.8배에 이르면 파도는 모양을 유지하지 못해요.</small>',
-      '<b>연안 쇄파</b> — 부서지면서 파의 에너지가 흩어져 파고가 낮아지고, 흰 물결이 해안으로 밀려가요.<small>이 장면은 대표적인 과정을 단순하게 나타낸 모형이에요. 실제 파도는 해저 지형과 파고·파장에 따라 부서지는 위치와 모습이 달라요. 세로 방향(수심·파고)은 보기 쉽게 과장했어요.</small>',
+      '<b>속도 감소</b> — 수심이 파장의 1/2보다 얕아지면 파도가 해저면의 영향을 받아 나아가는 속도가 느려져요. 얕을수록 더 느려요.<small>얕은 바다에서 해파의 속도는 수심이 얕을수록 느려요(천해파의 속도 v = √(gh)). 세로 측정선은 그 자리의 수심이에요.</small>',
+      '<b>파장 감소</b> — 뒤따르는 마루는 같은 주기로 계속 들어오는데 앞의 마루가 느려지니, 마루 사이의 간격인 파장이 짧아져요.<small>파장 = 속도 × 주기예요. 주기는 거의 변하지 않으므로 속도가 느려진 만큼 파장이 짧아져요.</small>',
+      '<b>파고 증가</b> — 얕은 곳에서는 에너지가 전달되는 속도도 느려져, 파의 에너지가 좁은 구간에 모이고 파고가 높아져요.<small>부서지기 전에는 에너지 손실이 작아요. 물이 위로 쌓이는 것이 아니라 같은 넓이의 바다에 담긴 파의 에너지가 커지는 거예요. 파고는 골에서 마루까지의 높이예요.</small>',
+      '<b>부서짐</b> — 파장은 짧아지고 파고는 높아져 앞면이 가팔라진 마루가 앞으로 쏟아지며 부서져요.<small>마루 쪽은 골 쪽보다 수심이 깊어 더 빨리 나아가요. 파고가 수심의 약 0.8배에 이르면 파도는 모양을 유지하지 못해요.</small>',
+      '<b>연안 쇄파</b> — 부서진 물은 낮고 넓은 흰 물결이 되어 해안으로 밀려가요. 파의 에너지가 흩어져 파고가 낮아져요.<small>이 장면은 대표적인 과정을 단순하게 나타낸 모형이에요. 실제 파도는 해저 지형과 파고·파장에 따라 부서지는 위치와 모습이 달라요. 세로 방향(수심·파고)은 보기 쉽게 과장했어요.</small>',
     ],
   },
 };
 
 /* ===== 탭3 본체 (js/tab3.js 그대로) ===== */
-/* 탭3: 풍랑·너울·연안 쇄파 — ① 바람 부는 해역의 풍랑 → (경계 정지) → ② 바람이 불지 않는 해역의 너울 → ③ 해안의 연안 쇄파를 이어서 자동 재생
+/* 탭3: 풍랑·너울·연안 쇄파 — ① 바람 부는 해역의 풍랑 → (경계 정지) → ② 발생 해역 밖의 너울 → ③ 해안의 연안 쇄파를 이어서 자동 재생
    하나의 긴 바다(world x) 위에서 카메라가 이동. 너울은 분산 관계(ω² = gk·tanh kh)로 수심에 따른 파장·속도를,
    에너지 흐름 보존(천수 계수)으로 파고를 계산하고, 파고가 수심의 0.78배에 이르면 부서진 뒤 파고 = 0.78 × 수심으로 줄어듦 (단순화한 모형).
    ③에서는 마루 하나를 골라 부서질 때까지 따라가며 속도 → 파장 → 파고 → 부서짐을 차례로 강조 (물리량은 항상 함께 변함).
-   그리기: 매 프레임 바뀌는 것(수면·거품·물마루·바람 화살표·밀려 오르는 물)은 해상도를 제한한 캔버스에,
-   고정된 것(하늘·구름·해저·이름표)과 글자가 있는 표시는 SVG 두 장(캔버스 뒤·앞)에 그림 → 느린 태블릿에서도 프레임 비용이 작음 */
+   그리기 층: 뒤 SVG(하늘·구름·경계·해역 이름표, 확대됨) < 캔버스(수면·거품·바람 화살표·해저·해안, 확대됨) < 앞 SVG(추적 표시·라벨, 화면 좌표라 확대돼도 글자 크기 유지) */
 /* ================= 탭3: 풍랑·너울·연안 쇄파 ================= */
 (function () {
   const TX = TEXT.tab3; // 이 탭의 문구
-  const svg = $('#svg3');                       // 뒤 SVG: 하늘·구름·해·경계·이름표
+  const svg = $('#svg3');                       // 뒤 SVG
   const stageEl = $('#stage3');
   const TAU = 2 * Math.PI;
   const sm = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
-  const INK = '#24303A';
+  const INK = '#24303A', ACC = '#E8553E', GREY = '#7B8792';
 
   /* ---- 장면 (단위: px, s) ---- */
   const Y0 = 290;                 // 평균 해수면
   const XW = 1100;                // 바람이 부는 해역의 끝(경계)
   const CAM1 = 700;               // 경계 정지 카메라 (경계가 화면 x = 400)
   const CAM2 = 1550;              // ② 너울을 보는 카메라
-  const US = 830;                 // 해안선의 ③ 화면 안 x
-  const XC = 2812, XS = XC + US;  // ③ 카메라, 해안선(world x)
+  const XS = 3642;                // 해안선(world x)
   const BED = .34, U1 = 120;      // 해안 쪽 해저 경사(해안선에서 U1 까지 직선), 그 너머는 네제곱으로 깊어짐
   /* ---- 너울: 주기 T, 깊은 바다 파장 L0·속도 C0·파고 H0. 수심·파고는 그림에서 VEX배 과장 (파고/수심 비는 과장과 무관) ---- */
   const T = 3.2, OM = TAU / T, L0 = 220, G = TAU * L0 / (T * T), VEX = 18, H0 = 37.5, GAM = .78, DMIN = 8;
   const K0 = TAU / L0, C0 = OM / K0, PH0 = 1.3;
-  /* 수심: ③ 화면 왼쪽 끝(u = US)에서 속도가 깊은 바다의 90%가 되도록 C4를 정함 (kh = atanh(.9)) */
-  const D90 = Math.atanh(.9) / (K0 / .9) * VEX, C4 = (D90 - BED * US) / Math.pow(US - U1, 4);
+  /* 수심: 해안선에서 830 px 떨어진 곳(쇄파 구역 화면의 왼쪽 끝)에서 속도가 깊은 바다의 90%가 되도록 C4를 정함 */
+  const D90 = Math.atanh(.9) / (K0 / .9) * VEX, C4 = (D90 - BED * 830) / Math.pow(830 - U1, 4);
   const depth = x => { const u = XS - x; return u <= 0 ? 0 : Math.min(4000, BED * u + C4 * Math.pow(Math.max(0, u - U1), 4)); };
   /* ---- 풍랑: 짧은 파장 성분들 (바람 부는 해역을 벗어나면 D 거리로 약해짐, 짧을수록 빨리) ---- */
   const WIND = [{ L: 58, a: 7.5, D: 70, p: .4 }, { L: 84, a: 10.5, D: 110, p: 2.3 }, { L: 112, a: 12, D: 160, p: 4.1 }, { L: 150, a: 10, D: 220, p: 1.3 }]
     .map(w => { const k = TAU / w.L; return { ...w, k, om: Math.sqrt(G * k) }; });
   const QW = .3; // 풍랑 마루를 뾰족하게 (Gerstner). 성분이 모두 겹쳐도 Σ k·a·QW < 1 이라 윤곽이 접히지 않음
 
-  /* ---- 타임라인: ① 10 s → 이동 6 s → 경계 정지 2.5 s → 이동 7.5 s → ② 8 s → 이동 11 s → ③ (추적 마루에 따라 약 27 s) ---- */
-  const T1 = 10, P1 = 6, HOLD = 2.5, P2 = 7.5, T2 = 8, P3 = 11;
-  const START = [0, T1, T1 + P1 + HOLD + P2 + T2];
-  const DUR = [T1, START[2] - START[1], P3 + 27];
-  let TOTAL = START[2] + DUR[2];  // ③ 길이는 pickTrack() 에서 추적 마루에 맞춰 다시 정함
-  const camAt = s => {
-    if (s < T1) return 0; s -= T1;
-    if (s < P1) return CAM1 * sm(0, 1, s / P1); s -= P1;
-    if (s < HOLD) return CAM1; s -= HOLD;
-    if (s < P2) return CAM1 + (CAM2 - CAM1) * sm(0, 1, s / P2); s -= P2;
-    if (s < T2) return CAM2; s -= T2;
-    return CAM2 + (XC - CAM2) * sm(0, 1, s / P3);
-  };
-  const stageAt = s => s < START[1] ? 0 : s < START[2] ? 1 : 2;
-
   /* ---- 수심·너울 표 (world x, 2 px 간격) ---- */
   const XMIN = -400, XMAX = XS + 400, DX = 2, N = (XMAX - XMIN) / DX + 1;
-  const KK = new Float64Array(N), PHI = new Float64Array(N), HH = new Float64Array(N), MM = new Float64Array(N), LEAN = new Float64Array(N), CU = new Float64Array(N);
+  const KK = new Float64Array(N), PHI = new Float64Array(N), HH = new Float64Array(N), MM = new Float64Array(N), LEAN = new Float64Array(N), CU = new Float64Array(N), VF = new Float64Array(N);
   let XB = XS;
   (function build() {
     const cg0 = G / (2 * OM);
@@ -331,68 +314,70 @@ const TEXT = {
     }
     for (let i = 0; i < N; i++) {
       const x = XMIN + i * DX, d = depth(x);
-      if (XB === XS && x > XC && Hsh[i] >= GAM * d) XB = x;
+      if (XB === XS && x > XS - 600 && Hsh[i] >= GAM * d) XB = x;
       HH[i] = x >= XS ? 0 : Math.min(Hsh[i], GAM * d);
     }
     for (let i = 0; i < N; i++) {
       const x = XMIN + i * DX;
-      // 앞으로 쏠림: 쇄파 직전까지 0 → .8, 부서진 뒤에는 1.05 (앞면이 거의 수직인 톱니형)
-      LEAN[i] = x < XB ? .8 * sm(XB - 260, XB, x) : .8 + .25 * sm(XB, XB + 40, x);
-      // 말려 넘어감: 쇄파 지점 앞뒤 45 px 에서만
-      CU[i] = sm(XB - 45, XB - 8, x) * (1 - sm(XB + 8, XB + 45, x));
+      LEAN[i] = .8 * sm(XB - 260, XB, x);                                     // 앞으로 쏠림: 쇄파 직전까지 0 → .8 (앞면이 가팔라짐)
+      CU[i] = sm(XB - 50, XB - 4, x) * (1 - sm(XB + 8, XB + 40, x));         // 말려 떨어짐: 쇄파 지점 바로 앞뒤에서만
+      VF[i] = sm(XB + 4, XB + 30, x);                                         // 부서진 뒤: 마루가 무너져 낮고 넓은 물결로 (0 → 1)
+      if (x > XB + 4) MM[i] = MM[i] + (.6 - MM[i]) * VF[i];                  // 마루 모양: 뾰족 → 넓고 납작
     }
   })();
   const at = (A, x) => { const f = clamp((x - XMIN) / DX, 0, N - 1.001), i = f | 0, r = f - i; return A[i] + (A[i + 1] - A[i]) * r; };
   const phiInv = v => { let lo = 0, hi = N - 1; if (v <= PHI[0]) return XMIN; if (v >= PHI[hi]) return XMAX; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (PHI[m] < v) lo = m; else hi = m; } return XMIN + (lo + (v - PHI[lo]) / (PHI[hi] - PHI[lo])) * DX; };
   const mu = m => 1 / Math.sqrt(Math.PI * (m + .25)); // ((1+cosθ)/2)^m 의 평균 → 평균 해수면 유지
-  const CURL_F = s => Math.exp(-(s - .3) * (s - .3) / .3), CURL_G = s => Math.exp(-(s - .62) * (s - .62) / .3); // 말림: 앞으로(f)·아래로(g)
-  const CF0 = CURL_F(0), CG0 = CURL_G(0);
-  /* 마루(world x)의 화면 x·y (앞으로 쏠린 만큼 포함) */
-  const crestXY = x => { const k = at(KK, x), m = at(MM, x), H = at(HH, x), cu = at(CU, x); return { x: x - camX + at(LEAN, x) * 1.415 / k + cu * 1.45 / k * CF0, y: Y0 - H * (1 - mu(m)) + cu * .55 * H * CG0, k, m, H }; };
-  /* ③ 단계 경계: 추적 마루가 해안선에서 이 거리(u)에 올 때 다음 단계로 */
-  const X1 = XS - 560, X2 = XS - 370;
+  const CURL_F = s => Math.exp(-(s - .35) * (s - .35) / (s < .35 ? .25 : 1.0)), CURL_G = s => Math.exp(-(s - .55) * (s - .55) / .25); // 마루 끝(s≈.2~.8)이 앞으로 뻗으며(f, 앞쪽은 천천히 줄어 앞면도 함께 기욺) 아래로 떨어져(g) 앞면 위에 닿음
 
-  /* ---- 뒤 SVG: 하늘은 깊이별 시차 (해 15% · 하늘색/흰 구름 50% · 먹구름/경계/이름표 100%) ---- */
+  /* ---- 카메라·타임라인: ① 10 s → 이동 6 s → 경계 정지 2.5 s → 이동 7.5 s → ② 8 s → 이동 9 s → ③ (추적 마루에 따라 약 42 s) ----
+     ③ 처음 구도(CAM3A)는 쇄파 구역이 화면 밖 오른쪽. 추적 마루가 다가오면 CAM3B 로 구도 이동 (마루 위치의 함수라 재생·점프와 무관하게 같음) */
+  const CAM3A = XB - 1010, CAM3B = XB - 640;
+  const T1 = 10, P1 = 6, HOLD = 2.5, P2 = 7.5, T2 = 8, P3 = 9;
+  const START = [0, T1, T1 + P1 + HOLD + P2 + T2];
+  const DUR = [T1, START[2] - START[1], P3 + 42];
+  let TOTAL = START[2] + DUR[2];  // ③ 길이는 pickTrack() 에서 추적 마루에 맞춰 다시 정함
+  const camAt = s => {
+    if (s < T1) return 0; s -= T1;
+    if (s < P1) return CAM1 * sm(0, 1, s / P1); s -= P1;
+    if (s < HOLD) return CAM1; s -= HOLD;
+    if (s < P2) return CAM1 + (CAM2 - CAM1) * sm(0, 1, s / P2); s -= P2;
+    if (s < T2) return CAM2; s -= T2;
+    return CAM2 + (CAM3A - CAM2) * sm(0, 1, s / P3);
+  };
+  const stageAt = s => s < START[1] ? 0 : s < START[2] ? 1 : 2;
+  /* ③ 단계 경계: 추적 마루가 해안선에서 이 거리(u)에 올 때 다음 단계로 */
+  const X1 = XS - 700, X2 = XS - 440, XPAN0 = XS - 790, XPAN1 = XS - 540;
+
+  /* ---- 뒤 SVG: 하늘 (하늘색은 카메라의 50%, 흰 구름 50%, 먹구름·경계·이름표 100%). 해는 없음 ---- */
   svg.appendChild(E('defs', {}, [
-    E('linearGradient', { id: 's3-sky', gradientUnits: 'userSpaceOnUse', x1: 900, y1: 0, x2: 1500, y2: 0 }, [E('stop', { offset: 0, 'stop-color': '#A9C3D1' }), E('stop', { offset: .6, 'stop-color': '#B1CCDA' }), E('stop', { offset: 1, 'stop-color': '#BFE3F5' })]),
+    E('linearGradient', { id: 's3-sky', gradientUnits: 'userSpaceOnUse', x1: 900, y1: 0, x2: 1500, y2: 0 }, [E('stop', { offset: 0, 'stop-color': '#B3CAD6' }), E('stop', { offset: 1, 'stop-color': '#BFE3F5' })]),
   ]));
-  const PAR_FAR = .15, PAR_MID = .5;
-  const mid = E('g'); svg.appendChild(mid);            // 하늘색 (카메라의 50%)
-  // 하늘: 색이 변하는 900~1500 구간만 그라데이션, 양 옆은 단색 (2 px 겹쳐 이음새 없음)
-  mid.appendChild(E('rect', { x: -200, y: -40, width: 1102, height: 620, fill: '#A9C3D1' }));
+  const PAR_MID = .5;
+  const mid = E('g'); svg.appendChild(mid);
+  mid.appendChild(E('rect', { x: -200, y: -40, width: 1102, height: 620, fill: '#B3CAD6' }));
   mid.appendChild(E('rect', { x: 1498, y: -40, width: 1600, height: 620, fill: '#BFE3F5' }));
   mid.appendChild(E('rect', { x: 900, y: -40, width: 600, height: 620, fill: 'url(#s3-sky)' }));
-  const far = E('g'); svg.appendChild(far);            // 해 (카메라의 15%): ①에서는 화면 밖 오른쪽
-  const sun = E('g', { transform: 'translate(1130,70)' }); far.appendChild(sun);
-  for (let i = 0; i < 8; i++) {
-    const a = i / 8 * TAU, r1 = 38, r2 = i % 2 ? 48 : 54;
-    const l = [Math.cos(a) * r1, Math.sin(a) * r1, Math.cos(a) * r2, Math.sin(a) * r2];
-    sun.appendChild(E('line', { x1: l[0], y1: l[1], x2: l[2], y2: l[3], stroke: INK, 'stroke-width': 8, 'stroke-linecap': 'round' }));
-    sun.appendChild(E('line', { x1: l[0], y1: l[1], x2: l[2], y2: l[3], stroke: '#FFE082', 'stroke-width': 4.5, 'stroke-linecap': 'round' }));
-  }
-  sun.appendChild(E('circle', { r: 30, fill: '#FFE082', stroke: INK, 'stroke-width': 4 }));
   const cloud = (x, y, s, fill) => E('path', { d: 'M0 0 a26 26 0 0 1 50 -16 a30 30 0 0 1 58 8 a20 20 0 0 1 4 40 l-110 0 a22 22 0 0 1 -2 -32 Z', fill, stroke: INK, 'stroke-width': 4 / s, transform: `translate(${x},${y}) scale(${s})` });
-  const clouds = E('g'); svg.appendChild(clouds);      // 흰 구름 (카메라의 50%, 해 앞)
-  [[1110, 80, .9], [1486, 84, .85], [1826, 78, 1]].forEach(([x, y, s]) => clouds.appendChild(cloud(x, y, s, '#fff')));
+  const clouds = E('g'); svg.appendChild(clouds);      // 흰 구름 두 개, 작게 (카메라의 50%)
+  [[1130, 70, .6], [1800, 62, .55]].forEach(([x, y, s]) => clouds.appendChild(cloud(x, y, s, '#fff')));
   const back = E('g'); svg.appendChild(back);           // 바다에 붙은 것: 먹구름·경계·이름표 (100%)
-  [[90, 76, 1], [380, 60, .8], [600, 84, 1.1], [1000, 64, .85]].forEach(([x, y, s]) => back.appendChild(cloud(x, y, s, '#C7D1D8')));
+  [[120, 72, .9], [520, 60, .75], [1000, 80, .9]].forEach(([x, y, s]) => back.appendChild(cloud(x, y, s, '#C7D1D8')));
   back.appendChild(E('path', { d: `M${XW} 40 L${XW} ${Y0 - 50}`, stroke: INK, 'stroke-width': 2, 'stroke-dasharray': '8 7', opacity: .45 }));
   const addPill = (parent, text, x, y, o) => { const p = pill(text, o); p.move(x, y); parent.appendChild(p.g); return p; };
-  addPill(back, TX.wind, 250, 118, { fs: 16, pad: 8 });
+  addPill(back, TX.wind, 250, 128, { fs: 16, pad: 8 });
   addPill(back, TX.windZone, 850, 62, { fs: 16, pad: 8, bg: '#E3EAEF' });   // ①·경계 정지 화면용 (경계 정지 때 배지와 겹치지 않게 아래 줄)
-  addPill(back, TX.calmZone, 1350, 30, { fs: 16, pad: 8 });   // 경계 정지 화면용
-  addPill(back, TX.calmZone, 2100, 30, { fs: 16, pad: 8 });   // ② 화면용
-  const winds = []; for (let i = 0; i < 9; i++) winds.push({ off: i * 131, y: 150 + (i * 37) % 95 });
+  addPill(back, TX.calmZone, 1350, 30, { fs: 16, pad: 8 });                 // 경계 정지 화면용
+  addPill(back, TX.calmZone, 2050, 30, { fs: 16, pad: 8 });                 // ② 화면용
+  const winds = []; for (let i = 0; i < 9; i++) winds.push({ off: i * 131, y: 160 + (i * 37) % 95 });
 
-  /* ---- 캔버스 (수면·거품·물마루·바람 화살표): 그림 칸 크기에 맞추되 배율은 1.5배까지만 ---- */
+  /* ---- 캔버스 (수면·거품·물마루·바람 화살표·해저·해안): 배율은 1.5배까지, 느리면 더 낮춤 ---- */
   const cv = document.createElement('canvas'); cv.className = 'stage-cv'; svg.after(cv);
   const ctx = cv.getContext('2d');
   let cvW = 0, cvH = 0, base = { s: 1, ox: 0, oy: 0 }, dprCap = 1.5;
-  /* 느린 기기 대응: 최근 2초 평균 프레임 간격이 25 ms 를 넘으면 캔버스 배율을 한 단계 낮춤 (1.5 → 1 → .75) */
   let fAcc = 0, fN = 0;
-  function watchFps(dt) {
-    fAcc += dt; fN++;
-    if (fAcc < 2) return;
+  function watchFps(dt) { // 최근 2초 평균 프레임 간격이 25 ms 를 넘으면 캔버스 배율을 한 단계 낮춤 (1.5 → 1 → .75)
+    fAcc += dt; fN++; if (fAcc < 2) return;
     if (fAcc / fN > .025 && dprCap > .75) { dprCap = dprCap > 1 ? 1 : .75; cvW = 0; }
     fAcc = 0; fN = 0;
   }
@@ -407,74 +392,70 @@ const TEXT = {
   if (window.ResizeObserver) new ResizeObserver(fitCanvas).observe(stageEl); else window.addEventListener('resize', fitCanvas);
   const WIND_D = new Path2D('M-44 0 Q-30 -9 -15 0 T14 0 M14 0 L4 -8 M14 0 L4 8');
   const CAP_D = new Path2D('M-10 3 Q-8 -4 -2 -3 Q2 -7 7 -2 Q11 0 10 4 Q0 6 -10 3 Z');
+  const beachY = u => u <= 100 ? Y0 - .3 * u : Y0 - 30 - .08 * (u - 100);
+  const bedD = (() => { let d = `M${XS - 1400} 600`; for (let x = XS - 1400; x <= XS + 400; x += 10) d += `L${x} ${(x < XS ? Y0 + depth(x) : beachY(x - XS)).toFixed(1)}`; return new Path2D(d + `L${XS + 400} 600Z`); })();
+  const pebbles = []; for (let x = XS - 530; x < XS + 360; x += 46) { const y = (x < XS ? Y0 + depth(x) : beachY(x - XS)) + 16 + (x % 3) * 9; if (y < 545) pebbles.push([x + (x % 5) * 4, y]); }
   let waterGrad = null;
 
-  /* ---- 앞 SVG: 해저·해안·깃발·추적 표시 ---- */
+  /* ---- 앞 SVG (화면 좌표 0~960 × 0~540, 확대와 무관): 추적 표시·측정선·라벨 ---- */
   const svgF = E('svg', { viewBox: '0 0 960 540', preserveAspectRatio: 'xMidYMid slice' }); cv.after(svgF);
-  const front = E('g'); svgF.appendChild(front);        // world (100%)
-  const beachY = u => u <= 100 ? Y0 - .3 * u : Y0 - 30 - .08 * (u - 100);
-  let bed = `M${XC - 80} 600`;
-  for (let x = XC - 80; x <= XS + 400; x += 10) bed += `L${x} ${(x < XS ? Y0 + depth(x) : beachY(x - XS)).toFixed(1)}`;
-  front.appendChild(E('path', { d: bed + `L${XS + 400} 600Z`, fill: '#E6C377', stroke: INK, 'stroke-width': 3.5, 'stroke-linejoin': 'round' }));
-  for (let x = XC + 300; x < XS + 360; x += 46) { const y = (x < XS ? Y0 + depth(x) : beachY(x - XS)) + 16 + (x % 3) * 9; if (y < 545) front.appendChild(E('circle', { cx: x + (x % 5) * 4, cy: y, r: 3, fill: '#D9AD5C', stroke: INK, 'stroke-width': 1.5 })); }
-  front.appendChild(E('g', { transform: `translate(${XS + 105},${beachY(105) + 2})` }, [
-    E('rect', { x: -4, y: -26, width: 8, height: 26, fill: '#8A5230', stroke: INK, 'stroke-width': 2.5 }),
-    E('circle', { cx: 0, cy: -42, r: 21, fill: '#5F9E4B', stroke: INK, 'stroke-width': 3 }),
-  ]));
-  addPill(front, TX.shallow + ' →', XC + 430, Y0 + depth(XC + 430) + 34, { fs: 15, pad: 8, bg: '#FFF3CF' });
-  const flagsG = E('g'); front.appendChild(flagsG);     // 주기 깃발 (바다에 고정)
   const ann = E('g'); svgF.appendChild(ann);
-  const pBreak = addPill(ann, TX.breaking, 0, 0, { fs: 17, pad: 8, bg: '#FFE082' });
-
-  /* ---- ③ 추적 표시: 실선(빨강) = 지금, 점선 = 깊은 바다. 범례 하나로 설명하고 이름표는 물리량 이름만 ---- */
-  const AP = { stroke: '#E8553E', 'stroke-width': 4, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' };
-  const GP = { stroke: INK, 'stroke-width': 3, fill: 'none', 'stroke-dasharray': '6 5', opacity: .7 };
-  const mk = E('path', { d: 'M-9 -14 L9 -14 L0 0 Z', fill: '#E8553E', stroke: INK, 'stroke-width': 2, 'stroke-linejoin': 'round' });
-  const legend = E('g', { transform: 'translate(760,30)' }, [   // 오른쪽 위 (해·구름·이름표와 겹치지 않는 자리)
-    E('rect', { x: 0, y: -13, width: 186, height: 26, rx: 13, fill: '#FFFDF8', stroke: INK, 'stroke-width': 2 }),
-    E('path', { d: 'M12 0 L40 0', ...AP }), E('text', { x: 47, y: 5, 'font-family': 'Jua', 'font-size': 14, fill: INK, text: TX.now }),
-    E('path', { d: 'M96 0 L124 0', ...GP }), E('text', { x: 131, y: 5, 'font-family': 'Jua', 'font-size': 14, fill: INK, text: TX.deep }),
+  const THIN = { stroke: INK, 'stroke-width': 1.5, fill: 'none', opacity: .55 };                 // 보조선: 가늘고 옅게
+  const DASH = { stroke: GREY, 'stroke-width': 2.5, fill: 'none', 'stroke-dasharray': '5 4' };  // 처음 값
+  const SOLID = { stroke: ACC, 'stroke-width': 4, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }; // 현재 값
+  const txt = (s, o = {}) => E('text', { 'font-family': o.body ? "'Noto Sans KR',sans-serif" : 'Jua', 'font-size': o.fs || 15, fill: o.fill || INK, 'text-anchor': o.anchor || 'middle', 'font-weight': o.body ? 500 : 400, 'paint-order': 'stroke', stroke: '#FFFDF8', 'stroke-width': 4, 'stroke-linejoin': 'round', text: s });
+  /* 짧은 설명 태그: 테두리 없는 흰 바탕 + 본문 글꼴 */
+  const note = s => { const w = textW(s, 13) + 18, g = E('g', {}, [E('rect', { x: -w / 2, y: -11, width: w, height: 22, rx: 6, fill: 'rgba(255,253,248,.92)' }), E('text', { y: 4, 'text-anchor': 'middle', 'font-family': "'Noto Sans KR',sans-serif", 'font-size': 13, 'font-weight': 500, fill: INK, text: s })]); g.w = w; return g; };
+  const mkMain = E('path', { d: 'M-8 -13 L8 -13 L0 0 Z', fill: ACC, stroke: INK, 'stroke-width': 1.5, 'stroke-linejoin': 'round' });            // 관찰 대상 마루 (끝까지)
+  const mkRear = E('path', { d: 'M-7 -12 L7 -12 L0 -1 Z', fill: '#fff', stroke: GREY, 'stroke-width': 1.5, 'stroke-linejoin': 'round' });        // 파장 단계의 뒤 마루
+  // 속도: 마루 위 화살표 두 개 (현재 = 실선, 처음 = 점선), 이름은 화살표 끝에
+  const gSpd = E('g'), spdNow = E('path', SOLID), spdFirst = E('path', DASH), spdNowT = txt(TX.now, { fs: 12, fill: ACC, anchor: 'start' }), spdFirstT = txt(TX.first, { fs: 12, fill: GREY, anchor: 'start' });
+  const spdLabel = txt(TX.speed, { fs: 17, fill: ACC }), spdLead = E('path', THIN);
+  gSpd.append(spdFirst, spdNow, spdFirstT, spdNowT, spdLead, spdLabel);
+  // 수심: 평균 해수면 ~ 해저 세로 측정선 + 여백의 이름
+  const gDep = E('g'), depLine = E('path', { stroke: INK, 'stroke-width': 2, fill: 'none', opacity: .7, 'stroke-dasharray': '3 4' }), depLabel = txt(TX.depth, { fs: 15, fill: INK }), depLead = E('path', THIN);
+  gDep.append(depLine, depLead, depLabel);
+  // 파장: 두 마루에서 올린 수직 보조선 + 수평 양방향 화살표(현재), 그 위에 처음 파장(점선)
+  const gLen = E('g'), lenGuide = E('path', THIN), lenNow = E('path', SOLID), lenFirst = E('path', DASH), lenFirstT = txt(TX.first, { fs: 12, fill: GREY, anchor: 'start' }), lenNowT = txt(TX.now, { fs: 12, fill: ACC, anchor: 'start' });
+  const lenLabel = txt(TX.length, { fs: 17, fill: ACC }), lenLead = E('path', THIN);
+  gLen.append(lenGuide, lenFirst, lenNow, lenFirstT, lenNowT, lenLead, lenLabel);
+  // 파고: 골 높이 ~ 마루 높이 세로 양방향 화살표(측정), 여백의 이름, 오른쪽 위의 작은 비교 막대(처음/현재)
+  const gHt = E('g'), htGuide = E('path', THIN), htNow = E('path', SOLID), htLabel = txt(TX.height, { fs: 17, fill: ACC }), htLead = E('path', THIN);
+  const cmp = E('g', { transform: 'translate(842,66)' }, [
+    E('rect', { x: -58, y: -14, width: 116, height: 150, rx: 8, fill: 'rgba(255,253,248,.92)' }),
+    txt(TX.compare, { fs: 13, body: true }),
   ]);
-  const aSpeed = E('g'), sGhost = E('path', GP), sLine = E('path', AP), sLine2 = E('path', AP), pSpeed = pill(TX.speed, { fs: 15, pad: 7 });
-  aSpeed.append(sGhost, pSpeed.g);
-  const aArrows = E('g'); aArrows.append(sLine, sLine2); // 속도 화살표(실선): 속도·파장 단계에서
-  const aLen = E('g'), lGhost = E('path', GP), lLine = E('path', AP), pLen = pill(TX.length, { fs: 15, pad: 7 });
-  aLen.append(lGhost, lLine, pLen.g);
-  const aHt = E('g'), hGhost = E('path', GP), hLine = E('path', AP), pHt = pill(TX.height, { fs: 15, pad: 7 });
-  aHt.append(hGhost, hLine, pHt.g);
-  const pPeriod = pill(TX.perPeriod, { fs: 13, pad: 6, sw: 2 });
-  ann.append(aLen, aHt, aSpeed, aArrows, pPeriod.g, mk, legend);
-  const tick = (x1, x2, y) => `M${x1} ${y - 8}L${x1} ${y + 8}M${x2} ${y - 8}L${x2} ${y + 8}M${x1} ${y}L${x2} ${y}`;
-  const arrowR = (x1, x2, y) => `M${x1} ${y}L${x2} ${y}M${x2 - 9} ${y - 7}L${x2} ${y}L${x2 - 9} ${y + 7}`;
+  const cmpFirst = E('rect', { x: -40, width: 26, fill: '#C3CDD5', stroke: GREY, 'stroke-width': 1.5 }), cmpNow = E('rect', { x: 10, width: 26, fill: '#F5B3A6', stroke: ACC, 'stroke-width': 2 });
+  const cmpBase = E('path', { d: 'M-50 104 L50 104', stroke: INK, 'stroke-width': 1.5 });
+  cmp.append(cmpFirst, cmpNow, cmpBase, E('text', { x: -27, y: 122, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 12, fill: GREY, text: TX.first }), E('text', { x: 23, y: 122, 'text-anchor': 'middle', 'font-family': 'Jua', 'font-size': 12, fill: ACC, text: TX.now }));
+  gHt.append(htGuide, htNow, htLead, htLabel, cmp);
+  // 부서짐: 짧은 설명 + 마루를 가리키는 연결선
+  const gBrk = E('g'), brkNote = note(TX.breakNote), brkLead = E('path', { stroke: INK, 'stroke-width': 1.5, fill: 'none', opacity: .7 });
+  gBrk.append(brkLead, brkNote);
+  ann.append(gDep, gSpd, gLen, gHt, gBrk, mkRear, mkMain);
+  const dArrowV = (x, y1, y2) => `M${x} ${y1}L${x} ${y2}M${x - 6} ${y1 + 8}L${x} ${y1}L${x + 6} ${y1 + 8}M${x - 6} ${y2 - 8}L${x} ${y2}L${x + 6} ${y2 - 8}`;
+  const arrowR = (x1, x2, y) => `M${x1} ${y}L${x2} ${y}M${x2 - 8} ${y - 6}L${x2} ${y}L${x2 - 8} ${y + 6}`;
   const KA = 1; // 속도 화살표 길이 = 속도(px/s) × KA
-  // 깊은 바다의 마루·골 높이 (파고 증가 단계의 가로 기준선)
-  const Y_CREST0 = Y0 - H0 * (1 - mu(1)), Y_TROUGH0 = Y0 + H0 * mu(1);
+  const f1 = v => v.toFixed(1);
 
   /* ---- 상태 ---- */
   let t = 0, tau = 0, state = 'idle', stage = -1, camX = 0, track = null, phase = -1, OFF = 0, zoom = '', view = [0, 0, 960, 540];
-  const SLOW = .5; // 추적 마루가 넘어가는 동안의 재생 속도
+  const SLOW = .55; // 추적 마루가 넘어가는 동안의 재생 속도
+  const toX = x => (x - view[0]) * 960 / view[2], toY = y => (y - view[1]) * 540 / view[3]; // 캔버스 좌표 → 앞 SVG(화면) 좌표
 
   /* ③에 들어설 때: 카메라 도착 직후 화면 왼쪽 끝에 들어오는 마루를 골라 부서질 때까지 따라감 */
   function pickTrack() {
     const te = t + (START[2] + P3 - tau);               // 카메라 도착 시각 (전역 시간)
-    const xin = XC + 4, n = Math.floor((at(PHI, xin) - (OM * (te - 1.2) - PH0)) / TAU); // 도착 1.2 s 전 이후에 xin 을 지나는 첫 마루
+    const xin = CAM3A + 4, n = Math.floor((at(PHI, xin) - (OM * (te - 1.2) - PH0)) / TAU); // 도착 1.2 s 전 이후에 xin 을 지나는 첫 마루
     const tAt = x => (at(PHI, x) + PH0 - TAU * n) / OM; // 이 마루가 x 에 있는 시각
     const xAt = tt => phiInv(OM * tt - PH0 + TAU * n);  // 시각 tt 의 마루 위치
-    const tin = tAt(xin), tb = tAt(XB);
-    const flags = []; for (let j = 0; j < 20; j++) { const tt = tin + j * T, x = xAt(tt); if (x >= XB - 6) break; flags.push({ x, t: tt }); }
-    track = { n, tin, tAt, xAt, tb, t1: tAt(X1), t2: tAt(X2), ts0: tAt(XB - 45), ts1: tAt(XB + 12), ta: tAt(XB + 40), flags };
+    const tin = tAt(xin);
+    const k = at(KK, xin);
+    track = { n, tin, tAt, xAt, c0: OM / k, L0: TAU / k, H0: at(HH, xin), t1: tAt(X1), t2: tAt(X2), ts0: tAt(XB - 40), ts1: tAt(XB + 28), ta: tAt(XB + 44) };
     track.tEnd = track.ta + 6;
     OFF = tau - t; TOTAL = track.tEnd + OFF; DUR[2] = TOTAL - START[2];
-    flagsG.innerHTML = '';
-    flags.forEach(f => {
-      const g = E('g', { transform: `translate(${f.x.toFixed(1)},${Y0})` }, [
-        E('line', { x1: 0, y1: 6, x2: 0, y2: -30, stroke: INK, 'stroke-width': 2.5, 'stroke-linecap': 'round' }),
-        E('path', { d: 'M0 -30 L16 -24 L0 -18 Z', fill: '#E8553E', stroke: INK, 'stroke-width': 2, 'stroke-linejoin': 'round' }),
-        E('circle', { r: 3.5, fill: '#fff', stroke: INK, 'stroke-width': 2 }),
-      ]);
-      g.style.display = 'none'; flagsG.appendChild(g); f.g = g; f.shown = false;
-    });
   }
+  const camNow = () => (stage === 2 && track && tau >= START[2] + P3) ? CAM3A + (CAM3B - CAM3A) * sm(XPAN0, XPAN1, track.xAt(t)) : camAt(tau);
 
   /* ---- 수면 계산 (화면 x 5 px 간격, 넘어가는 마루 근처는 2.5 px) ---- */
   const SX = [], SY = [], SW = [], CR = [];
@@ -485,14 +466,15 @@ const TEXT = {
     SX.length = SY.length = SW.length = 0;
     for (let sx = -32, step = 5; sx <= 992; sx += step) {
       const x = camX + sx;
-      step = Math.abs(x - XB) < 70 ? 2.5 : 5;
+      step = Math.abs(x - XB) < 80 ? 2.5 : 5;
       const f = clamp((x - XMIN) / DX, 0, N - 1.001), i = f | 0, r = f - i;
-      const k = KK[i] + (KK[i + 1] - KK[i]) * r, m = MM[i] + (MM[i + 1] - MM[i]) * r, H = HH[i] + (HH[i + 1] - HH[i]) * r;
+      const k = KK[i] + (KK[i + 1] - KK[i]) * r, m = MM[i] + (MM[i + 1] - MM[i]) * r, vf = VF[i] + (VF[i + 1] - VF[i]) * r;
+      const H = (HH[i] + (HH[i + 1] - HH[i]) * r) * (1 - .4 * vf);   // 부서진 뒤 무너져 낮아짐 (그림용)
       const th = PHI[i] + (PHI[i + 1] - PHI[i]) * r - Ft, lean = LEAN[i] + (LEAN[i + 1] - LEAN[i]) * r, cu = CU[i] + (CU[i + 1] - CU[i]) * r, c2 = (1 + Math.cos(th)) / 2;
       let eta = H * (Math.pow(c2, m) - mu(m)), dx = lean * 1.415 / k * c2 * c2, wsum = 0;
-      if (cu > 0) { // 쇄파 지점: 마루 바로 앞이 앞으로 쏠리며(f) 아래로 떨어짐(g) → 윤곽이 실제로 넘어감
+      if (cu > 0) { // 쇄파 지점: 마루 끝이 앞으로 기울며(f) 아래로 떨어져(g) 앞쪽 수면에 닿음 → 윤곽이 자기 자신과 만나며 한 덩어리가 됨
         const s = th - Math.round(th / TAU) * TAU;   // 마루 기준 위상 (-π~π, +가 앞쪽)
-        dx += cu * 1.45 / k * CURL_F(s); eta -= cu * .55 * H * CURL_G(s);
+        dx += cu * 1.9 / k * CURL_F(s); eta -= cu * .8 * H * CURL_G(s);
       }
       if (x < XW + 900) {
         const fetch = .55 + .45 * sm(-200, 700, x), past = x > XW ? x - XW : 0;
@@ -504,13 +486,16 @@ const TEXT = {
       }
       SX.push(sx + dx); SY.push(Y0 - eta); SW.push(wsum);
     }
-    // 풍랑의 흰 물마루 후보: 바람 부는 해역의 높고 뾰족한 마루
-    CR.length = 0;
+    CR.length = 0; // 풍랑의 흰 물마루 후보: 바람 부는 해역의 높고 뾰족한 마루
     for (let i = 1; i < SX.length - 1; i++) {
       if (SW[i] < .8 || !(SY[i] < SY[i - 1] && SY[i] <= SY[i + 1])) continue;
       const h = Y0 - SY[i]; if (h >= 11) CR.push({ X: SX[i], Y: SY[i], h });
     }
   }
+  /* 화면 x 근처(±rad)에서 가장 높은 표본 → 마루 꼭대기 */
+  function crestSample(sx, rad) { let i0 = -1, best = 1e9; for (let i = 1; i < SX.length - 1; i++) if (Math.abs(SX[i] - sx) < rad && SY[i] < best) { best = SY[i]; i0 = i; } return i0; }
+  /* 마루(world x)의 화면 꼭대기 (표본에서 찾음; 그림과 항상 일치) */
+  function crestTop(x) { const sx = x - camX + at(LEAN, x) * 1.415 / at(KK, x), i = crestSample(sx, 32); return i < 0 ? null : { i, x: SX[i], y: SY[i], k: at(KK, x), H: at(HH, x) }; }
 
   /* ---- 풍랑의 흰 물마루: 마루에 붙은 작은 흰 조각 하나, 0.25 s 페이드, 나타날 때(≥15)·사라질 때(<11) 기준이 달라 깜빡이지 않음 ---- */
   const caps = [];
@@ -530,17 +515,13 @@ const TEXT = {
   }
 
   /* ---- 캔버스 그리기 ---- */
-  function setView(v) {    // v = [x, y, w, h] (viewBox)
-    const s = base.s * 960 / v[2];
-    ctx.setTransform(s, 0, 0, s, base.ox - v[0] * s, base.oy - v[1] * s);
-  }
+  function setView(v) { const s = base.s * 960 / v[2]; ctx.setTransform(s, 0, 0, s, base.ox - v[0] * s, base.oy - v[1] * s); }
   function drawCanvas() {
     fitCanvas();
     ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cvW, cvH);
     setView(view);
     ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    // 바람 화살표 (바다에 붙어 움직임)
-    if (camX < XW + 100) {
+    if (camX < XW + 100) {                                  // 바람 화살표 (바다에 붙어 움직임)
       for (const w of winds) {
         const x = -160 + mod(w.off + 150 * t, XW + 60), o = sm(-160, -60, x) * (1 - sm(XW - 160, XW - 20, x));
         const sx = x - camX; if (o <= 0 || sx < -60 || sx > 1020) continue;
@@ -549,18 +530,26 @@ const TEXT = {
         ctx.restore();
       }
     }
-    // 수면
     if (!waterGrad) { waterGrad = ctx.createLinearGradient(0, 230, 0, 600); waterGrad.addColorStop(0, '#7CC4EA'); waterGrad.addColorStop(1, '#1E5A85'); }
-    ctx.beginPath(); ctx.moveTo(SX[0], SY[0]);
+    ctx.beginPath(); ctx.moveTo(SX[0], SY[0]);              // 수면 (넘어가는 마루까지 하나의 윤곽)
     for (let i = 1; i < SX.length; i++) ctx.lineTo(SX[i], SY[i]);
     ctx.lineTo(992, 600); ctx.lineTo(-32, 600); ctx.closePath();
     ctx.fillStyle = waterGrad; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 3.5; ctx.stroke();
-    // 풍랑 물마루
-    for (const c of caps) {
+    for (const c of caps) {                                 // 풍랑 물마루
       ctx.save(); ctx.globalAlpha = c.op; ctx.translate(c.X, c.Y - 1); const s = clamp(c.h / 22, .7, 1.25); ctx.scale(s, s);
       ctx.fillStyle = '#fff'; ctx.fill(CAP_D); ctx.strokeStyle = INK; ctx.lineWidth = 2 / s; ctx.stroke(CAP_D); ctx.restore();
     }
-    coast();
+    if (camX > XS - 1500) {                                 // 해저·해안 (수면 앞에)
+      ctx.save(); ctx.translate(-camX, 0);
+      ctx.fillStyle = '#E6C377'; ctx.fill(bedD); ctx.strokeStyle = INK; ctx.lineWidth = 3.5; ctx.stroke(bedD);
+      ctx.fillStyle = '#D9AD5C'; ctx.lineWidth = 1.5;
+      for (const [x, y] of pebbles) { ctx.beginPath(); ctx.arc(x, y, 3, 0, TAU); ctx.fill(); ctx.stroke(); }
+      ctx.translate(XS + 105, beachY(105) + 2);
+      ctx.fillStyle = '#8A5230'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.rect(-4, -26, 8, 26); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#5F9E4B'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, -42, 21, 0, TAU); ctx.fill(); ctx.stroke();
+      ctx.restore();
+      foam();
+    }
   }
   /* 점 목록을 중점끼리 2차 곡선으로 이어 둥근 닫힌 경로로 */
   function roundPath(P) {
@@ -568,84 +557,87 @@ const TEXT = {
     for (let i = 0; i < n; i++) { const a = P[i], b = P[(i + 1) % n], mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2; if (i) ctx.quadraticCurveTo(a[0], a[1], mx, my); else ctx.moveTo(mx, my); }
     const a = P[0], b = P[1]; ctx.quadraticCurveTo(a[0], a[1], (a[0] + b[0]) / 2, (a[1] + b[1]) / 2); ctx.closePath();
   }
-  /* ---- 해안: 부서지는 마루마다 거품(흰 덩어리 + 뒤로 남는 띠 + 넘어가는 순간의 물보라), 밀려 올라가는 물 ---- */
-  function coast() {
-    if (camX <= XC - 980) return;
+  /* ---- 거품: 부서진 마루마다 수면을 따라 퍼지는 불규칙한 흰 띠 (테두리 없음), 충돌 순간의 물보라, 해안에서 밀려 오르는 물 ---- */
+  function foam() {
     const Ft = OM * t - PH0, Hb = at(HH, XB);
-    const n0 = Math.ceil((at(PHI, XB - 30) - Ft) / TAU), n1 = Math.floor((at(PHI, XS - 12) - Ft) / TAU);
+    const n0 = Math.ceil((at(PHI, XB - 12) - Ft) / TAU), n1 = Math.floor((at(PHI, XS - 12) - Ft) / TAU);
     for (let n = n0; n <= n1; n++) {
-      const x = phiInv(Ft + TAU * n), c = crestXY(x), p = (x - XB) / 36, L = TAU / c.k;
-      let i0 = -1, best = 1e9;   // 마루 꼭대기 표본 (화면 x 가 마루 근처이고 가장 높은 점)
-      for (let i = 1; i < SX.length - 1; i++) { if (Math.abs(SX[i] - c.x) < 30 && SY[i] < best) { best = SY[i]; i0 = i; } }
-      if (i0 < 0) continue;
-      // 뒤로 남는 얇은 띠: 마루 뒤 0.45 파장
-      const bandA = .75 * sm(.3, 1, p) * (1 - sm(0, 1, (Hb * .4 - c.H) / (Hb * .25)));
-      if (bandA > .01) {
-        let ia = i0; while (ia > 0 && SX[i0] - SX[ia] < .45 * L) ia--;
-        ctx.beginPath(); ctx.moveTo(SX[ia], SY[ia] - 1.5); for (let i = ia + 1; i <= i0; i++) ctx.lineTo(SX[i], SY[i] - 1.5);
-        ctx.globalAlpha = bandA; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3.5; ctx.stroke(); ctx.globalAlpha = 1;
-      }
-      // 흰 덩어리: 마루 꼭대기에서 앞면을 따라(표본 순서 = 넘어간 윤곽도 그대로 따라감) 파고의 60% 아래까지, 바깥쪽 법선 방향으로 올록볼록하게
-      const blobA = sm(-.7, .1, p) * (1 - sm(0, 1, (Hb * .35 - c.H) / (Hb * .2)));
-      if (blobA > .01) {
-        const grow = sm(-.9, .2, p), R = (.2 + .16 * grow) * c.H, ib = Math.max(1, i0 - 2);
-        let i1 = i0; while (i1 < SX.length - 2 && SY[i1 + 1] - best < .6 * c.H && i1 - i0 < 14) i1++;
-        const P = [], NX = [], NY = [];
-        for (let i = ib; i <= i1; i++) { const tx = SX[i + 1] - SX[i - 1], ty = SY[i + 1] - SY[i - 1], l = Math.hypot(tx, ty) || 1; NX.push(ty / l); NY.push(-tx / l); }
-        for (let i = ib; i <= i1; i++) { const q = (i - ib) / Math.max(1, i1 - ib), w = Math.sin(q * Math.PI) * .75 + .25, rr = R * w * (.65 + .35 * Math.sin(i * 2.3 + n)), j = i - ib; P.push([SX[i] + NX[j] * rr, SY[i] + NY[j] * rr]); }
-        for (let i = i1; i >= ib; i--) { const q = (i - ib) / Math.max(1, i1 - ib), w = Math.sin(q * Math.PI) * .75 + .25, rr = R * .4 * w, j = i - ib; P.push([SX[i] - NX[j] * rr, SY[i] - NY[j] * rr]); }
-        roundPath(P); ctx.globalAlpha = blobA; ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke(); ctx.globalAlpha = 1;
-        // 물보라: 넘어가는 순간에만, 립 끝(가장 앞으로 나간 점)에 2~3개
-        if (at(CU, x) > .5 && p < .3) {
-          let it = i0; for (let i = i0; i <= i1; i++) if (SX[i] > SX[it]) it = i;
-          ctx.save(); ctx.translate(SX[it] + 4, SY[it] - 6); ctx.rotate(p * .7);
-          for (const [dx, dy, r] of [[0, 0, 2.6], [9, -6, 2], [-5, -9, 1.8]]) { ctx.beginPath(); ctx.arc(dx, dy, r, 0, TAU); ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 1.5; ctx.stroke(); }
-          ctx.restore();
-        }
+      const x = phiInv(Ft + TAU * n), p = (x - XB) / 36, L = TAU / at(KK, x), H = at(HH, x);
+      const c = crestTop(x); if (!c) continue;
+      const fade = 1 - sm(0, 1, (Hb * .3 - H) / (Hb * .15));              // 파고가 아주 낮아지면 사라짐
+      const A = sm(-.3, .5, p) * fade; if (A < .02) continue;
+      // 띠 범위: 마루 뒤 0.15 파장 ~ 앞 0.45 파장(부서지며 앞으로 퍼짐)
+      let ia = c.i, ib = c.i; const backL = .15 * L + .25 * L * sm(.3, 2, p), fwdL = .12 * L + .33 * L * sm(-.2, .8, p);
+      while (ia > 0 && SX[c.i] - SX[ia] < backL) ia--;
+      while (ib < SX.length - 1 && SX[ib] - SX[c.i] < fwdL) ib++;
+      const R = Hb * (.12 + .1 * sm(-.2, .6, p)) * (.6 + .4 * fade), P = [];
+      for (let i = ia; i <= ib; i++) { const q = (i - ia) / Math.max(1, ib - ia), w = Math.sin(q * Math.PI) ** .6, rr = R * w * (.6 + .4 * Math.sin(i * .5 + n * 1.3) * Math.sin(i * .23 + n)); P.push([SX[i], SY[i] - rr]); }
+      for (let i = ib; i >= ia; i--) { const q = (i - ia) / Math.max(1, ib - ia), w = Math.sin(q * Math.PI) ** .6; P.push([SX[i], SY[i] + R * .4 * w]); }
+      roundPath(P); ctx.globalAlpha = A; ctx.fillStyle = '#fff'; ctx.fill(); ctx.globalAlpha = 1;
+      if (p > -.15 && p < .45) {                                            // 충돌 순간의 물보라 (작은 흰 점 2~3개)
+        let it = c.i; for (let i = c.i; i <= Math.min(ib, c.i + 12); i++) if (SX[i] > SX[it]) it = i;
+        const s = sm(-.15, .05, p) * (1 - sm(.3, .45, p));
+        ctx.globalAlpha = s; ctx.fillStyle = '#fff';
+        for (const [dx, dy, r] of [[6, -8, 2.4], [14, -3, 1.8], [10, -15, 1.5]]) { ctx.beginPath(); ctx.arc(SX[it] + dx * (1 + p), SY[it] + dy - 10 * sm(0, .4, p), r, 0, TAU); ctx.fill(); }
+        ctx.globalAlpha = 1;
       }
     }
-    // 해안에서 물이 비탈을 오르내림
-    const ps = at(PHI, XS - 40) - Ft, r = 46 * Math.pow(.5 + .5 * Math.cos(ps - 1.2), 2), x0 = XS - camX;
+    const ps = at(PHI, XS - 40) - Ft, r = 46 * Math.pow(.5 + .5 * Math.cos(ps - 1.2), 2), x0 = XS - camX; // 해안에서 물이 비탈을 오르내림
     ctx.beginPath(); ctx.moveTo(x0 - 8, Y0 - 1); for (let u = 0; u <= r; u += 4) ctx.lineTo(x0 + u, beachY(u) - 2);
     ctx.strokeStyle = '#74BFE8'; ctx.lineWidth = 6; ctx.stroke();
     if (r > 3) { const ut = Math.max(0, r - 10); ctx.beginPath(); ctx.moveTo(x0 + ut, beachY(ut) - 3); ctx.lineTo(x0 + r, beachY(r) - 3); ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.stroke(); }
   }
 
-  /* ---- ③ 추적 마루 표시 + 관찰 순서(속도 → 파장 → 파고 → 부서짐 → 부서진 뒤) ---- */
-  const ratio = { c: 0, L: 0, H: 0 }; // 지금 값 ÷ 깊은 바다 값 (오른쪽 카드 막대)
+  /* ---- ③ 추적 마루 표시 (화면 좌표) + 관찰 순서(속도 → 파장 → 파고 → 부서짐 → 부서진 뒤) ---- */
+  const ratio = { c: 0, L: 0, H: 0 }; // 현재 값 ÷ 처음 값 (오른쪽 카드 막대)
+  const show = (g, on) => { const v = on ? '' : 'none'; if (g.style.display !== v) g.style.display = v; };
   function annotate() {
-    let ph = -1;
+    let ph = -1, c = null;
     if (state === 'end') ph = 4;
     else if (stage === 2 && track && t >= track.tin) {
       ph = t < track.t1 ? 0 : t < track.t2 ? 1 : t < track.ts0 ? 2 : t < track.ta ? 3 : 4;
-      const x = track.xAt(t), c = crestXY(x);
-      ratio.c = OM / c.k / C0; ratio.L = K0 / c.k; ratio.H = c.H / H0;
-      track.flags.forEach(f => { const on = t >= f.t; if (on !== f.shown) { f.shown = on; f.g.style.display = on ? '' : 'none'; } });
-      if (ph <= 2) mk.setAttribute('transform', `translate(${c.x.toFixed(1)},${(c.y - 6).toFixed(1)})`);
-      if (ph === 0) {        // 속도: 마루 위에 화살표 두 개 (실선 = 지금, 점선 = 깊은 바다), 길이 ∝ 속도
-        const x1 = c.x + 12, ys = c.y - 30;
-        sLine.setAttribute('d', arrowR(x1, x1 + OM / c.k * KA, ys)); sGhost.setAttribute('d', arrowR(x1, x1 + C0 * KA, ys - 18));
-        pSpeed.move(x1 - 34, ys - 9);
-        const f0 = track.flags[0]; pPeriod.g.style.display = f0 && t >= f0.t ? '' : 'none';
-        if (f0) pPeriod.move(f0.x - camX + 48, Y0 + 40);
-      } else if (ph === 1) { // 파장: 이 마루와 바로 뒤 마루 사이 (실선) 바로 위에 깊은 바다 파장 (점선), 두 마루에 속도 화살표
-        const xb2 = phiInv(OM * t - PH0 + TAU * (track.n - 1)), b = crestXY(xb2), yl = Y0 - 74;
-        lLine.setAttribute('d', arrowD(b.x, yl, c.x, yl, 9)); lGhost.setAttribute('d', tick(c.x - L0, c.x, yl - 20));
-        pLen.move((b.x + c.x) / 2, yl + 20);
-        sLine.setAttribute('d', arrowR(c.x + 12, c.x + 12 + OM / c.k * KA, c.y - 26)); sLine2.setAttribute('d', arrowR(b.x + 12, b.x + 12 + OM / b.k * KA, b.y - 26));
-      } else if (ph === 2) { // 파고: 골에서 마루까지 (실선) + 깊은 바다의 마루·골 높이 (가로 점선)
-        const yt = Y0 + c.H * mu(c.m), hx = c.x - 22;
-        hGhost.setAttribute('d', `M0 ${Y_CREST0}L960 ${Y_CREST0}M0 ${Y_TROUGH0}L960 ${Y_TROUGH0}`);
-        hLine.setAttribute('d', arrowD(hx, yt, hx, c.y, 8));
-        pHt.move(hx - 38, (c.y + yt) / 2);
-      }
+      const x = track.xAt(t), k = at(KK, x);
+      ratio.c = OM / k / track.c0; ratio.L = TAU / k / track.L0; ratio.H = at(HH, x) / track.H0;
+      c = crestTop(x);
     } else { ratio.c = ratio.L = ratio.H = 0; }
-    aSpeed.style.display = ph === 0 ? '' : 'none'; aLen.style.display = ph === 1 ? '' : 'none'; aHt.style.display = ph === 2 ? '' : 'none';
-    if (ph !== 0) pPeriod.g.style.display = 'none';
-    aArrows.style.display = ph >= 0 && ph <= 1 ? '' : 'none'; sLine2.style.display = ph === 1 ? '' : 'none';
-    mk.style.display = ph >= 0 && ph <= 2 ? '' : 'none'; legend.style.display = ph >= 0 && ph <= 2 ? '' : 'none';
-    pBreak.g.style.display = ph >= 3 ? '' : 'none';
-    if (ph >= 3) pBreak.move(XB - camX - 70, Y0 - 118);
+    show(mkMain, !!c && ph <= 4 && state !== 'end');
+    if (c) {
+      const cx = toX(c.x), cy = toY(c.y), x = track.xAt(t);
+      mkMain.setAttribute('transform', `translate(${f1(cx)},${f1(cy - 5)})`);
+      if (ph === 0) {        // 속도: 마루 위 화살표 (현재 실선 · 처음 점선), 수심 측정선
+        const x1 = cx + 10, ys = cy - 30, ln = OM / c.k * KA, lf = track.c0 * KA;
+        spdNow.setAttribute('d', arrowR(x1, x1 + ln, ys)); spdFirst.setAttribute('d', arrowR(x1, x1 + lf, ys - 18));
+        attr(spdNowT, { x: f1(x1 + ln + 8), y: f1(ys + 4) }); attr(spdFirstT, { x: f1(x1 + lf + 8), y: f1(ys - 14) });
+        attr(spdLabel, { x: 150, y: 170 }); spdLead.setAttribute('d', `M150 178 L${f1(x1 - 4)} ${f1(ys - 9)}`);
+        const dy = toY(Y0), db = toY(Y0 + Math.min(depth(x), 300)), dxs = cx - 2;
+        depLine.setAttribute('d', `M${f1(dxs - 6)} ${f1(dy)}L${f1(dxs + 6)} ${f1(dy)}M${f1(dxs)} ${f1(dy)}L${f1(dxs)} ${f1(db)}M${f1(dxs - 6)} ${f1(db)}L${f1(dxs + 6)} ${f1(db)}`);
+        attr(depLabel, { x: 70, y: 470 }); depLead.setAttribute('d', `M96 466 L${f1(dxs - 4)} ${f1((dy + db) / 2)}`);
+      } else if (ph === 1) { // 파장: 두 마루의 수직 보조선 + 사이의 양방향 화살표(현재), 바로 위에 처음 파장(점선)
+        const b = crestTop(phiInv(OM * t - PH0 + TAU * (track.n - 1)));
+        if (b) {
+          const bx = toX(b.x), by = toY(b.y), yt = Math.min(cy, by) - 46;
+          mkRear.setAttribute('transform', `translate(${f1(bx)},${f1(by - 5)})`);
+          lenGuide.setAttribute('d', `M${f1(cx)} ${f1(cy - 18)}L${f1(cx)} ${f1(yt - 24)}M${f1(bx)} ${f1(by - 18)}L${f1(bx)} ${f1(yt - 24)}`);
+          lenNow.setAttribute('d', arrowD(bx, yt, cx, yt, 8)); lenFirst.setAttribute('d', `M${f1(cx - track.L0 * 960 / view[2])} ${f1(yt - 20)}L${f1(cx)} ${f1(yt - 20)}`);
+          attr(lenNowT, { x: f1(cx + 10), y: f1(yt + 4) }); attr(lenFirstT, { x: f1(cx + 10), y: f1(yt - 16) });
+          attr(lenLabel, { x: 480, y: 170 }); lenLead.setAttribute('d', `M480 178 L${f1((bx + cx) / 2)} ${f1(yt - 6)}`);
+        }
+        show(mkRear, !!b);
+      } else if (ph === 2) { // 파고: 골 ~ 마루 세로 양방향 화살표 + 가로 보조선, 오른쪽 위 비교 막대
+        let it = c.i, worst = -1e9; for (let i = c.i; i < Math.min(SX.length, c.i + 60); i++) { if (SX[i] - SX[c.i] > .9 * TAU / c.k) break; if (SY[i] > worst) { worst = SY[i]; it = i; } }
+        const ty = toY(SY[it]), ax = cx - 26;
+        htNow.setAttribute('d', dArrowV(ax, cy, ty)); htGuide.setAttribute('d', `M${f1(ax - 8)} ${f1(cy)}L${f1(cx + 2)} ${f1(cy)}M${f1(ax - 8)} ${f1(ty)}L${f1(toX(SX[it]))} ${f1(ty)}`);
+        attr(htLabel, { x: 560, y: 170 }); htLead.setAttribute('d', `M560 178 L${f1(ax - 4)} ${f1((cy + ty) / 2)}`);
+        const sc = 70 / track.H0, hN = ratio.H * track.H0 * sc, hF = track.H0 * sc;
+        attr(cmpFirst, { y: f1(104 - hF), height: f1(hF) }); attr(cmpNow, { y: f1(104 - hN), height: f1(hN) });
+      } else if (ph === 3) { // 부서짐: 짧은 설명 + 연결선 (화면 여백 고정, 끝만 마루를 따라감)
+        let it = c.i; for (let i = c.i; i < Math.min(SX.length, c.i + 14); i++) { if (SY[i] > c.y + .55 * c.H) break; if (SX[i] > SX[it]) it = i; } // 마루 끝 (앞면 위쪽에서 가장 앞으로 나간 점)
+        const nx = 640, ny = 150; brkNote.setAttribute('transform', `translate(${nx},${ny})`);
+        brkLead.setAttribute('d', `M${f1(nx - brkNote.w / 2 + 10)} ${ny + 11} L${f1(toX(SX[it]))} ${f1(toY(SY[it]) - 6)}`);
+      }
+    }
+    show(gSpd, ph === 0 && !!c); show(gDep, ph === 0 && !!c); show(gLen, ph === 1 && !!c); show(gHt, ph === 2 && !!c); show(gBrk, ph === 3 && !!c);
+    if (ph !== 1) show(mkRear, false);
     if (ph !== phase) {
       phase = ph;
       checkEls.forEach((li, i) => { li.classList.toggle('now', i === ph); li.classList.toggle('done', i < ph); });
@@ -653,28 +645,27 @@ const TEXT = {
     }
     syncBars();
   }
-  /* 쇄파 순간 확대 (부서짐 단계에서만, 쇄파 지점 중심 1.5배, 부드럽게 들어가고 나옴). 캔버스와 앞·뒤 SVG 에 같은 viewBox 적용 */
+  /* 쇄파 순간 확대: 부서지는 마루와 그 앞 수면 중심(쇄파 지점 기준), 1.7배, 하늘·해저 비중을 줄임. 캔버스·뒤 SVG 에 같은 viewBox */
   function zoomView() {
     let z = 1;
-    if (stage === 2 && track) z = 1 + .5 * sm(track.ts0 - .8, track.ts0 + .4, t) * (1 - sm(track.ts1 - .3, track.ts1 + 1.2, t));
-    const w = 960 / z, h = 540 / z, cx = XB - XC + 10, cy = Y0 - 14;
+    if (stage === 2 && track) z = 1 + .7 * sm(track.ts0 - .6, track.ts0 + .6, t) * (1 - sm(track.ts1 - .4, track.ts1 + 1.4, t));
+    const w = 960 / z, h = 540 / z, cx = XB - camX + 40, cy = Y0 + 6;
     view = z === 1 ? [0, 0, 960, 540] : [clamp(cx - w / 2, 0, 960 - w), clamp(cy - h / 2, 0, 540 - h), w, h];
     const vb = view.map(v => +v.toFixed(1)).join(' ');
-    if (vb !== zoom) { zoom = vb; svg.setAttribute('viewBox', vb); svgF.setAttribute('viewBox', vb); }
+    if (vb !== zoom) { zoom = vb; svg.setAttribute('viewBox', vb); }
   }
   let camStr = '';
   function render(dt) {
-    if (state === 'play' && stage === 2 && track && t >= track.ts0 && t < track.ts1) dt *= SLOW; // 넘어가는 순간은 느리게 (수면·거품·해설·막대 모두 같은 시간 기준)
+    if (state === 'play' && stage === 2 && track && t >= track.ts0 && t < track.ts1) dt *= SLOW; // 넘어가는 순간은 느리게 (수면·거품·표시·설명·막대 모두 같은 시간 기준)
     t += dt;
     if (state === 'play') { tau += dt; if (tau >= TOTAL) { tau = TOTAL; state = 'end'; syncButtons(); } }
     const st = stageAt(tau); if (st !== stage) enterStage(st);
-    camX = camAt(tau);
+    camX = camNow();
     const cs = camX.toFixed(1);
     if (cs !== camStr) { // 카메라가 움직일 때만 SVG 그룹 이동
       camStr = cs;
-      back.setAttribute('transform', `translate(${-cs},0)`); front.setAttribute('transform', `translate(${-cs},0)`);
+      back.setAttribute('transform', `translate(${-cs},0)`);
       mid.setAttribute('transform', `translate(${(-camX * PAR_MID).toFixed(1)},0)`); clouds.setAttribute('transform', `translate(${(-camX * PAR_MID).toFixed(1)},0)`);
-      far.setAttribute('transform', `translate(${(-camX * PAR_FAR).toFixed(1)},0)`);
     }
     if (dt > 0 && dt < .1) watchFps(dt);
     surface(); whitecaps(dt); zoomView(); drawCanvas(); annotate(); syncProgress();
@@ -689,12 +680,12 @@ const TEXT = {
     $('#st3').appendChild(li); return li;
   });
   const checks = document.createElement('ul'); checks.className = 'checks';
-  // 속도·파장·파고 항목에는 막대 (길이 = 지금 값 ÷ 깊은 바다 값, 눈금 = 깊은 바다)
-  checks.innerHTML = TX.checks.map((c, i) => `<li data-n="${i + 1}"><button type="button" class="ck-btn">${c}</button>${i < 3 ? `<span class="ck-bar"><i></i><b></b>${i === 0 ? `<small>${TX.deep}</small>` : ''}</span>` : ''}</li>`).join('');
+  // 속도·파장·파고 항목에는 막대 (길이 = 현재 값 ÷ 처음 값, 눈금 = 처음)
+  checks.innerHTML = TX.checks.map((c, i) => `<li data-n="${i + 1}"><button type="button" class="ck-btn">${c}</button>${i < 3 ? `<span class="ck-bar"><i></i><b></b>${i === 0 ? `<small>${TX.first}</small>` : ''}</span>` : ''}</li>`).join('');
   stepEls[2].appendChild(checks);
   const checkEls = Array.from(checks.children), bars = stepEls.map(li => li.querySelector('.st-bar i')), barW = [];
   const ckBars = checkEls.slice(0, 3).map(li => li.querySelector('.ck-bar i')), ckW = [];
-  const BAR_MAX = 1.4; // 막대 끝 = 140 % (깊은 바다 100 % 눈금은 CSS 에서 같은 비율로)
+  const BAR_MAX = 1.4; // 막대 끝 = 140 % (처음 100 % 눈금은 CSS 에서 같은 비율로)
   checkEls.forEach((li, i) => { li.querySelector('.ck-btn').onclick = () => jumpTo(i); });
   function syncBars() {
     [ratio.c, ratio.L, ratio.H].forEach((v, i) => {
@@ -712,7 +703,7 @@ const TEXT = {
   }
   function enterStage(st) {
     stage = st; $('#badge3').textContent = TX.steps[st].badge; setExplain(TX.cap[st]);
-    track = null; phase = -1; flagsG.innerHTML = ''; checkEls.forEach(li => li.classList.remove('now', 'done'));
+    track = null; phase = -1; checkEls.forEach(li => li.classList.remove('now', 'done'));
     if (st === 2) pickTrack(); else { TOTAL = START[2] + DUR[2]; }
   }
   /* 관찰 순서 카드의 항목을 누르면 그 단계의 처음부터 (③ 밖이면 ③ 처음부터) */
