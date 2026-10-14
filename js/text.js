@@ -52,8 +52,7 @@ const TEXT = {
     checks: ['속도 감소', '파장 감소', '파고 증가', '부서짐'],
     /* 그림 안 이름표 */
     wind: '바람', windZone: '바람이 부는 해역', calmZone: '발생 해역 밖',
-    speed: '속도', length: '파장', height: '파고', depth: '수심', first: '처음', now: '현재', compare: '파고 비교',
-    breakNote: '마루가 앞으로 쏟아짐',
+    speed: '속도', length: '파장', height: '파고', depth: '수심', first: '처음', now: '현재',
     /* 재생 버튼 */
     play: '▶ 전체 재생', replay: '↺ 다시 재생',
     /* 단계별 해설 (①·②, 그리고 ③으로 카메라가 이동하는 동안) */
