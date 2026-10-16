@@ -28,6 +28,10 @@ button:focus-visible,[tabindex]:focus-visible,summary:focus-visible{outline:3px 
 .brand{display:flex;align-items:baseline;gap:10px;min-width:0;white-space:nowrap}
 .brand h1{font-family:var(--display);font-weight:400;font-size:clamp(20px,2.6vw,28px);line-height:1.2;margin:0;letter-spacing:-.5px;flex:none}
 .brand .sub{font-size:clamp(12px,1.5vw,15px);color:var(--ink-2);border-left:2px solid rgba(36,48,58,.25);padding-left:10px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+/* 제목 부분(앱 이름·부제)을 누르면 처음 화면(1탭)으로. 글자 폭만큼만 눌리게 fit-content, 부제 말줄임은 그대로 */
+a.brand{color:inherit;text-decoration:none;border-radius:16px;margin:-4px -8px;padding:4px 8px;width:fit-content;max-width:calc(100% + 16px);-webkit-tap-highlight-color:transparent}
+@media (hover:hover){ a.brand:hover h1{color:var(--accent)} }   /* 터치 화면에서는 누른 뒤 색이 남지 않게 */
+a.brand:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .tabs{display:flex;gap:6px;max-width:var(--maxw);margin:6px auto 0;padding:0 16px;overflow-x:auto;scrollbar-width:none;width:100%;min-width:0}
 .tabs::-webkit-scrollbar{display:none}
 .tab{flex:1 0 auto;min-width:120px;padding:8px 14px 9px;border-radius:12px 12px 0 0;background:#fff;color:var(--ink-2);font-size:17px;border:var(--bw) solid var(--ink);border-bottom:none;position:relative;top:2px;display:flex;align-items:center;gap:8px;white-space:nowrap}
