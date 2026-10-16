@@ -61,12 +61,22 @@ let _last = performance.now();
   if (!_paused && frames[activeTab]) frames[activeTab](dt);
   requestAnimationFrame(loop);
 })(performance.now());
-$$('.tab').forEach(b => b.addEventListener('click', () => {
+/* 탭 전환: 탭 버튼 표시·패널 표시·활성 탭 바꾸고, 처음 여는 탭이면 tabInit 호출 */
+function setTab(id) {
+  const b = $(`.tab[data-tab="${id}"]`);
   $$('.tab').forEach(x => x.classList.toggle('active', x === b)); b.scrollIntoView({ inline: 'center', block: 'nearest' });
-  $$('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel' + b.dataset.tab));
-  activeTab = b.dataset.tab;
+  $$('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel' + id));
+  activeTab = id;
   if (tabInit[activeTab]) { tabInit[activeTab](); }
-}));
+}
+$$('.tab').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+/* 제목을 누르면 처음 화면으로: 1탭 (각 탭의 슬라이더·토글·예측·관찰 위치 등 학생이 바꾼 것은 그대로 둠) */
+function goHome() {
+  if (activeTab !== '1') setTab('1');      // 이미 1탭이면 다시 부르지 않음 (애니메이션·그림 유지)
+  $('.tabs').scrollLeft = 0;               // 좁은 화면에서 탭 줄을 옆으로 밀어 둔 경우 첫 탭이 보이게
+  scrollTo(0, 0); document.body.scrollTop = 0;   // 아래로 스크롤한 경우 맨 위로
+}
+$('#homeLink').addEventListener('click', e => { e.preventDefault(); goHome(); });
 
 /* ---- 글자 폭 추정 + 알약 이름표 ---- */
 function textW(t, fs) { let w = 0; for (const ch of t) { w += /[가-힣]/.test(ch) ? fs * .92 : /[①-⑳ⓐ-ⓩ⏱↔→←]/.test(ch) ? fs * .95 : /[A-Z]/.test(ch) ? fs * .64 : /[0-9a-z.]/.test(ch) ? fs * .52 : ch === ' ' ? fs * .3 : fs * .62; } return w; }
