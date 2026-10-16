@@ -229,3 +229,5 @@ details.more[open]>summary{margin-bottom:4px}
 
 /* ---------- 푸터 ---------- */
 .site-foot{max-width:var(--maxw);margin:0 auto;padding:4px 16px 8px;text-align:center;font-size:13px;color:var(--ink-2);width:100%}
+footer .hub{color:inherit;font-weight:500;white-space:nowrap;text-decoration:underline;text-decoration-color:color-mix(in srgb,currentColor 35%,transparent);text-underline-offset:3px}
+footer .hub:hover{color:var(--ink);text-decoration-color:currentColor}
