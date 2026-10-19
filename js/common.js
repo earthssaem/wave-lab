@@ -66,7 +66,7 @@ function setTab(id) {
   const b = $(`.tab[data-tab="${id}"]`);
   $$('.tab').forEach(x => x.classList.toggle('active', x === b)); b.scrollIntoView({ inline: 'center', block: 'nearest' });
   $$('.panel').forEach(p => p.classList.toggle('active', p.id === 'panel' + id));
-  activeTab = id;
+  activeTab = id; document.documentElement.removeAttribute('data-tab'); // 처음 표시(html[data-tab])를 거두고 .active 로만 보여 줌
   if (tabInit[activeTab]) { tabInit[activeTab](); }
   // 새로고침해도 보던 탭이 열리게 주소 끝에 탭 번호를 적어 둠 (#tab3). 1탭은 주소를 깨끗하게 둠. 방문 기록은 늘리지 않음
   try { history.replaceState(null, '', id === '1' ? location.pathname + location.search : '#tab' + id); } catch (e) { /* 주소를 못 바꾸는 환경이면 그냥 둠 */ }

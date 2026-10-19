@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <link rel="stylesheet" href="css/style.css">
+<!-- 새로고침 때 1탭이 잠깐 보였다가 바뀌지 않도록, 그리기 전에 주소의 탭(#tab3)을 html[data-tab] 으로 표시 (패널은 css, 탭 버튼은 본문 끝 스크립트, 해제는 common.js 의 setTab) -->
+<script>(function () { var m = location.hash.match(/^#tab([2-5])$/); if (m) document.documentElement.setAttribute('data-tab', m[1]); })();</script>
 </head>
 <body>
 <header class="top">
@@ -184,6 +186,10 @@
 </section>
 
 </main>
+<script>/* 주소의 탭 버튼을 처음부터 선택된 모양으로 (위 head 스크립트 참고) */
+(function () { var id = document.documentElement.getAttribute('data-tab'); if (!id) return;
+  document.querySelectorAll('.tab').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-tab') === id); });
+  document.querySelector('.tab.active').scrollIntoView({ inline: 'center', block: 'nearest' }); })(); // 폰: 탭 줄을 그 탭이 보이게 미리 밀어 둠</script>
 <footer class="site-foot">© 2026 제작: 김연경(earthssaem@gmail.com) | <a class="hub" href="https://earthssaem-lab.vercel.app/" target="_blank" rel="noopener">연경쌤의 지구과학 실험실 둘러보기 →</a></footer>
 <!-- 스크립트는 common → text → tab1 … tab5 순서로 로드 (번들러·ES module 없이 file:// 에서도 동작) -->
 <script src="js/common.js"></script>
