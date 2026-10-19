@@ -343,7 +343,7 @@ const TEXT = {
   const viewAt = s => { const e = sm(START[2], START[2] + P3, s), z = 1 + (Z3 - 1) * e; return [0, VY3 * e, 960 / z, 540 / z]; }; // ③으로 이동하는 동안만 바뀌고 그 뒤 고정
   const stageAt = s => s < START[1] ? 0 : s < START[2] ? 1 : 2;
   /* ③ 관찰: 뒤 마루 B 가 화면 왼쪽(XIN)에 들어올 때 시작. 앞 마루 A 가 X1·X2 에 오면 강조를 속도 → 파장 → 파고로 옮김 */
-  const XIN = CAM3 + 20, X1 = XS - 400, X2 = XS - 280;
+  const XIN = CAM3 + 40, X1 = XS - 400, X2 = XS - 280;
   /* 쇄파: 마루가 BK0 에서 BK1 로 가는 동안 마루 끝이 앞으로 뻗어 떨어짐 (진행도 b = 0 → 1, 닿는 순간 b ≈ .78) */
   const BK0 = XB - 16, BK1 = XB + 30, brk = x => (x - BK0) / (BK1 - BK0);
 
@@ -359,14 +359,9 @@ const TEXT = {
   const cloud = (x, y, s, fill) => E('path', { d: 'M0 0 a26 26 0 0 1 50 -16 a30 30 0 0 1 58 8 a20 20 0 0 1 4 40 l-110 0 a22 22 0 0 1 -2 -32 Z', fill, stroke: INK, 'stroke-width': 4 / s, transform: `translate(${x},${y}) scale(${s})` });
   const clouds = E('g'); svg.appendChild(clouds);      // 흰 구름 두 개, 작게 (카메라의 50%)
   [[1130, 70, .6], [1800, 62, .55]].forEach(([x, y, s]) => clouds.appendChild(cloud(x, y, s, '#fff')));
-  const back = E('g'); svg.appendChild(back);           // 바다에 붙은 것: 먹구름·경계·이름표 (100%)
+  const back = E('g'); svg.appendChild(back);           // 바다에 붙은 것: 먹구름·경계 (100%)
   [[120, 72, .9], [520, 60, .75], [1000, 80, .9]].forEach(([x, y, s]) => back.appendChild(cloud(x, y, s, '#C7D1D8')));
   back.appendChild(E('path', { d: `M${XW} 40 L${XW} ${Y0 - 50}`, stroke: INK, 'stroke-width': 2, 'stroke-dasharray': '8 7', opacity: .45 }));
-  const addPill = (parent, text, x, y, o) => { const p = pill(text, o); p.move(x, y); parent.appendChild(p.g); return p; };
-  addPill(back, TX.wind, 250, 128, { fs: 16, pad: 8 });
-  addPill(back, TX.windZone, 850, 62, { fs: 16, pad: 8, bg: '#E3EAEF' });   // ①·경계 정지 화면용 (경계 정지 때 배지와 겹치지 않게 아래 줄)
-  addPill(back, TX.calmZone, 1350, 30, { fs: 16, pad: 8 });                 // 경계 정지 화면용
-  addPill(back, TX.calmZone, 2050, 30, { fs: 16, pad: 8 });                 // ② 화면용
   const winds = []; for (let i = 0; i < 9; i++) winds.push({ off: i * 131, y: 160 + (i * 37) % 95 });
 
   /* ---- 캔버스 (수면·거품·물마루·바람 화살표·해저·해안): 배율은 1.5배까지, 느리면 더 낮춤 ---- */
@@ -397,6 +392,22 @@ const TEXT = {
 
   /* ---- 앞 SVG (화면 좌표 0~960 × 0~540, 확대와 무관): 추적 표시·측정선·라벨 ---- */
   const svgF = E('svg', { viewBox: '0 0 960 540', preserveAspectRatio: 'xMidYMid slice' }); cv.after(svgF);
+  /* 해역 이름표: 바다(world x)에 붙어 카메라와 함께 옆으로 움직이지만 높이·크기는 화면 기준으로 고정 (③으로 갈 때 확대·화면 내림에 밀려 잘리지 않게).
+     화면 가장자리에 닿기 전에 서서히 숨기고, ③으로 이동하기 시작하면 숨김 */
+  const zoneG = E('g'); svgF.appendChild(zoneG);
+  const zones = [[TX.wind, 250, 128], [TX.windZone, 850, 62, '#E3EAEF'], [TX.calmZone, 1350, 30], [TX.calmZone, 2050, 30]].map(([s, x, y, bg]) => {
+    const p = pill(s, { fs: 16, pad: 8, bg }); zoneG.appendChild(p.g); return { p, x, y, hw: textW(s, 16) / 2 + 8 };
+  });
+  function placeZones() {
+    const out = 1 - sm(START[2], START[2] + 1.2, tau);
+    const sky = (1 - sm(START[2] + .5, START[2] + 3, tau)).toFixed(2); // 구름도 화면을 내리는 동안 위로 잘려 나가지 않게 서서히 숨김
+    if (clouds.getAttribute('opacity') !== sky) { clouds.setAttribute('opacity', sky); back.setAttribute('opacity', sky); }
+    for (const z of zones) {
+      const sx = toX(z.x - camX), o = out * clamp((sx - z.hw - 6) / 40, 0, 1) * clamp((954 - sx - z.hw) / 40, 0, 1), k = o.toFixed(2) + f1(sx);
+      if (k === z.k) continue; z.k = k;                // 카메라가 멈춰 있으면 건드리지 않음
+      fade(z.p.g, o); if (o > .01) z.p.move(f1(sx), z.y);
+    }
+  }
   const ann = E('g'); svgF.appendChild(ann);
   const THIN = { stroke: INK, 'stroke-width': 1.5, fill: 'none', opacity: .55 };                 // 보조선: 가늘고 옅게
   const DASH = { stroke: GREY, 'stroke-width': 2.5, fill: 'none', 'stroke-dasharray': '5 4' };  // 처음 값
@@ -406,24 +417,32 @@ const TEXT = {
   const mark = (letter, fill, color) => E('g', {}, [E('circle', { r: 11, fill, stroke: INK, 'stroke-width': 2 }), E('text', { 'text-anchor': 'middle', y: 5.5, 'font-family': 'Jua', 'font-size': 15, fill: color, text: letter })]);
   const mkA = mark(TX.a, ACC, '#fff'), mkB = mark(TX.b, '#fff', INK); // 관찰하는 두 마루 (앞 A · 뒤 B): 물 입자가 아니라 마루의 위치
   // 속도: 같은 시간 간격(DT)마다 마루가 있던 자리를 점으로 NT 개만 남김 (오래될수록 옅게) → 점 사이 거리 = 같은 시간 동안 나아간 거리
-  const DT = 1, NT = 3;
+  const DT = 1, NT = 3, MKX = -15, MKY = -26;  // MKX·MKY: 마루 꼭대기에서 A·B 표시까지 (왼쪽 위, 보조선·마루를 가리지 않게)
   const gDot = E('g'), dotTr = [E('polyline', { ...THIN, stroke: ACC, opacity: .8 }), E('polyline', { ...THIN, opacity: .8 })];
   const dots = [0, 1].map(j => Array.from({ length: NT }, () => E('circle', { r: 4.5, fill: j ? '#fff' : ACC, stroke: INK, 'stroke-width': 1.5 })));
   const dotNote = txt(TX.dots, { fs: 14, anchor: 'start' });
   gDot.append(...dotTr, ...dots[0], ...dots[1], dotNote);
-  // 파장: A·B 에서 올린 수직 보조선 + 사이의 양방향 화살표(현재), 그 위에 관찰 시작 때의 거리(점선, B 에서 시작), 이름은 화살표 중앙 위
-  const gLen = E('g'), lenGuide = E('path', THIN), lenNow = E('path', SOLID), lenFirst = E('path', DASH), lenFirstT = txt(TX.first, { fs: 13, fill: GREY, anchor: 'start' });
-  const lenLabel = txt(TX.length, { fill: ACC });
-  gLen.append(lenGuide, lenFirst, lenNow, lenFirstT, lenLabel);
+  // 파장: A·B 의 실제 마루 꼭대기에서 올린 수직 보조선 + 사이의 양방향 화살표(현재 파장만), 이름은 화살표 중앙 위
+  const gLen = E('g'), lenGuide = E('path', THIN), lenNow = E('path', SOLID), lenLabel = txt(TX.length, { fill: ACC });
+  gLen.append(lenGuide, lenNow, lenLabel);
   // 파고: A 의 골(A·B 사이) ~ 마루 세로 양방향 화살표 + 가로 보조선, 이름은 옆
   const gHt = E('g'), htGuide = E('path', THIN), htNow = E('path', SOLID), htLabel = txt(TX.height, { fill: ACC, anchor: 'end' });
   gHt.append(htGuide, htNow, htLabel);
-  // 파고 비교 영역 (오른쪽 위, 위치·배율 고정): 관찰 시작(옅게)·현재(강조색)를 그림과 같은 배율(1:1), 같은 아래 기준으로 나란히
-  const CMP = { x: 818, y: 14, w: 128, h: 112, base: 92 }, CMPX = [CMP.x + 38, CMP.x + 92], BARW = 24;
-  const gCmp = E('g'), barS = E('rect', { width: BARW, fill: '#C3CDD5', stroke: GREY, 'stroke-width': 1.5 }), barN = E('rect', { width: BARW, fill: ACC, stroke: INK, 'stroke-width': 1.5 });
-  gCmp.append(E('rect', { x: CMP.x, y: CMP.y, width: CMP.w, height: CMP.h, rx: 10, fill: '#FFFDF8', opacity: .92, stroke: INK, 'stroke-width': 1.5 }),
-    E('path', { d: `M${CMP.x + 12} ${CMP.base}L${CMP.x + CMP.w - 12} ${CMP.base}`, stroke: INK, 'stroke-width': 1.5 }), barS, barN);
-  [TX.start, TX.now].forEach((s, i) => gCmp.appendChild(attr(txt(s, { fs: 13, fill: i ? ACC : GREY }), { x: CMPX[i] + BARW / 2, y: CMP.base + 18 })));
+  /* 비교 영역 (오른쪽 위, 위치 고정): 파장 단계에는 처음·현재 파장(가로 막대, 같은 시작점·같은 축척),
+     파고 단계에는 관찰 시작·현재 파고(세로 막대, 그림과 같은 배율·같은 아래 기준). 처음 값은 옅게, 현재 값은 강조색 */
+  const CMP = { x: 818, y: 14, w: 128, h: 112 }, KL = .36;        // KL: 파장 막대 축척 (화면 거리 × KL, 처음·현재 공통·고정)
+  const gCmp = E('g'), cmpTitle = s => attr(txt(s, { fs: 14, fill: INK }), { x: CMP.x + CMP.w / 2, y: CMP.y + 19 });
+  gCmp.append(E('rect', { x: CMP.x, y: CMP.y, width: CMP.w, height: CMP.h, rx: 10, fill: '#FFFDF8', opacity: .92, stroke: INK, 'stroke-width': 1.5 }));
+  const LX = CMP.x + 44, LROW = [CMP.y + 50, CMP.y + 84], BARH = 13;              // 파장 막대: 같은 시작점 LX, 줄마다 위치
+  const gCmpL = E('g'), lenS = E('rect', { x: LX, height: BARH, fill: '#C3CDD5', stroke: GREY, 'stroke-width': 1.5 }), lenN = E('rect', { x: LX, height: BARH, fill: ACC, stroke: INK, 'stroke-width': 1.5 });
+  attr(lenS, { y: LROW[0] - BARH / 2 }); attr(lenN, { y: LROW[1] - BARH / 2 });
+  gCmpL.append(cmpTitle(TX.length), E('path', { d: `M${LX} ${LROW[0] - 14}L${LX} ${LROW[1] + 14}`, stroke: INK, 'stroke-width': 1.5 }), lenS, lenN);
+  [TX.first, TX.now].forEach((s, i) => gCmpL.appendChild(attr(txt(s, { fs: 13, fill: i ? ACC : GREY, anchor: 'end' }), { x: LX - 7, y: LROW[i] + 5 })));
+  const HBASE = CMP.y + 90, CMPX = [CMP.x + 38, CMP.x + 92], BARW = 24;           // 파고 막대: 같은 아래 기준 HBASE
+  const gCmpH = E('g'), barS = E('rect', { width: BARW, fill: '#C3CDD5', stroke: GREY, 'stroke-width': 1.5 }), barN = E('rect', { width: BARW, fill: ACC, stroke: INK, 'stroke-width': 1.5 });
+  gCmpH.append(cmpTitle(TX.height), E('path', { d: `M${CMP.x + 12} ${HBASE}L${CMP.x + CMP.w - 12} ${HBASE}`, stroke: INK, 'stroke-width': 1.5 }), barS, barN);
+  [TX.start, TX.now].forEach((s, i) => gCmpH.appendChild(attr(txt(s, { fs: 13, fill: i ? ACC : GREY }), { x: CMPX[i] + BARW / 2, y: HBASE + 16 })));
+  gCmp.append(gCmpL, gCmpH);
   ann.append(gDot, gLen, gHt, gCmp, mkB, mkA);
   const dArrowV = (x, y1, y2) => `M${f1(x)} ${f1(y1)}L${f1(x)} ${f1(y2)}M${f1(x - 6)} ${f1(y1 + 8)}L${f1(x)} ${f1(y1)}L${f1(x + 6)} ${f1(y1 + 8)}M${f1(x - 6)} ${f1(y2 - 8)}L${f1(x)} ${f1(y2)}L${f1(x + 6)} ${f1(y2 - 8)}`;
   const f1 = v => v.toFixed(1);
@@ -665,12 +684,14 @@ const TEXT = {
     const on = !!cA && state !== 'end' && !svg.dataset.bare;
     ann.style.display = svg.dataset.bare ? 'none' : '';
     const ax = on ? toX(cA.x) : 0, ay = on ? toY(cA.y) : 0, bx = cB ? toX(cB.x) : 0, by = cB ? toY(cB.y) : 0;
-    // 마루 표시: A 는 부서져 해안에 닿을 때까지, B 는 파장을 볼 때까지
-    show(mkA, on); if (on) mkA.setAttribute('transform', `translate(${f1(ax)},${f1(ay - 20)})`);
-    const oB = on && cB ? 1 - sm(track.t2, track.t2 + .8, t) : 0; fade(mkB, oB);
-    if (oB > .01) mkB.setAttribute('transform', `translate(${f1(bx)},${f1(by - 20)})`);
+    // 마루 표시: 마루 꼭대기의 왼쪽 위(MKX·MKY)에 두어 마루와 측정선을 가리지 않음. A 는 부서져 해안에 닿을 때까지, B 는 파장을 볼 때까지
+    const mk = (el, x, y) => el.setAttribute('transform', `translate(${f1(clamp(x + MKX, 14, 946))},${f1(Math.max(y + MKY, 64))})`);
+    show(mkA, on); if (on) mk(mkA, ax, ay);
+    const out = (te, tt) => 1 - sm(te - .45, te, tt), inn = (te, tt) => sm(te, te + .45, tt); // 강조 바꾸기: 앞 표시가 사라진 뒤 다음 표시가 나타남
+    const oB = on && cB ? out(track.t2, t) : 0; fade(mkB, oB);
+    if (oB > .01) mk(mkB, bx, by);
     // 속도: 같은 시간 간격의 점 (A·B 각각 최근 NT 개, 오래될수록 옅게)
-    const oD = on ? 1 - sm(track.t1, track.t1 + 1, t) : 0; fade(gDot, oD);
+    const oD = on ? out(track.t1, t) : 0; fade(gDot, oD);
     if (oD > .01) {
       const k1 = Math.floor((t - track.tin) / DT);
       [track.nA, track.nB].forEach((n, j) => {
@@ -678,24 +699,27 @@ const TEXT = {
         dots[j].forEach((el, q) => {
           const k = k1 - q; if (k < 0) { show(el, false); return; }
           const tk = track.tin + k * DT, [x, y] = crestScr(n, tk);
-          show(el, true); attr(el, { cx: f1(x), cy: f1(y - 20), opacity: (1 - .75 * (t - tk) / (NT * DT)).toFixed(2) }); // 표시(A·B)가 있던 높이 그대로
-          pts.push(f1(x) + ',' + f1(y - 20));
+          show(el, true); attr(el, { cx: f1(x + MKX), cy: f1(y + MKY), opacity: (1 - .75 * (t - tk) / (NT * DT)).toFixed(2) }); // 표시(A·B)가 있던 자리 그대로
+          pts.push(f1(x + MKX) + ',' + f1(y + MKY));
         });
         dotTr[j].setAttribute('points', pts.join(' '));
       });
       place(dotNote, 16, 72);
     }
-    // 파장: 같은 A·B 사이의 수평 거리 (현재 = 실선 화살표, 관찰 시작 = 점선)
-    const oL = on && cB ? sm(track.t1 - .3, track.t1 + .3, t) * (1 - sm(track.t2, track.t2 + .8, t)) : 0; fade(gLen, oL);
+    // 파장: 그림에 그려진 A·B 의 마루 꼭대기에서 올린 수직 보조선 사이의 거리 (현재 파장만, 처음과의 비교는 비교 영역에서)
+    const oL = on && cB ? inn(track.t1, t) * out(track.t2, t) : 0; fade(gLen, oL);
     if (oL > .01) {
-      const yt = Math.max(60, Math.min(ay, by) - 50), L0 = track.L0 * 960 / view[2];
-      lenGuide.setAttribute('d', `M${f1(ax)} ${f1(ay - 33)}L${f1(ax)} ${f1(yt - 40)}M${f1(bx)} ${f1(by - 33)}L${f1(bx)} ${f1(yt - 40)}`);
+      const yt = Math.max(84, Math.min(ay, by) - 46);   // 화살표 높이: 위 배지·화면 끝과 겹치지 않게 (이름은 그 위)
+      lenGuide.setAttribute('d', `M${f1(ax)} ${f1(ay - 3)}L${f1(ax)} ${f1(yt - 8)}M${f1(bx)} ${f1(by - 3)}L${f1(bx)} ${f1(yt - 8)}`);
       lenNow.setAttribute('d', arrowD(bx, yt, ax, yt, 8));
-      lenFirst.setAttribute('d', `M${f1(bx)} ${f1(yt - 34)}L${f1(bx + L0)} ${f1(yt - 34)}`);
-      place(lenFirstT, bx + L0 + 6, yt - 30); place(lenLabel, (ax + bx) / 2, yt - 9);
+      place(lenLabel, (ax + bx) / 2, yt - 9);
     }
+    // 비교 영역: 파장 단계에서 나타나 파고 단계까지 같은 자리를 씀
+    const oC = on ? inn(track.t1, t) * out(track.ts0, t) : 0; fade(gCmp, oC);
+    const oCL = on && cB ? out(track.t2, t) : 0; fade(gCmpL, oCL); fade(gCmpH, on ? inn(track.t2, t) : 0);
+    if (oC > .01 && oCL > .01) { attr(lenS, { width: f1(track.L0 * 960 / view[2] * KL) }); attr(lenN, { width: f1(Math.max(0, ax - bx) * KL) }); } // 처음은 고정, 현재는 그려진 두 마루 사이 거리
     // 파고: A 의 마루 ~ A·B 사이의 골 (관찰하는 마루에 대응하는 인접 골), 비교 영역은 그림과 같은 배율·같은 아래 기준
-    const oH = on ? sm(track.t2 - .3, track.t2 + .3, t) * (1 - sm(track.ts0, track.ts0 + .6, t)) : 0; fade(gHt, oH); fade(gCmp, oH);
+    const oH = on ? inn(track.t2, t) * out(track.ts0, t) : 0; fade(gHt, oH);
     if (oH > .01) {
       let it = -1, worst = -1e9;
       for (let i = cB ? cB.i : Math.max(1, cA.i - 40); i < cA.i; i++) if (SY[i] > worst) { worst = SY[i]; it = i; }
@@ -706,7 +730,7 @@ const TEXT = {
         place(htLabel, hx - 9, (ay + ty) / 2 + 7);
       }
       const hS = track.H0 * 540 / view[3], hN = heightOf(track.nA, t) * 540 / view[3];
-      attr(barS, { x: CMPX[0], y: f1(CMP.base - hS), height: f1(hS) }); attr(barN, { x: CMPX[1], y: f1(CMP.base - hN), height: f1(hN) });
+      attr(barS, { x: CMPX[0], y: f1(HBASE - hS), height: f1(hS) }); attr(barN, { x: CMPX[1], y: f1(HBASE - hN), height: f1(hN) });
     }
     if (ph !== phase) {
       phase = ph;
@@ -735,7 +759,7 @@ const TEXT = {
       mid.setAttribute('transform', `translate(${(-camX * PAR_MID).toFixed(1)},0)`); clouds.setAttribute('transform', `translate(${(-camX * PAR_MID).toFixed(1)},0)`);
     }
     if (dt > 0 && dt < .1) watchFps(dt);
-    surface(); whitecaps(dt); setViewBox(); drawCanvas(); annotate(); syncProgress();
+    surface(); whitecaps(dt); setViewBox(); drawCanvas(); placeZones(); annotate(); syncProgress();
   }
 
   /* ---- 관찰 순서 카드·버튼·해설 ---- */
