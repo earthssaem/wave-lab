@@ -229,8 +229,29 @@
   }
   /* 화면 x 근처(±rad)에서 가장 높은 표본 → 마루 꼭대기 */
   function crestSample(sx, rad) { let i0 = -1, best = 1e9; for (let i = 1; i < SX.length - 1; i++) if (Math.abs(SX[i] - sx) < rad && SY[i] < best) { best = SY[i]; i0 = i; } return i0; }
-  /* 마루(world x)의 화면 꼭대기 (표본에서 찾음; 그림과 항상 일치) */
+  /* 표본 i 와 양옆 두 점을 지나는 포물선의 꼭짓점 [x, y] (표본 사이 양쪽 절반 안으로 제한)
+     → 마루·골이 움직일 때 표시·라벨이 표본 간격(5 px)씩 건너뛰며 떨리지 않고 부드럽게 따라감 */
+  function vertex(i) {
+    const x0 = SX[i - 1], y0 = SY[i - 1], x1 = SX[i], y1 = SY[i], x2 = SX[i + 1], y2 = SY[i + 1];
+    const a = x1 - x0, b = x2 - x1; if (a <= 1e-6 || b <= 1e-6) return [x1, y1];
+    const s0 = (y1 - y0) / a, s1 = (y2 - y1) / b, A = (s1 - s0) / (a + b), B = (s0 * b + s1 * a) / (a + b); // y = y1 + B·u + A·u², u = x − x1
+    if (Math.abs(A) < 1e-9) return [x1, y1];
+    const u = clamp(-B / (2 * A), -a / 2, b / 2);
+    return [x1 + u, y1 + B * u + A * u * u];
+  }
+  /* 마루(world x)의 화면 꼭대기 (표본에서 찾음; 그림과 항상 일치) — 거품 그리기용 */
   function crestTop(x) { const sx = x - camX + at(LEAN, x) * 1.415 / at(KK, x), i = crestSample(sx, 32); return i < 0 ? null : { i, x: SX[i], y: SY[i], k: at(KK, x), H: at(HH, x) }; }
+  /* 표시·라벨용 마루 꼭대기: 근처의 볼록한 꼭대기들을 표본 사이까지 보간한 뒤 높이가 비슷할수록 크게 섞음
+     → 마루가 움직여도, 부서질 때 원래 꼭대기와 떨어지는 마루 끝의 높이가 엇갈려도 표시가 건너뛰지 않고 미끄러지듯 옮겨 감 */
+  function crestMark(x) {
+    const c = crestTop(x); if (!c) return null;
+    const sx = x - camX + at(LEAN, x) * 1.415 / c.k, tops = [];
+    for (let i = Math.max(1, c.i - 26), i1 = Math.min(SX.length - 2, c.i + 26); i <= i1; i++) if (Math.abs(SX[i] - sx) < 32 && SY[i] <= SY[i - 1] && SY[i] <= SY[i + 1]) tops.push(vertex(i)); // c.i 근처만 (표본 간격 ≥ 2.5 px)
+    if (!tops.length) tops.push(vertex(c.i));
+    const top = Math.min(...tops.map(v => v[1])); let w = 0, mx = 0, my = 0;
+    for (const [vx, vy] of tops) { const k = Math.exp(-(vy - top) / .6); w += k; mx += k * vx; my += k * vy; }
+    return { ...c, x: mx / w, y: my / w };
+  }
 
   /* ---- 풍랑의 흰 물마루: 마루에 붙은 작은 흰 조각 하나, 0.25 s 페이드, 나타날 때(≥15)·사라질 때(<11) 기준이 달라 깜빡이지 않음 ---- */
   const caps = [];
@@ -328,7 +349,7 @@
     if (state === 'end') ph = 4;
     else if (stage === 2 && track && t >= track.tin) {
       ph = t < track.t1 ? 0 : t < track.t2 ? 1 : t < track.ts0 ? 2 : t < track.ta ? 3 : 4;
-      c = crestTop(track.xAt(t));
+      c = crestMark(track.xAt(t));
     }
     show(mkMain, !!c && ph <= 4 && state !== 'end');
     if (c) {
@@ -347,7 +368,7 @@
           place(depLabel, dxs + 10, (dy + db) / 2 + 7);
         }
       } else if (ph === 1) { // 파장: 두 마루의 수직 보조선 + 사이의 양방향 화살표(현재), 그 위에 처음 파장(점선), 이름은 중앙 위
-        const b = crestTop(phiInv(OM * t - PH0 + TAU * (track.n - 1)));
+        const b = crestMark(phiInv(OM * t - PH0 + TAU * (track.n - 1)));
         if (b) {
           const bx = toX(b.x), by = toY(b.y), yt = Math.min(cy, by) - 46;
           mkRear.setAttribute('transform', `translate(${f1(bx)},${f1(by - 5)})`);
@@ -359,8 +380,9 @@
         show(mkRear, !!b);
       } else if (ph === 2) { // 파고: 골 ~ 마루 세로 양방향 화살표(측정) + 가로 보조선, 그 옆에 처음 파고(점선, 골 기준), 이름은 바로 옆
         let it = c.i, worst = -1e9; for (let i = c.i; i < Math.min(SX.length, c.i + 60); i++) { if (SX[i] - SX[c.i] > .9 * TAU / c.k) break; if (SY[i] > worst) { worst = SY[i]; it = i; } }
-        const ty = toY(SY[it]), ax = cx - 24, fx = ax - 16, hf = track.H0 * 540 / view[3];
-        htNow.setAttribute('d', dArrowV(ax, cy, ty)); htGuide.setAttribute('d', `M${f1(fx - 6)} ${f1(cy)}L${f1(cx + 2)} ${f1(cy)}M${f1(fx - 6)} ${f1(ty)}L${f1(toX(SX[it]))} ${f1(ty)}`);
+        const [gx, gy] = it > 0 && it < SX.length - 1 ? vertex(it) : [SX[it], SY[it]]; // 골도 표본 사이를 보간
+        const ty = toY(gy), ax = cx - 24, fx = ax - 16, hf = track.H0 * 540 / view[3];
+        htNow.setAttribute('d', dArrowV(ax, cy, ty)); htGuide.setAttribute('d', `M${f1(fx - 6)} ${f1(cy)}L${f1(cx + 2)} ${f1(cy)}M${f1(fx - 6)} ${f1(ty)}L${f1(toX(gx))} ${f1(ty)}`);
         htFirst.setAttribute('d', `M${f1(fx)} ${f1(ty)}L${f1(fx)} ${f1(ty - hf)}M${f1(fx - 5)} ${f1(ty - hf)}L${f1(fx + 5)} ${f1(ty - hf)}`);
         place(htFirstT, fx, ty - hf - 8); place(htLabel, (fx + ax) / 2 + 6, Math.min(cy, ty - hf) - 30); // 이름은 두 막대 바로 위 (파형을 가리지 않음)
       }
