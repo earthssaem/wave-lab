@@ -238,6 +238,7 @@ details.more[open]>summary{margin-bottom:4px}
   .controls .btn{flex:1 1 calc(50% - 8px);min-width:0}
   #panel5 .controls{display:grid;grid-template-columns:1fr 1fr}
   #t5-stepnum{grid-column:1/-1;order:-1}
+  #badge3{display:none}   /* 폰: 그림이 작아 배지가 A·B 표시를 가림 (단계 이름은 아래 관찰 순서에 있음) */
   /* 폰: 그림 속 단계 배지는 바로 아래 단계 표시와 같으므로 숨기고, '위에서 본 모습'은 왼쪽 위(육지)로 옮겨 만을 가리지 않게 */
   #badge5{display:none}
   #stage5 .mychip{right:auto;left:8px;top:8px}
