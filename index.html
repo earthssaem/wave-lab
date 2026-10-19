@@ -157,22 +157,29 @@
     <div class="sim">
       <div class="stage-wrap" id="stage5">
         <svg id="svg5" viewBox="0 0 960 540" preserveAspectRatio="xMidYMid slice"></svg>
-        <div class="badge" id="badge5">관찰</div><div class="mychip">위에서 본 모습 · 위쪽이 육지</div>
+        <div class="badge" id="badge5"></div><div class="mychip">위에서 본 모습 · 위쪽이 육지</div>
       </div>
       <div class="controls">
         <button class="btn" id="t5-prev">◀ 이전</button>
-        <div class="steps" id="t5-steps"></div>
-        <div class="spacer"></div>
-        <button class="btn" id="t5-pause">⏸ 일시 정지</button>
+        <div class="t5-stepnum" id="t5-stepnum" aria-live="polite"></div>
         <button class="btn primary" id="t5-next">다음 ▶</button>
+        <div class="spacer"></div>
+        <button class="btn" id="t5-replay">↺ 다시 보기</button>
+        <button class="btn" id="t5-pause">⏸ 일시 정지</button>
       </div>
-      <div id="ex5"></div>
     </div>
     <div class="lab-side">
-      <div class="card">
-        <h3>해안 모양</h3>
-        <div class="seg seg-col" id="seg5-scene"><button data-v="cape" class="sel">🏝 곶과 만</button><button data-v="line">📐 비스듬한 직선 해안</button></div>
-        <div class="rng"><label>파가 들어오는 방향 <b id="v5-ang">정면 (0°)</b></label><input type="range" id="r5-ang" min="-50" max="50" step="5" value="0"></div>
+      <div class="card t5-card" aria-live="polite">
+        <h3 id="t5-title"></h3>
+        <p class="t5-key" id="t5-key"></p>
+        <p class="t5-body" id="t5-body"></p>
+        <div class="t5-sum" id="t5-sum" hidden></div>
+        <div class="t5-look">
+          <span class="t5-look-h">화면에서 볼 부분</span>
+          <ul class="t5-leg" id="t5-leg"></ul>
+          <p id="t5-look"></p>
+        </div>
+        <details class="more" id="t5-more"><summary>자세히 보기</summary><div class="info" id="t5-more-body"></div></details>
       </div>
     </div>
   </div>

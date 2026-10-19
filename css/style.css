@@ -80,6 +80,7 @@ a.brand:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .btn.primary:hover{background:var(--accent-2)}
 .btn:disabled{opacity:.4;cursor:default;transform:none;box-shadow:0 2px 0 var(--ink)}
 .btn:disabled:hover{background:#fff}
+.btn.primary:disabled:hover{background:var(--accent)}   /* 터치 화면에서 누른 뒤 남는 hover 때문에 글자가 안 보이지 않게 */
 /* 관찰 보조 토글: 켜짐 = 탭 색 체크 상자 + 옅은 탭 색 배경, 꺼짐 = 빈 상자 + 회색 글자 */
 .btn.tog{display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--ink-3);border-color:var(--line);box-shadow:none}
 .btn.tog::before{content:'';flex:none;width:17px;height:17px;border-radius:5px;border:2px solid var(--line);background:#fff;display:grid;place-items:center;font-family:var(--body);font-size:12px;font-weight:700;line-height:1;color:#fff}
@@ -211,6 +212,26 @@ details.more[open]>summary{margin-bottom:4px}
 #sp-detail{font-size:13px;line-height:1.6}
 #sp-detail b{font-size:14px}
 
+/* ---------- 탭5: 단계 표시·단계 설명 카드 ---------- */
+.t5-stepnum{font-family:var(--display);font-size:16px;line-height:1.25;padding:6px 14px;border-radius:999px;background:var(--tc-soft);white-space:nowrap;text-align:center}
+.t5-stepnum b{font-weight:400;color:var(--ink-2)}
+.t5-card h3{white-space:normal;font-size:18px;margin-bottom:6px;word-break:keep-all}
+.t5-card p{margin:0}
+.t5-key{font-weight:700;font-size:16px;line-height:1.55;word-break:keep-all}
+.t5-body{margin-top:6px!important;font-size:15px;line-height:1.65;color:var(--ink-2);word-break:keep-all}
+.t5-look{margin-top:10px;padding:8px 10px 9px;border-radius:10px;background:var(--tc-soft);font-size:15px;line-height:1.55;word-break:keep-all}
+.t5-look-h{display:block;font-family:var(--display);font-size:14px;color:var(--ink-2);margin-bottom:3px}
+.t5-leg{list-style:none;margin:0 0 5px;padding:0;display:flex;flex-direction:column;gap:2px;font-size:13.5px;color:var(--ink-2)}
+.t5-leg:empty{display:none}
+.t5-leg li{display:flex;align-items:center;gap:7px}
+.t5-leg svg{flex:none;width:30px;height:14px;border-radius:3px}
+.t5-sum{margin-top:10px;display:flex;flex-direction:column;gap:4px;font-family:var(--display);font-size:15.5px;line-height:1.35}
+.t5-sum div{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px}
+.t5-sum span{padding:2px 9px;border-radius:999px;background:#F4F7FA;border:1.5px solid var(--line)}
+.t5-sum i{font-style:normal;color:var(--ink-3)}
+.t5-sum small{font-family:var(--body);font-size:12.5px;color:var(--ink-2);line-height:1.45}
+.t5-card details.more{margin-top:8px}
+
 /* ---------- 작은 화면 ---------- */
 @media(max-width:600px){
   .tab{min-width:0;padding:7px 11px 8px;font-size:15px;gap:6px}.tab .num{width:21px;height:21px;font-size:12px}
@@ -218,8 +239,10 @@ details.more[open]>summary{margin-bottom:4px}
   .controls .spacer{display:none}
   .controls .btn{flex:1 1 calc(50% - 8px);min-width:0}
   #panel5 .controls{display:grid;grid-template-columns:1fr 1fr}
-  #t5-steps{grid-column:1/-1;justify-content:center;order:-1}
-  #t5-prev{order:1}#t5-next{order:2}#t5-pause{order:3;grid-column:1/-1}
+  #t5-stepnum{grid-column:1/-1;order:-1}
+  /* 폰: 그림 속 단계 배지는 바로 아래 단계 표시와 같으므로 숨기고, '위에서 본 모습'은 왼쪽 위(육지)로 옮겨 만을 가리지 않게 */
+  #badge5{display:none}
+  #stage5 .mychip{right:auto;left:8px;top:8px}
   .ex-row{flex-wrap:wrap}
   .ex-main{flex-basis:100%;order:2}
   .ex-btn{margin-left:auto}
