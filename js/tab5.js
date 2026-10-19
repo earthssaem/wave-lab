@@ -261,31 +261,32 @@
     { sea: .6, iso: 0, crest: .2, rays: 1, rayLines: .45, coast: 1 },           // ⑥ 해안 지형과 연결 (파향선은 흐리게, 띠는 그대로)
   ];
   const STEPS = TX.STEPS, NS = STEPS.length;
-  /* '화면에서 볼 부분' 범례 그림 (30×14) */
+  /* 범례 그림 (30×14): 그림 속 색·선 모양 그대로 */
   const LEG_ICON = {
-    shallow: `<rect width="30" height="14" fill="${SEA[0]}"/>`,
-    deep: `<rect width="30" height="14" fill="${SEA[3]}"/>`,
+    depth: SEA.map((c, i) => `<rect x="${i * 7.5}" width="7.5" height="14" fill="${c}"/>`).join(''),
     iso: `<rect width="30" height="14" fill="${SEA[2]}"/><path d="M1 7H29" stroke="#1E5A85" stroke-width="2" stroke-dasharray="5 3"/>`,
     speed: `<rect width="30" height="14" fill="${SEA[3]}"/><path d="M3 7H20" stroke="#24303A" stroke-width="5"/><path d="M3 7H20" stroke="#FFE082" stroke-width="2.5"/><path d="M28 7L19 2V12Z" fill="#FFE082" stroke="#24303A"/>`,
     crest: `<rect width="30" height="14" fill="${SEA[2]}"/><path d="M2 7H28" stroke="#1E5A85" stroke-width="6" stroke-linecap="round"/><path d="M2 7H28" stroke="#fff" stroke-width="3" stroke-linecap="round"/>`,
-    start: `<rect width="30" height="14" fill="${SEA[2]}"/><path d="M1 7H29" stroke="#fff" stroke-width="2" stroke-dasharray="5 3"/>`,
-    past: `<rect width="30" height="14" fill="${SEA[2]}"/><path d="M1 7H29" stroke="#fff" stroke-width="1.6" stroke-dasharray="3 3"/>`,
+    past: `<rect width="30" height="14" fill="${SEA[2]}"/><path d="M1 7H29" stroke="#fff" stroke-width="2" stroke-dasharray="5 3"/>`,
     dots: `<rect width="30" height="14" fill="${SEA[2]}"/><path d="M4 7H26" stroke="#24303A" stroke-width="2"/><circle cx="6" cy="7" r="3" fill="#fff" stroke="#24303A" stroke-width="1.5"/><circle cx="15" cy="7" r="3" fill="#fff" stroke="#24303A" stroke-width="1.5"/><circle cx="24" cy="7" r="3" fill="#fff" stroke="#24303A" stroke-width="1.5"/>`,
     dir: `<rect width="30" height="14" fill="${SEA[2]}"/><path d="M3 7H20" stroke="#24303A" stroke-width="5"/><path d="M3 7H20" stroke="#E8553E" stroke-width="2.5"/><path d="M28 7L19 2V12Z" fill="#E8553E" stroke="#24303A"/>`,
-    ray: `<rect width="30" height="14" fill="${SEA[2]}"/><path d="M2 7H28" stroke="#E8553E" stroke-width="2.5"/>`,
+    ray: `<rect width="30" height="14" fill="${SEA[2]}"/><path d="M2 7H22" stroke="#E8553E" stroke-width="2.5"/><path d="M28 7L21 3V11Z" fill="#E8553E"/>`,
     band: `<rect width="30" height="14" fill="${SEA[2]}"/><path d="M0 3H30V11H0Z" fill="#FFE082" opacity=".8"/><path d="M0 2.5H30M0 11.5H30" stroke="#E8553E" stroke-width="1.8"/>`,
   };
-  const LEG = [[], ['shallow', 'deep', 'iso', 'speed'], ['crest', 'start', 'dots'], ['crest', 'past', 'dir'], ['ray', 'band'], ['ray', 'band']];
+  const LEG = [[], ['depth', 'iso', 'speed'], ['crest', 'dots', 'past'], ['past', 'dir'], ['ray', 'band'], []];
   const show = (el, v) => { el.style.display = v ? '' : 'none'; if (v) el.style.opacity = v; };
   function applyStep() {
     const s = STEPS[step], v = VIEW[step];
-    $('#badge5').textContent = TX.nums[step] + ' ' + s.short;
-    $('#t5-stepnum').innerHTML = TX.stepLabel(step + 1, NS, s.short);
+    $('#badge5').textContent = TX.nums[step] + ' ' + s.title;
+    $('#t5-stepnum').innerHTML = TX.stepLabel(step + 1, NS, s.title);
     $('#t5-title').textContent = TX.nums[step] + ' ' + s.title;
-    $('#t5-key').innerHTML = s.key; $('#t5-body').innerHTML = s.body; $('#t5-look').innerHTML = s.look;
+    const desc = $('#t5-desc'); desc.hidden = !s.desc; desc.innerHTML = (s.desc || []).join('<br>');
+    $('#t5-look').innerHTML = s.look;
     $('#t5-leg').innerHTML = LEG[step].map(k => `<li><svg viewBox="0 0 30 14" aria-hidden="true">${LEG_ICON[k]}</svg>${TX.legend[k]}</li>`).join('');
+    /* ⑥: 설명 대신 정리 (앞 단계 정리 한 줄 + 곶·만 두 줄) */
     const sum = $('#t5-sum'); sum.hidden = step !== NS - 1;
-    sum.innerHTML = TX.summary.map(line => '<div>' + line.map(w => `<span>${w}</span>`).join('<i>→</i>') + '</div>').join('') + `<small>${TX.note}</small>`;
+    const chain = ws => ws.join(' <i>→</i> ');
+    sum.innerHTML = `<div class="recap">${chain(TX.recap)}</div>` + TX.summary.map((ws, i) => `<div class="line ${i ? 'bay' : 'cape'}">${chain(ws)}</div>`).join('');
     const more = $('#t5-more'); more.hidden = !s.more; more.open = false; $('#t5-more-body').innerHTML = s.more || '';
     $('#t5-prev').disabled = step === 0; $('#t5-next').disabled = step === NS - 1;
     show(L.sea, v.sea); show(L.iso, v.iso); show(L.crest, v.crest); show(L.focus, v.focus); show(L.speed, v.speed);
