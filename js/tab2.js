@@ -97,7 +97,7 @@
     });
     if (started && !revealed && tt > T * 1.6) {
       revealed = true;
-      setCap(TX.capReveal(predicted, S));
+      setCap(TX.capReveal(predicted));
     }
   }
 
