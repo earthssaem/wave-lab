@@ -149,25 +149,15 @@
   }
   const ann = E('g'); svgF.appendChild(ann);
   const THIN = { stroke: INK, 'stroke-width': 1.5, fill: 'none', opacity: .55 };                 // 보조선: 가늘고 옅게
-  const DASH = { stroke: GREY, 'stroke-width': 2.5, fill: 'none', 'stroke-dasharray': '5 4' };  // 처음 값
   const SOLID = { stroke: ACC, 'stroke-width': 4, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }; // 현재 값
   const txt = (s, o = {}) => E('text', { 'font-family': 'Jua', 'font-size': o.fs || 19, fill: o.fill || INK, 'text-anchor': o.anchor || 'middle', 'paint-order': 'stroke', stroke: '#FFFDF8', 'stroke-width': 2.5, 'stroke-opacity': .8, 'stroke-linejoin': 'round', text: s });
   const place = (el, x, y) => { sa(el, 'x', f1(clamp(x, 14, 946))); sa(el, 'y', f1(clamp(y, 24, 526))); }; // 확대돼도 글자가 화면 밖으로 나가지 않게
-  const mark = (letter, fill, color) => E('g', {}, [E('circle', { r: 11, fill, stroke: INK, 'stroke-width': 2 }), E('text', { 'text-anchor': 'middle', y: 5.5, 'font-family': 'Jua', 'font-size': 15, fill: color, text: letter })]);
-  const mkA = mark(TX.a, ACC, '#fff'), mkB = mark(TX.b, '#fff', INK); // 관찰하는 두 마루 (앞 A · 뒤 B): 물 입자가 아니라 마루의 위치
-  // 속도: 같은 시간 간격(DT)마다 마루가 있던 자리를 점으로 NT 개만 남김 (오래될수록 옅게) → 점 사이 거리 = 같은 시간 동안 나아간 거리
-  const DT = 1, NT = 3, MKX = -15, MKY = -26;  // MKX·MKY: 마루 꼭대기에서 A·B 표시까지 (왼쪽 위, 보조선·마루를 가리지 않게)
-  const gDot = E('g'), dotTr = [E('polyline', { ...THIN, stroke: ACC, opacity: .8 }), E('polyline', { ...THIN, opacity: .8 })];
-  const dots = [0, 1].map(j => Array.from({ length: NT }, () => E('circle', { r: 4.5, fill: j ? '#fff' : ACC, stroke: INK, 'stroke-width': 1.5 })));
-  const dotNote = txt(TX.dots, { fs: 14, anchor: 'start' });
-  gDot.append(...dotTr, ...dots[0], ...dots[1], dotNote);
   /* 처음·지금 비교: 움직이는 동안에는 측정선을 그리지 않고, 잠깐 멈춘 화면에서 '처음'(관찰 시작 때, 회색)과 '지금'(빨강)을 나란히 보여 줌.
      처음 값은 관찰 시작 시각의 수면 식으로 다시 계산 (어느 장면에서 시작해도 같음) */
   const FIRST = { stroke: GREY, 'stroke-width': 3, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' };
-  const ghost = letter => E('g', {}, [E('circle', { r: 11, fill: '#FFFDF8', stroke: GREY, 'stroke-width': 2, 'stroke-dasharray': '3 2.5' }), E('text', { 'text-anchor': 'middle', y: 5.5, 'font-family': 'Jua', 'font-size': 15, fill: GREY, text: letter })]);
   // 파장: 처음(관찰 시작 때 A·B 마루 꼭대기 자리, 회색 점) · 지금(빨강) 을 같은 높이의 양방향 화살표로, 이름은 화살표 중앙 위
-  const gLen0 = E('g'), len0Guide = E('path', { ...THIN, stroke: GREY, opacity: .9 }), len0Dot = E('path', { fill: GREY }), len0 = E('path', FIRST), len0T = txt(TX.firstLen, { fill: GREY, fs: 17 }), gA0 = ghost(TX.a), gB0 = ghost(TX.b);
-  gLen0.append(len0Guide, len0Dot, len0, len0T, gB0, gA0);
+  const gLen0 = E('g'), len0Guide = E('path', { ...THIN, stroke: GREY, opacity: .9 }), len0Dot = E('path', { fill: GREY }), len0 = E('path', FIRST), len0T = txt(TX.firstLen, { fill: GREY, fs: 17 });
+  gLen0.append(len0Guide, len0Dot, len0, len0T);
   const gLen = E('g'), lenGuide = E('path', THIN), lenNow = E('path', SOLID), lenLabel = txt(TX.nowLen, { fill: ACC, fs: 17 });
   gLen.append(lenGuide, lenNow, lenLabel);
   // 파고: 지금 A(빨강 화살표: 마루 ~ A·B 사이 골)에 처음 A 의 마루 모양(회색 점선)을 같은 골 높이로 겹치고, 그 옆에 처음 파고(회색 화살표)
@@ -175,7 +165,7 @@
   const htFirstT = txt(TX.firstH, { fill: GREY, fs: 17 }), htLabel = txt(TX.nowH, { fill: ACC, fs: 17 });
   gHt.append(htGhost, htBase, htFirst, htNow, htFirstT, htLabel);
   const holdNote = txt(TX.hold, { fs: 16, fill: INK });                  // 잠깐 멈춤 안내 (화면 위 가운데, 고정)
-  ann.append(gDot, gLen0, gLen, gHt, mkB, mkA, holdNote);
+  ann.append(gLen0, gLen, gHt, holdNote);
   const dArrowV = (x, y1, y2) => `M${f1(x)} ${f1(y1)}L${f1(x)} ${f1(y2)}M${f1(x - 6)} ${f1(y1 + 8)}L${f1(x)} ${f1(y1)}L${f1(x + 6)} ${f1(y1 + 8)}M${f1(x - 6)} ${f1(y2 - 8)}L${f1(x)} ${f1(y2)}L${f1(x + 6)} ${f1(y2 - 8)}`;
   const f1 = v => v.toFixed(1);
   const sa = (el, k, v) => { if (el.getAttribute(k) !== v) el.setAttribute(k, v); }; // 값이 바뀔 때만 씀 (멈춤 중 같은 값을 다시 써서 레이아웃을 다시 계산하지 않게)
@@ -409,7 +399,7 @@
   /* ---- ③ 관찰 표시 (화면 좌표): 물리량은 계산대로 함께 변하고, 강조만 속도·이동 거리 → 마루 사이 간격 → 파고 → 부서짐 순서 ---- */
   const show = (g, on) => { const v = on ? '' : 'none'; if (g.style.display !== v) g.style.display = v; };
   const fade = (g, o) => { show(g, o > .01); if (o > .01) sa(g, 'opacity', o.toFixed(2)); };
-  /* 시각 tt 의 마루 n 꼭대기 (화면 좌표, 수면과 같은 식) — 지나간 시각의 점을 찍을 때 */
+  /* 시각 tt 의 마루 n 꼭대기 (화면 좌표, 수면과 같은 식) — 관찰 시작 때 마루 자리를 다시 구할 때 */
   const crestScr = (n, tt) => { const x = xOf(n, tt); return [toX(x - camX + at(LEAN, x) * 1.415 / at(KK, x)), toY(Y0 - crestEta(x))]; };
   function annotate() {
     let ph = -1, cA = null, cB = null;
@@ -421,28 +411,6 @@
     const on = !!cA && state !== 'end' && !svg.dataset.bare;
     ann.style.display = svg.dataset.bare ? 'none' : '';
     const ax = on ? toX(cA.x) : 0, ay = on ? toY(cA.y) : 0, bx = cB ? toX(cB.x) : 0, by = cB ? toY(cB.y) : 0;
-    // 마루 표시: 마루 꼭대기의 왼쪽 위(MKX·MKY)에 두어 마루와 측정선을 가리지 않음. A 는 부서져 해안에 닿을 때까지, B 는 파장을 볼 때까지
-    const mk = (el, x, y) => sa(el, 'transform', `translate(${f1(clamp(x + MKX, 14, 946))},${f1(Math.max(y + MKY, 64))})`);
-    show(mkA, on); if (on) mk(mkA, ax, ay);
-    const out = (te, tt) => 1 - sm(te - .45, te, tt); // 강조가 바뀌기 직전에 앞 표시가 사라짐
-    const oB = on && cB ? out(track.t2 + .5, t) : 0; fade(mkB, oB);   // B 는 파장 비교 멈춤이 끝난 뒤 사라짐
-    if (oB > .01) mk(mkB, bx, by);
-    // 속도: 같은 시간 간격의 점 (A·B 각각 최근 NT 개, 오래될수록 옅게)
-    const oD = on ? out(track.t1, t) : 0; fade(gDot, oD);
-    if (oD > .01) {
-      const k1 = Math.floor((t - track.tin) / DT);
-      [track.nA, track.nB].forEach((n, j) => {
-        const pts = [];
-        dots[j].forEach((el, q) => {
-          const k = k1 - q; if (k < 0) { show(el, false); return; }
-          const tk = track.tin + k * DT, [x, y] = crestScr(n, tk);
-          show(el, true); attr(el, { cx: f1(x + MKX), cy: f1(y + MKY), opacity: (1 - .75 * (t - tk) / (NT * DT)).toFixed(2) }); // 표시(A·B)가 있던 자리 그대로
-          pts.push(f1(x + MKX) + ',' + f1(y + MKY));
-        });
-        sa(dotTr[j], 'points', pts.join(' '));
-      });
-      place(dotNote, 16, 72);
-    }
     // 잠깐 멈춤 비교의 보이는 정도: 멈추는 동안 나타나고, 다시 움직이면 사라짐 (그 멈춤을 거친 경우만)
     const cmpO = k => !on ? 0 : hk === k ? clamp(holdT / .4, 0, 1) : track.seen[k] && t >= track.stops[k] ? 1 - sm(track.stops[k], track.stops[k] + .5, t) : 0;
     fade(holdNote, hk >= 0 && on ? clamp(holdT / .3, 0, 1) : 0); place(holdNote, 480, 36);
@@ -454,7 +422,6 @@
       sa(len0Guide, 'd', `M${f1(xa0)} ${f1(ya0)}L${f1(xa0)} ${f1(yr - 8)}M${f1(xb0)} ${f1(yb0)}L${f1(xb0)} ${f1(yr - 8)}`);
       sa(len0Dot, 'd', [[xa0, ya0], [xb0, yb0]].map(([x, y]) => `M${f1(x - 4)} ${f1(y)}a4 4 0 1 0 8 0a4 4 0 1 0 -8 0`).join(''));
       sa(len0, 'd', arrowD(xb0, yr, xa0, yr, 8)); place(len0T, (xa0 + xb0) / 2, yr - 9);
-      mk(gA0, xa0, ya0); mk(gB0, xb0, yb0);
       sa(lenGuide, 'd', `M${f1(ax)} ${f1(ay - 3)}L${f1(ax)} ${f1(yr - 8)}M${f1(bx)} ${f1(by - 3)}L${f1(bx)} ${f1(yr - 8)}`);
       sa(lenNow, 'd', arrowD(bx, yr, ax, yr, 8)); place(lenLabel, (ax + bx) / 2, yr - 9);
     }
