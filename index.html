@@ -63,9 +63,11 @@
 <section class="panel" id="panel2">
   <div class="sim sim-wide">
     <div class="stage-wrap" id="stage2">
-      <svg id="svg2" viewBox="0 40 1176 420" preserveAspectRatio="xMidYMid slice"></svg>
-      <div class="badge">물 입자의 운동</div>
+      <svg id="svg2" viewBox="0 0 660 300" preserveAspectRatio="xMidYMid slice"></svg>
+      <div class="badge" id="badge2">물 입자의 운동</div>
+      <div class="wdir" id="dir2"><span></span><svg viewBox="0 0 40 16" aria-hidden="true"><path d="M3 8H34M25 2L35 8L25 14"/></svg></div>
       <div class="mychip" id="chip2" hidden></div>
+      <div class="moment" id="mom2" hidden></div>
       <button class="btn primary cta" id="t2-predict" type="button">🐦 예측하기</button>
       <div class="predict" id="pred2" hidden>
         <div class="pbox" role="dialog" aria-modal="true" aria-labelledby="pred2-q">
@@ -77,9 +79,7 @@
       </div>
     </div>
     <div class="controls">
-      <button class="btn tog on" id="t2-trail">궤적</button>
-      <button class="btn tog on" id="t2-deep">깊이별 입자</button>
-      <button class="btn tog on" id="t2-num">①② 위치 번호</button>
+      <button class="btn" id="t2-turn" type="button"></button>
       <div class="spacer"></div>
       <button class="btn" id="t2-again">↺ 예측 다시 하기</button>
       <button class="btn" id="t2-pause">⏸ 일시 정지</button>
