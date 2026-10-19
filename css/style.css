@@ -167,6 +167,11 @@ details.more[open]>summary{margin-bottom:4px}
 .pred-line{display:block;margin-bottom:2px}
 .ex-list{margin:0;padding-left:1.2em}
 .ex-list li+li{margin-top:3px}
+.ex-more p{margin:0}
+.ex-more p+p,.ex-more p+ol,.ex-more ol+p{margin-top:7px}
+.ex-more .ex-q{font-weight:700;color:var(--ink)}
+.ex-steps{margin:5px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,max-content);gap:3px 22px}
+.ex-steps span{display:inline-block;min-width:1.5em;font-weight:700;color:var(--ink)}
 
 /* ---------- 탭3: 관찰 순서 ---------- */
 .stepper{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
@@ -238,7 +243,7 @@ details.more[open]>summary{margin-bottom:4px}
   .controls .btn{flex:1 1 calc(50% - 8px);min-width:0}
   #panel5 .controls{display:grid;grid-template-columns:1fr 1fr}
   #t5-stepnum{grid-column:1/-1;order:-1}
-  #badge3{display:none}   /* 폰: 그림이 작아 배지가 A·B 표시를 가림 (단계 이름은 아래 관찰 순서에 있음) */
+  #badge3{display:none}   /* 폰: 그림이 작아 배지가 비교 표시를 가림 (단계 이름은 아래 관찰 순서에 있음) */
   /* 폰: 그림 속 단계 배지는 바로 아래 단계 표시와 같으므로 숨기고, '위에서 본 모습'은 왼쪽 위(육지)로 옮겨 만을 가리지 않게 */
   #badge5{display:none}
   #stage5 .mychip{right:auto;left:8px;top:8px}
@@ -246,6 +251,7 @@ details.more[open]>summary{margin-bottom:4px}
   .ex-main{flex-basis:100%;order:2}
   .ex-btn{margin-left:auto}
   .explain{font-size:15px}
+  .ex-steps{grid-template-columns:1fr}
   /* 폰: 예측 질문이 작은 그림 안에 다 들어가지 않으면 질문이 보이는 동안 그림 높이를 늘림 */
   #pred2{position:relative;inset:auto;min-height:100%}
   #pred2 .pbox{max-height:none}
