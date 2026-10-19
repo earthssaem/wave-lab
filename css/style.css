@@ -50,6 +50,9 @@ a.brand:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 /* 탭마다 색(--tc)·옅은 색(--tc-soft) */
 .panel{display:none;background:var(--paper);border:var(--bw) solid var(--ink);border-radius:0 14px 14px 14px;padding:12px;box-shadow:0 4px 0 rgba(36,48,58,.08)}
 .panel.active{display:block}
+/* 새로고침 때 주소의 탭(#tab2~5)을 처음부터 보여 줌: index.html 의 탭 줄 바로 뒤 스크립트가 html[data-tab] 을 붙이고 setTab 이 뗌 */
+html[data-tab] #panel1{display:none}
+html[data-tab="2"] #panel2,html[data-tab="3"] #panel3,html[data-tab="4"] #panel4,html[data-tab="5"] #panel5{display:block}
 #panel1{--tc:var(--tab1);--tc-soft:#E4EFFA}
 #panel2{--tc:var(--tab2);--tc-soft:#FBF0D9}
 #panel3{--tc:var(--tab3);--tc-soft:#EEEAF6}
